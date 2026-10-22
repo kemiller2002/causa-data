@@ -1,0 +1,6 @@
+{
+  "repository": "https://github.com/kemiller2002/indy-init-rehearsal-001",
+  "commit": "55f49f61c939a3a780cee592f36f732a1328f981",
+  "project": "src/engine/App.Engine.fsproj",
+  "purpose": "Authoritative F# domain engine (decide/evolve/History.validate) used to generate and verify fixtures. Consumed read-only; never modified here."
+}

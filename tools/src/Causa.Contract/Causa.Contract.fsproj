@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Causa.Contract</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Json.fs" />
+    <Compile Include="Errors.fs" />
+    <Compile Include="Wire.fs" />
+    <Compile Include="Events.fs" />
+    <Compile Include="Projection.fs" />
+    <Compile Include="SchemaCheck.fs" />
+    <Compile Include="Store.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../.engine/src/engine/App.Engine.fsproj" />
+  </ItemGroup>
+</Project>
