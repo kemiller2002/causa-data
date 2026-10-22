@@ -1,0 +1,9 @@
+# Changes here can defeat the compatibility gate's self-checks (CONTRACT.md §14, trust boundary).
+/tools/                 @kemiller2002
+/.github/               @kemiller2002
+/Directory.Build.props  @kemiller2002
+/global.json            @kemiller2002
+/engine.lock.json       @kemiller2002
+/contract/              @kemiller2002
+/fixtures/              @kemiller2002
+/compatibility/         @kemiller2002

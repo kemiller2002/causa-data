@@ -1,0 +1,2 @@
+tag=causa-storage-v1.0.0
+commit=c947c7e354be80766573a782546c8186336774cc
