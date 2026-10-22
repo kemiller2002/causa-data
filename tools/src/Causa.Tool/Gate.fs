@@ -118,8 +118,22 @@ module Gate =
     let actualEngine (under: EngineUnderTest) : Result<(string * string) list, string> =
         match under with
         | LoadedByThisProcess ->
-            typeof<IndyInitRootCauseInvestigator.Engine.EventBody>.Assembly.Location
-            |> Path.GetDirectoryName |> nonNull |> hashAssemblies |> Ok
+            // Hash each assembly as the runtime resolved it (review round 4), not the files next to the engine:
+            // resolve it through the default load context, then require exactly one loaded instance.
+            let loaded (name: string) =
+                let simple = Path.GetFileNameWithoutExtension name |> nonNull
+                try Reflection.Assembly.Load(Reflection.AssemblyName simple) |> ignore with _ -> ()
+                AppDomain.CurrentDomain.GetAssemblies()
+                |> Array.filter (fun a -> a.GetName().Name = simple)
+                |> List.ofArray
+                |> function
+                    | [ a ] when not (String.IsNullOrEmpty a.Location) && File.Exists a.Location -> Ok(name, Json.sha256Hex (File.ReadAllBytes a.Location))
+                    | [] -> Error(simple + " is not loaded")
+                    | [ _ ] -> Error(simple + " is loaded without a file location")
+                    | xs -> Error(simple + " is loaded " + string xs.Length + " times")
+            engineAssemblies
+            |> List.map loaded
+            |> List.fold (fun acc r -> match acc, r with Ok xs, Ok x -> Ok(xs @ [ x ]) | Error e, _ | _, Error e -> Error e) (Ok [])
         | BuiltIn root ->
             let engineRoot = Path.Combine(root, ".engine") + "/"
             let props = engineBuildProperties engineRoot |> List.map (fun (k, v) -> "-p:" + k + "=" + v)

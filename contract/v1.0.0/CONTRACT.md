@@ -1098,7 +1098,8 @@ checkout and a sterile tree, and between the authoring machine and GitHub's runn
 
 `causa gate .` recomputes all of the pins and runs full verification; any difference is a failure. It also hashes
 the engine assemblies **that the running gate process actually loaded** and requires them to equal the sterile
-build (`engine.loaded`). So the gate does not need to know how a build could be steered: a planted
+build (`engine.loaded`). Each assembly is resolved through the runtime's default load context, and must be loaded
+exactly once, from a file whose bytes are hashed. So the gate does not need to know how a build could be steered: a planted
 `Directory.Build.targets`, `Directory.Build.rsp`, `*.fsproj.user`, `obj/*.targets`, MSBuild property, environment
 variable or substituted NuGet package that changes the compiled engine changes the bytes the gate loads, and the
 gate fails. `gate-selftest` plants four of these hooks and checks that each one is caught.
