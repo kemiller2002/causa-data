@@ -11,6 +11,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="../../../.engine/src/engine/App.Engine.fsproj" AdditionalProperties="$(CausaEngineBuildProperties)" />
     <ProjectReference Include="../../src/Causa.Tool/Causa.Tool.fsproj" />
     <ProjectReference Include="../../src/Causa.GitHub/Causa.GitHub.fsproj" />
   </ItemGroup>

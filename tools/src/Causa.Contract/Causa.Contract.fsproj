@@ -12,6 +12,6 @@
     <Compile Include="Store.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../../../.engine/src/engine/App.Engine.fsproj" />
+    <ProjectReference Include="../../../.engine/src/engine/App.Engine.fsproj" AdditionalProperties="$(CausaEngineBuildProperties)" />
   </ItemGroup>
 </Project>

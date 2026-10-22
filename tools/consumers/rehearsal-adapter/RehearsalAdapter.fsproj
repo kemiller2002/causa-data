@@ -8,7 +8,7 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../../../.engine/src/engine/App.Engine.fsproj" />
+    <ProjectReference Include="../../../.engine/src/engine/App.Engine.fsproj" AdditionalProperties="$(CausaEngineBuildProperties)" />
     <ProjectReference Include="../../src/Causa.Contract/Causa.Contract.fsproj" />
   </ItemGroup>
 </Project>

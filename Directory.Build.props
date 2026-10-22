@@ -7,4 +7,10 @@
     <Deterministic>true</Deterministic>
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
+  <!-- Every build of the pinned engine uses these exact settings, so its output bytes do not depend on where the
+       tree lives and can be compared with the sterile build the compatibility gate pins (Gate.engineBuildProperties). -->
+  <PropertyGroup>
+    <CausaEngineRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory).engine/'))</CausaEngineRoot>
+    <CausaEngineBuildProperties>Configuration=Release;DebugType=none;DebugSymbols=false;CopyLocalLockFileAssemblies=true;EnableSourceControlManagerQueries=false;EnableSourceLink=false;IncludeSourceRevisionInInformationalVersion=false;PathMap=$(CausaEngineRoot)=/_/engine/</CausaEngineBuildProperties>
+  </PropertyGroup>
 </Project>

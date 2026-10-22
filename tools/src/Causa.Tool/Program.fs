@@ -123,7 +123,7 @@ let main argv =
             | _ when File.Exists(Gate.releaseMarker full) ->
                 [ { Gate.Rule = "anchor.required"; Gate.Detail = "compatibility/v1.0.0/RELEASE exists: the gate must run with --anchor <release tag>" } ]
             | _ -> []
-        let failures = Gate.run full @ anchored
+        let failures = Gate.run full Gate.LoadedByThisProcess @ anchored
         printfn "%s" (Json.canonical (Gate.report failures) |> Result.defaultValue "")
         if failures.IsEmpty then 0 else 1
     | [ "gate-selftest"; root ] ->

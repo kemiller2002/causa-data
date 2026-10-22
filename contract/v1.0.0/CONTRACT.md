@@ -952,7 +952,7 @@ successor (no new events) is acceptable and changes nothing.
    - **dataset identity**: SHA-256 of the exact bytes of `fixtures/v1.0.0/manifest.json`, which pins the schema
      identity and every investigation's events, manifest, snapshot and state digests;
    - **release identity**: SHA-256 of the exact bytes of `compatibility/v1.0.0/lock.json`, which pins every frozen
-     file (negative fixtures included), the engine source and the SDK.
+     file (negative fixtures included), the engine assemblies and the SDK.
 
 ## 11. Error handling
 
@@ -1079,23 +1079,48 @@ preserves it byte-for-byte by not rewriting the source.
 
 - the schema identity and the digest of every frozen file;
 - every expected state digest, and every negative fixture's expected code;
-- the engine commit, plus `engineSourceSha256`: a content hash of **everything MSBuild builds the engine from**:
-  - every imported project file outside the dotnet installation, as listed by the MSBuild preprocessor — so a
-    `Directory.Build.props`/`.targets` planted anywhere up the tree is caught. Restore-generated `obj/` files are
-    excluded;
-  - every evaluated `Compile` item, with its content;
-  - the `PackageReference` id/version list. NuGet package content is taken as immutable per version;
+- the engine commit, plus `engineAssemblies`: the SHA-256 of the **bytes of the engine assemblies**
+  (`IndyInitRootCauseInvestigator.Engine.dll`, `Aegis.Core.dll`, `FSharp.Core.dll`). These are produced by a
+  **sterile build** of the pinned commit, which:
+  - takes the sources from the git object store (`git archive <commit>`), so nothing untracked, ignored or generated
+    can enter;
+  - builds in a fresh temporary directory, with no `Directory.Build.*`, `Directory.Packages.props`, `NuGet.Config`
+    or `global.json` above it (other than the pinned `global.json` it writes itself);
+  - replaces the whole environment, keeping only the tool path and network egress settings;
+  - disables response files (`-noAutoResponse`);
+  - uses a fresh HOME and NuGet package folder, with nuget.org as the only package source;
 - the .NET SDK version (`global.json`, `rollForward: disable`).
 
-`causa gate .` recomputes all of them and runs full verification; any difference is a failure.
+Every build of the engine, sterile or not, uses the same settings (`CausaEngineBuildProperties` in
+`Directory.Build.props`). These are Release, no PDB, source paths mapped and no source-control metadata, so the
+assembly bytes do not depend on where the tree lives. This was confirmed between two directories, between a git
+checkout and a sterile tree, and between the authoring machine and GitHub's runners.
+
+`causa gate .` recomputes all of the pins and runs full verification; any difference is a failure. It also hashes
+the engine assemblies **that the running gate process actually loaded** and requires them to equal the sterile
+build (`engine.loaded`). So the gate does not need to know how a build could be steered: a planted
+`Directory.Build.targets`, `Directory.Build.rsp`, `*.fsproj.user`, `obj/*.targets`, MSBuild property, environment
+variable or substituted NuGet package that changes the compiled engine changes the bytes the gate loads, and the
+gate fails. `gate-selftest` plants four of these hooks and checks that each one is caught.
 
 After the freeze, the gate is **anchored to the release tag**: `causa gate . --anchor causa-storage-v1.0.0`
 additionally requires the working-tree lock to be byte-identical to the lock in the tag, and every frozen path
 (`contract/v1.0.0`, `fixtures/v1.0.0`, `compatibility/v1.0.0`, `engine.lock.json`, `global.json`) to equal the tag.
-Regenerating the lock in the same change therefore cannot launder a modification. From the freeze commit onwards,
-`compatibility/v1.0.0/RELEASE` exists (itself a frozen file). While it exists, `causa gate .` without `--anchor` fails
-(`anchor.required`), so a missing or deleted tag cannot silently downgrade the gate to unanchored. Protecting the tag
-from deletion on the hosting side is recommended in addition.
+Regenerating the lock in the same change therefore cannot launder a modification. The anchor must be the release
+tag itself (`refs/tags/causa-storage-v1.0.0`); any other ref is refused (`anchor.tag`). From the freeze commit onwards,
+`compatibility/v1.0.0/RELEASE` exists, and it is listed among the lock's frozen files. While it exists,
+`causa gate .` without `--anchor` fails (`anchor.required`), so a missing tag cannot silently downgrade the gate to
+unanchored.
+
+**Trust boundary.** The gate is code in this repository, run by a workflow in this repository. It detects
+incompatible changes made by anyone who leaves the gate, the toolkit and the workflow alone. A change that edits
+those can make any check pass. That is outside what a self-checking repository can prevent. It is covered by the
+hosting side:
+- a protected release tag;
+- required status checks;
+- review of every change to `tools/`, `.github/`, `Directory.Build.props` and `global.json`.
+
+A change that deletes `RELEASE` and the tag together is also outside the gate's reach, for the same reason.
 
 The negative fixtures cover every reader stage rule and, one rule per fixture, the engine's decision rules. Each
 engine-rule fixture is the **sole** reason for refusal, which the generator asserts against the pinned engine. So a
