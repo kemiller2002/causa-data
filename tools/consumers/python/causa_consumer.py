@@ -1132,7 +1132,7 @@ def verify_negative(name: str, raw: bytes, listed_code: str | None, frozen: Mapp
     extra = ""
     stage15_withheld = False
     if kind == "investigation":
-        files = {k: b64(fx["files"][k]) for k in INVESTIGATION_FILES}
+        files = {k: b64(v) for k, v in fx["files"].items()}
         res = run_pipeline(fx["directoryId"], files, schemas)
         got, stage15_withheld = res.primary, res.withheld
     elif kind == "append":
@@ -1144,7 +1144,7 @@ def verify_negative(name: str, raw: bytes, listed_code: str | None, frozen: Mapp
         base = by_key.get(fx["baseScenarioKey"])
         if base is None:
             return pre + [failed(cname, f"unknown baseScenarioKey {fx['baseScenarioKey']}")]
-        files = {k: b64(fx["files"][k]) for k in INVESTIGATION_FILES}
+        files = {k: b64(v) for k, v in fx["files"].items()}
         got, extra, stage15_withheld = evaluate_successor(base, files, schemas)
     got_s = "accepted-structurally (no error)" if got is None else got.code + (f"[{got.domain_code}]" if got.domain_code else "")
     detail = f"kind={kind} expected={expected}" + (f"[{exp_domain}]" if exp_domain else "") + f" got={got_s}"

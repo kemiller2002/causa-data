@@ -945,6 +945,12 @@ successor (no new events) is acceptable and changes nothing.
    `schemas/` as `{path, sha256}`. Paths are relative and `/`-separated, sorted ordinally. Each digest is over exact file
    bytes. The **schema identity** is the SHA-256 of `bundle.json`'s exact bytes. Compatibility tooling compares this
    identity (§14).
+4. **Identities.** Three digests identify a release:
+   - **schema identity**: SHA-256 of the exact bytes of `contract/v1.0.0/schemas/bundle.json`;
+   - **dataset identity**: SHA-256 of the exact bytes of `fixtures/v1.0.0/manifest.json`, which pins the schema
+     identity and every investigation's events, manifest, snapshot and state digests;
+   - **release identity**: SHA-256 of the exact bytes of `compatibility/v1.0.0/lock.json`, which pins every frozen
+     file (negative fixtures included), the engine source and the SDK.
 
 ## 11. Error handling
 
