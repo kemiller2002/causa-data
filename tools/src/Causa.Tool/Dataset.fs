@@ -152,6 +152,10 @@ module Negatives =
               { a with Events = Array.append [| 0xEFuy; 0xBBuy; 0xBFuy |] a.Events }
           inv "truncated-event-line" Codes.jsonMalformed "The last events.ndjson line is truncated mid-object."
               (let t = (utf8.GetString a.Events).TrimEnd('\n') in { a with Events = utf8.GetBytes(t.Substring(0, t.Length - 7) + "\n") })
+          inv "feff-inside-string" Codes.jsonMalformed "An observation's text contains U+FEFF (escaped as \\ufeff); U+FEFF is forbidden everywhere (CONTRACT §2.3)."
+              (let t = (utf8.GetString a.Events).TrimEnd('\n').Split('\n')
+               let l2 = t[2].Replace("\"original\":\"", "\"original\":\"\\ufeff")
+               { a with Events = utf8.GetBytes(String.Join("\n", Array.concat [ t[0..1]; [| l2 |]; t[3..] ]) + "\n") })
           inv "duplicate-json-key" Codes.jsonMalformed "An event object repeats the key 'eventType' (JSON objects must have unique keys)."
               (let t = (utf8.GetString a.Events).TrimEnd('\n').Split('\n')
                let l0 = t[0].Replace("\"eventType\":\"InvestigationStarted\"", "\"eventType\":\"InvestigationStarted\",\"eventType\":\"InvestigationStarted\"")

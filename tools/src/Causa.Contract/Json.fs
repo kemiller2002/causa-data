@@ -64,7 +64,9 @@ module Json =
         | JsonValueKind.False -> Ok(JBool false)
         | JsonValueKind.String ->
             let s = e.GetString() |> nonNull
-            if isWellFormed s then Ok(JStr s) else Error(path + ": string contains an unpaired surrogate")
+            if not (isWellFormed s) then Error(path + ": string contains an unpaired surrogate")
+            elif s.Contains '\uFEFF' then Error(path + ": U+FEFF is not allowed (CONTRACT §2.3)")
+            else Ok(JStr s)
         | JsonValueKind.Number ->
             let raw = e.GetRawText()
             if not (integerText.IsMatch raw) then Error(path + ": number '" + raw + "' is not a JSON integer")
@@ -82,8 +84,8 @@ module Json =
             match names |> List.countBy id |> List.tryFind (fun (_, n) -> n > 1) with
             | Some(dup, _) -> Error(path + ": duplicate object key '" + dup + "'")
             | None ->
-                match names |> List.tryFind (isWellFormed >> not) with
-                | Some _ -> Error(path + ": object key contains an unpaired surrogate")
+                match names |> List.tryFind (fun n -> not (isWellFormed n) || n.Contains '\uFEFF') with
+                | Some _ -> Error(path + ": object key contains an unpaired surrogate or U+FEFF")
                 | None ->
                     props |> traverse (fun (k, v) -> ofElement (path + "." + k) v |> Result.map (fun j -> k, j))
                     |> Result.map JObj
@@ -149,6 +151,7 @@ module Json =
     let rec private problems (v: JValue) : string list =
         match v with
         | JStr s when not (isWellFormed s) -> [ "string contains an unpaired surrogate" ]
+        | JStr s when s.Contains '\uFEFF' -> [ "string contains U+FEFF" ]
         | JInt n when n > maxSafeInteger || n < -maxSafeInteger -> [ "integer outside the safe range" ]
         | JArr items -> items |> List.collect problems
         | JObj props ->

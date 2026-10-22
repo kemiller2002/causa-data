@@ -268,6 +268,37 @@ CATALOG_NOT_IMPLEMENTED = [
 ]
 
 
+ENUM_CASES = [
+    ("lifecycle", "InvestigationLifecycle", [("Draft", "draft"), ("Active", "active"), ("AwaitingEvidence", "awaitingEvidence"), ("AwaitingVerification", "awaitingVerification"), ("Resolved", "resolved"), ("Closed", "closed"), ("Archived", "archived")]),
+    ("hypothesisState", "HypothesisState", [("Proposed", "proposed"), ("Plausible", "plausible"), ("Supported", "supported"), ("Weakened", "weakened"), ("Falsified", "falsified"), ("Superseded", "superseded")]),
+    ("unknownState", "UnknownState", [("Identified", "identified"), ("Investigating", "investigating"), ("UnknownResolved", "resolved"), ("AcceptedResidual", "acceptedResidual"), ("UnknownSuperseded", "superseded")]),
+    ("materiality", "Materiality", [("Blocking", "blocking"), ("Material", "material"), ("NonMaterial", "nonMaterial"), ("Informational", "informational")]),
+    ("assumptionState", "AssumptionState", [("ExplicitUnverified", "explicitUnverified"), ("ProvisionallyAccepted", "provisionallyAccepted"), ("AssumptionVerified", "verified"), ("Rejected", "rejected"), ("Expired", "expired")]),
+    ("contradictionState", "ContradictionState", [("Detected", "detected"), ("Triaged", "triaged"), ("ContradictionInvestigating", "investigating"), ("ContradictionResolved", "resolved"), ("ContradictionAcceptedResidual", "acceptedResidual"), ("ContradictionSuperseded", "superseded")]),
+    ("actionState", "ActionState", [("ActionProposed", "proposed"), ("ActionApproved", "approved"), ("ActionInProgress", "inProgress"), ("ActionCompleted", "completed"), ("ActionInterpreted", "interpreted"), ("ActionRejected", "rejected"), ("ActionCancelled", "cancelled")]),
+    ("actionKind", "ActionKind", [("Test", "test"), ("Inspection", "inspection"), ("Query", "query"), ("Comparison", "comparison"), ("Experiment", "experiment")]),
+    ("causeState", "CausalAssertionState", [("CauseProposed", "proposed"), ("CauseConfirmed", "confirmed"), ("CauseReopened", "reopened"), ("CauseSuperseded", "superseded")]),
+    ("causeRole", "CauseRole", [("RootCause", "rootCause"), ("ContributingFactor", "contributingFactor"), ("Trigger", "trigger"), ("EnablingCondition", "enablingCondition")]),
+    ("correctiveActionState", "CorrectiveActionState", [("CorrectionProposed", "proposed"), ("CorrectionApproved", "approved"), ("CorrectionInProgress", "inProgress"), ("Implemented", "implemented"), ("AwaitingVerificationOfEffect", "awaitingVerificationOfEffect"), ("VerifiedEffective", "verifiedEffective"), ("VerificationFailed", "verificationFailed"), ("ReworkRequired", "reworkRequired"), ("CorrectionCancelled", "cancelled")]),
+    ("correctiveActionKind", "CorrectiveActionKind", [("Mitigation", "mitigation"), ("Workaround", "workaround"), ("Correction", "correction"), ("Prevention", "prevention")]),
+    ("evidenceCategory", "EvidenceCategory", [("DirectObservation", "directObservation"), ("Measurement", "measurement"), ("Log", "log"), ("Document", "document"), ("ExperimentResult", "experimentResult"), ("Testimony", "testimony"), ("ExternalReference", "externalReference")]),
+    ("verificationStatus", "VerificationStatus", [("Unverified", "unverified"), ("PartiallyVerified", "partiallyVerified"), ("Verified", "verified"), ("Invalidated", "invalidated")]),
+    ("relationshipKind", "RelationshipKind", [("Supports", "supports"), ("Contradicts", "contradicts"), ("Discriminates", "discriminates"), ("Insufficient", "insufficient")]),
+    ("predictionStrength", "PredictionStrength", [("Necessary", "necessary"), ("Expected", "expected"), ("DiscriminatingPrediction", "discriminating"), ("NonDiscriminating", "nonDiscriminating")]),
+    ("predictionTiming", "PredictionTiming", [("Prospective", "prospective"), ("Retrospective", "retrospective")]),
+    ("verificationOutcome", "VerificationOutcome", [("Satisfied", "satisfied"), ("Failed", "failed"), ("Inconclusive", "inconclusive")]),
+    ("conclusionStrength", "ConclusionStrength", [("PlausibleExplanation", "plausibleExplanation"), ("LeadingExplanation", "leadingExplanation"), ("SupportedCause", "supportedCause"), ("ConfirmedCause", "confirmedCause"), ("AcceptedWithResidualUncertainty", "acceptedWithResidualUncertainty")]),
+    ("proposalKind", "ProposalKind", [("ProposedHypothesis", "hypothesis"), ("ProposedUnknown", "unknown"), ("ProposedAction", "action")]),
+    ("proposalState", "ProposalState", [("ProposalActive", "active"), ("ProposalAccepted", "accepted"), ("ProposalRejected", "rejected")]),
+    ("hypothesisCommand", "HypothesisCommand", [("MarkPlausible", "markPlausible"), ("MarkSupported", "markSupported"), ("MarkWeakened", "markWeakened"), ("Falsify", "falsify"), ("Supersede", "supersede"), ("Reopen", "reopen")]),
+    ("contentKind", "EvidenceContent", [("TextEvidence", "text"), ("ArtifactEvidence", "artifact")]),
+]
+LIFECYCLE_COMMANDS = [("ActivateInvestigation", "activateInvestigation"), ("MarkAwaitingEvidence", "markAwaitingEvidence"), ("MarkAwaitingVerification", "markAwaitingVerification"),
+                      ("ResolveInvestigation", "resolveInvestigation"), ("CloseInvestigation", "closeInvestigation"), ("ReopenInvestigation", "reopenInvestigation"), ("VerificationFailed", "verificationFailed")]
+HYPOTHESIS_COMMANDS = [(a, b) for a, b in ENUM_CASES[21][2]]
+ACTOR_KINDS = "Human -> {kind:human}; System -> {kind:system}; Agent(provider, model) -> {kind:agent, provider, model}"
+
+
 def load_schemas(root):
     return {p.relative_to(root).as_posix(): json.loads(p.read_text()) for p in Path(root).rglob("*.schema.json")}
 
@@ -305,6 +336,12 @@ def main():
     registered = docs["event-envelope.schema.json"]["properties"]["eventType"]["enum"]
     if sorted(registered) != sorted(ENGINE):
         problems.append("envelope eventType enum differs from the engine mapping")
+    common = docs["common.schema.json"]["$defs"]
+    for name, _, pairs in ENUM_CASES:
+        if [b for _, b in pairs] != common[name]["enum"]:
+            problems.append(f"enum {name}: mapping {[b for _, b in pairs]} != schema {common[name]['enum']}")
+    if [b for _, b in LIFECYCLE_COMMANDS] != common["lifecycleCommand"]["enum"]:
+        problems.append("lifecycleCommand mapping differs from schema")
     if problems:
         sys.exit("reconciliation incomplete:\n" + "\n".join(problems))
 
@@ -346,8 +383,9 @@ def main():
 
     md = ["# Field mapping — F# engine ↔ Causa v1.0.0 wire", "",
           f"Engine: `kemiller2002/indy-init-rehearsal-001@{ENGINE_COMMIT}` (`src/engine/Commands.fs` `EventBody`). "
-          "Generated by `causa-data/tools/py/reconciliation.py` from a hand-written mapping, cross-checked against the frozen schemas "
-          "(the script refuses to run if any schema field is unmapped).", "",
+          "Generated from a hand-written mapping and cross-checked against the frozen schemas: generation fails if any schema field "
+          "or enumeration value is unmapped. Normative alongside CONTRACT.md §6–§7.", "",
+          "Actor: " + ACTOR_KINDS + ".", "",
           "Every payload key is required. `nullable` = the F# `option`, encoded as `null` when absent. All fields were introduced in 1.0.0.", "",
           "## Envelope", "", "| wire field | F# source | F# type | resolution |", "|---|---|---|---|"]
     md += [f"| `{a}` | {b} | {c} | {e} |" for a, b, c, d, e in ENVELOPE]
@@ -359,10 +397,21 @@ def main():
             md.append(f"| {wf} | `{r['fsharpElement']}` | {r['fsharpType']} | {r['jsonType'] or '—'} | "
                       f"{'—' if r['nullable'] is None else ('yes' if r['nullable'] else 'no')} | {r['constraints'] or '—'} | {r['semantic']} |")
         md.append("")
-    md += ["## Enumerations (engine case → wire value)", "",
-           "Engine prefixes that exist only to avoid F# name collisions are dropped. Bidirectional exhaustiveness is tested in "
-           "`tools/tests/Causa.Contract.Tests` against the engine's own `CaseNames.all*` lists.", "",
-           rr.enum_table(docs), ""]
+    md += ["## Enumerations (F# union case → wire value)", "",
+           "Engine prefixes that exist only to avoid F# name collisions are dropped. The F# case names are those of the "
+           "engine's `Model.fs`/`Commands.fs` unions. Bidirectional exhaustiveness is tested against the engine's own case lists "
+           "(`Codec.fs` `CaseNames.all*`) by the reference toolkit's unit tests.", "",
+           "| enumeration | F# union | F# case → wire value |", "|---|---|---|"]
+    md += [f"| `{name}` | `{union}` | " + ", ".join(f"`{a}`→`{b}`" for a, b in pairs) + " |" for name, union, pairs in ENUM_CASES]
+    md += ["", "### Engine command strings", "",
+           "`LifecycleChanged.command` and `HypothesisTransitioned.command` carry a command name; the engine stores it as a "
+           "string (`LifecycleChanged.command`, `HypothesisChange.Command`). These are the exact engine strings:", "",
+           "| field | engine string → wire value |", "|---|---|",
+           "| `LifecycleChanged.command` | " + ", ".join(f"`\"{a}\"`→`{b}`" for a, b in LIFECYCLE_COMMANDS) + " |",
+           "| `HypothesisTransitioned.command` | " + ", ".join(f"`\"{a}\"`→`{b}`" for a, b in HYPOTHESIS_COMMANDS) + " |", "",
+           "`\"VerificationFailed\"` is not a user command. The engine emits it as the follow-on `LifecycleChanged(AwaitingVerification, Active, \"VerificationFailed\", Some reason)` "
+           "when `RecordVerification` records a failed outcome while the investigation awaits verification. Hypothesis command strings "
+           "are `$\"{command}\"` of the `HypothesisCommand` union, i.e. the case name.", ""]
     (out / "FIELD-MAPPING.md").write_text("\n".join(md) + "\n", encoding="utf-8")
 
     reg = ["# Event registry — Causa storage contract v1.0.0", "",

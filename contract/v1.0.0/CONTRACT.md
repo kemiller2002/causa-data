@@ -46,7 +46,9 @@ input as invalid until it is resolved through §14.
    `[-(2^53-1), 2^53-1]`. Non-integers, exponents and out-of-range integers are `CAUSA.JSON_MALFORMED`; `-0` parses but is
    `CAUSA.NON_CANONICAL`. Object keys are case-sensitive and MUST be unique (`CAUSA.JSON_MALFORMED`). They are
    lowerCamelCase, except the file-name keys of negative-fixture `files` objects. Unpaired UTF-16 surrogates are
-   invalid. U+FEFF anywhere other than as a (forbidden) leading BOM is `CAUSA.JSON_MALFORMED`.
+   invalid. U+FEFF is forbidden everywhere: as a leading BOM (`CAUSA.ENCODING`), and anywhere else, raw or escaped as
+   `\ufeff`, including inside string values (`CAUSA.JSON_MALFORMED`). Writers refuse text containing it
+   (`CAUSA.UNREPRESENTABLE`).
 4. **Closed structures.** Every object defined here is closed (`additionalProperties: false`). Unknown fields are
    rejected, never ignored. v1.0.0 defines **no extension namespace** (§13.4).
 5. **Required vs nullable.** v1.0.0 has **no optional keys**: every declared key MUST be present. A value that the
@@ -98,7 +100,7 @@ compatibility/v1.0.0/lock.json                compatibility gate lock (§14)
    `runId` matches `^[a-z0-9][a-z0-9-]{0,63}$`. A reader MUST reject any other directory name (`CAUSA.PATH_INVALID`),
    including `.`/`..` segments, separators, upper case or percent-encoding.
 3. An investigation directory contains **exactly** the three files above. A missing or extra file is
-   `CAUSA.PATH_INVALID`.
+   `CAUSA.PATH_INVALID`. Every directory entry counts, including hidden files and subdirectories.
 4. `fixtures/v1.0.0/` and `contract/v1.0.0/` are **immutable** after the `causa-storage-v1.0.0` tag. Writers MUST NOT
    create, modify or delete anything under them. All demonstration writes go to an isolated
    `workspaces/demo/<runId>/` namespace (§9).
@@ -113,7 +115,8 @@ Schema: `root-manifest.schema.json`. Fields: `formatVersion` (`"1.0.0"`), `datas
 the canonical `state` object, §8), `eventsSha256` (file bytes), `manifestSha256` and `snapshotSha256` (canonical digests).
 
 `negativeFixtures[]` lists `{path, expectedErrorCode}` with paths relative to `fixtures/v1.0.0/`. A negative fixture is
-never listed as a valid investigation. The root manifest contains no digest of itself.
+never listed as a valid investigation. The root manifest contains no digest of itself. It is anchored by `compatibility/v1.0.0/lock.json` (which pins its
+bytes, §14) and by the immutable release tag.
 
 ## 5. Authoritative event envelope — one line of `events.ndjson`
 
@@ -148,7 +151,8 @@ Schema: `event-envelope.schema.json`.
    and `actor`. Readers MUST NOT reorder, split or merge groups. Admissibility (§11.3) is decided per group. A
    `correlationId` names exactly one group: reusing it for a later, non-adjacent group is invalid
    (`CAUSA.CORRELATION_REUSED`), so writers MUST use a fresh command id per command. The engine does not enforce
-   this; the contract does.
+   this; the contract does. Adjacent events that share a `correlationId` but differ in `occurredAt` or `actor` are not
+   one command. The engine's admissibility check refuses them (stage 15, `HISTORY.INADMISSIBLE_EVENT`).
 5. **Immutability.** An appended event is never edited, re-ordered or deleted. Corrections are new events
    (for example `EvidenceSuperseded`).
 6. **Clock values** are recorded, not validated. `occurredAt` need not increase with `aggregateVersion`, and a reader
@@ -897,13 +901,15 @@ pending command so that it can reload and re-decide. Otherwise the writer append
 emitted, recomputes snapshot and manifest, and verifies the result exactly as a reader would (§11) before reporting
 success. Evaluation order for an append: (1) the version check (`CAUSA.VERSION_STALE`, before the appended lines are
 read); (2) the appended lines through stages 2–7, numbered from current + 1; (3) the combined history through every
-reader stage, with manifest and snapshot rebuilt by the evaluator.
+reader stage, with manifest and snapshot rebuilt by the evaluator. "Numbered from current + 1" is how lines are
+labelled in messages. A wrong `aggregateVersion` on an appended line is caught at stage 12 in step (3).
 
 ### 9.3 Successor files
 
 A newer file set for an investigation is acceptable only if its `events.ndjson` starts with the previously accepted
 `events.ndjson` bytes (`CAUSA.HISTORY_REWRITTEN` otherwise). This holds even when every hash and the snapshot are
-self-consistent. The candidate is first verified on its own (§11.1); the prefix check follows.
+self-consistent. The candidate is first verified on its own (§11.1); the prefix check follows. A byte-identical
+successor (no new events) is acceptable and changes nothing.
 
 ### 9.4 Remote providers (GitHub)
 
@@ -961,7 +967,8 @@ Conforming readers MUST agree on the primary code for every negative fixture.
 
 Dataset-level codes: `CAUSA.FIXTURE_DRIFT` (any root-manifest entry field — digest, version, lifecycle, title — differs
 from the investigation; the root manifest, bundle, golden and negative-fixture files are themselves checked for framing,
-canonical form and schema with the stage codes above) and
+canonical form, versions and schema with the stage codes above; a `golden/scenarios.json` that contradicts the
+investigations is `CAUSA.GOLDEN_MISMATCH`) and
 `CAUSA.GOLDEN_MISMATCH` (the projection differs from the golden file). Write-side codes: `CAUSA.VERSION_STALE` (§9.2),
 `CAUSA.HISTORY_REWRITTEN` (§9.3) and `CAUSA.UNREPRESENTABLE` (a domain value has no v1 wire form, §2.9, §7.2).
 
