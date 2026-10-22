@@ -69,12 +69,18 @@ let private githubLive (phase: string) (root: string) (runId: string) (fixtureCo
         eprintfn "GITHUB_TOKEN is not set"
         2
     | Some token ->
-        let branch = "claude/causa-storage-contract-v1-8aymdx"
+        let branch =
+            Environment.GetEnvironmentVariable "CAUSA_LIVE_BRANCH" |> Option.ofObj |> Option.defaultValue "claude/causa-storage-contract-v1-8aymdx"
         let config : Causa.GitHub.Config = { Owner = "kemiller2002"; Repository = "causa-data"; Branch = branch; ApiBase = "https://api.github.com" }
         use client = new Net.Http.HttpClient()
         let rest = Causa.GitHub.Provider.rest config (Causa.GitHub.Http.transport config token client)
         let scratch = Path.Combine(root, ".local", "git-backend", runId + "-" + phase + "-" + string Environment.ProcessId + ".git")
-        let git = (Causa.GitHub.GitBackend.create scratch "https://github.com/kemiller2002/causa-data" branch).GetAwaiter().GetResult()
+        // CAUSA_WRITE_BACKEND=rest writes through the Git Data API (the browser application's path);
+        // the default git smart-HTTP backend exists because some sandboxes deny REST writes.
+        let git =
+            match Environment.GetEnvironmentVariable "CAUSA_WRITE_BACKEND" with
+            | "rest" -> rest
+            | _ -> (Causa.GitHub.GitBackend.create scratch "https://github.com/kemiller2002/causa-data" branch).GetAwaiter().GetResult()
         let env : LiveTests.Env =
             { Backend = git; Rest = rest; RestConfig = config; Set = schemasOrExit root; RunId = runId
               LocalRoot = Path.Combine(root, ".local", "github-live"); RepoRoot = root; Human = IndyInitRootCauseInvestigator.Engine.Actor.human "live-test-operator" }
