@@ -78,7 +78,21 @@ module Sync =
                 | _ -> [ e ] :: acc) []
             |> List.rev
         let start = remote.Loaded |> Option.map (fun l -> l.State)
+        let remoteEvents = remote.Loaded |> Option.map (fun l -> l.Events) |> Option.defaultValue []
+        let sameEvent (a: Event) (b: Event) = a.CommandId = b.CommandId && a.Body = b.Body && a.Actor = b.Actor && a.At = b.At
+        // A pending command that already landed remotely (e.g. its confirmation was lost) is dropped,
+        // not re-decided; a remote command with the same id but different events is a real conflict.
+        let landed (group: Event list) =
+            let remoteGroup = remoteEvents |> List.filter (fun e -> e.CommandId = group.Head.CommandId)
+            match remoteGroup with
+            | [] -> Ok false
+            | rg when rg.Length = group.Length && List.forall2 sameEvent rg group -> Ok true
+            | _ -> CausaError.fail Codes.correlationReused ("command " + Uuid.text group.Head.CommandId + " exists remotely with different events")
         groups
+        |> traverse (fun g -> landed g |> Result.map (fun l -> g, l))
+        |> Result.map (List.filter (snd >> not) >> List.map fst)
+        |> Result.bind (fun unlanded ->
+        unlanded
         |> List.fold
             (fun acc group ->
                 acc
@@ -96,7 +110,7 @@ module Sync =
                         | Error errors ->
                             Error { Code = Codes.historyInadmissible; DomainCode = Some (List.head errors).Code
                                     Detail = "pending command no longer applies: " + String.Join("; ", errors |> List.map (fun e -> e.Code + " " + e.Message)) }))
-            (Ok(start, []))
+            (Ok(start, [])))
         |> Result.map (fun (_, events) -> { local with Synced = remote.Files; SyncedToken = Some remote.Token; Pending = events })
 
     type Attempt =
@@ -156,9 +170,11 @@ module Sync =
                                     | Error f -> return { Outcome = outcomeOf f; Local = local; Commit = None; Attempts = n }
                                 | Error f -> return { Outcome = outcomeOf f; Local = local; Commit = None; Attempts = n }
                                 | Ok commit ->
-                                    match! b.Head() with
+                                    // Confirm by reading the tree of the commit we published, not the (moving) branch head.
+                                    match! b.TreeOf commit with
                                     | Error f -> return { Outcome = SyncOutcome.Pending("written but unconfirmed: " + failureText f); Local = local; Commit = Some commit; Attempts = n }
-                                    | Ok token ->
+                                    | Ok tree ->
+                                        let token = { HeadCommit = commit; TreeSha = tree }
                                         match! loadAt b set token prefix local.InvestigationId with
                                         | Ok confirmed when sameBytes confirmed.Files (Some files) ->
                                             return { Outcome = SyncOutcome.Synced commit

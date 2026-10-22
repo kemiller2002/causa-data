@@ -16,6 +16,30 @@ module Gate =
         |> List.map (fun p -> Layout.posix (Path.GetRelativePath(root, p)), Json.sha256Hex (File.ReadAllBytes p))
         |> List.sortWith (fun (a, _) (b, _) -> String.CompareOrdinal(a, b))
 
+    /// Content hash of the engine source actually compiled (CONTRACT §14): every *.fs / *.fsproj under
+    /// .engine/src/engine plus the engine's Directory.Build.props, as sorted "path:sha256" lines.
+    let engineSourceSha256 (root: string) =
+        let engine = Path.Combine(root, ".engine")
+        if not (Directory.Exists(Path.Combine(engine, "src", "engine"))) then "missing"
+        else
+            Directory.GetFiles(Path.Combine(engine, "src", "engine"), "*", SearchOption.AllDirectories)
+            |> Array.filter (fun f -> (f.EndsWith ".fs" || f.EndsWith ".fsproj") && not (f.Contains "/bin/" || f.Contains "/obj/"))
+            |> Array.append [| Path.Combine(engine, "Directory.Build.props") |]
+            |> Array.filter File.Exists
+            |> Array.map (fun f -> Layout.posix (Path.GetRelativePath(engine, f)) + ":" + Json.sha256Hex (File.ReadAllBytes f))
+            |> Array.sortWith (fun a b -> String.CompareOrdinal(a, b))
+            |> String.concat "\n"
+            |> Json.strictUtf8.GetBytes
+            |> Json.sha256Hex
+
+    let private sdkVersion (root: string) =
+        let p = Path.Combine(root, "global.json")
+        if not (File.Exists p) then "unpinned"
+        else
+            match File.ReadAllText p |> Json.parse with
+            | Ok v -> (match Negatives.get [ "sdk"; "version" ] v with JStr s -> s | _ -> "unpinned")
+            | Error _ -> "unreadable"
+
     let private engineCommit (root: string) =
         match File.ReadAllText(Path.Combine(root, "engine.lock.json")) |> Json.parse with
         | Ok v -> (match Negatives.get [ "commit" ] v with JStr s -> s | _ -> "")
@@ -39,6 +63,8 @@ module Gate =
               "contractVersion", JStr "1.0.0"
               "releaseTag", JStr "causa-storage-v1.0.0"
               "engineCommit", JStr(engineCommit root)
+              "engineSourceSha256", JStr(engineSourceSha256 root)
+              "dotnetSdk", JStr(sdkVersion root)
               "schemaBundleSha256", JStr(Json.sha256Hex (File.ReadAllBytes(Layout.bundle root)))
               "eventTypes", JArr(EventWire.eventTypes |> List.map JStr)
               "expectedStates",
@@ -53,13 +79,44 @@ module Gate =
 
     type Failure = { Rule: string; Detail: string }
 
+    let frozenRoots = [ "contract/v1.0.0"; "fixtures/v1.0.0"; "compatibility/v1.0.0"; "engine.lock.json"; "global.json" ]
+
+    let private git (root: string) (args: string list) =
+        let psi = Diagnostics.ProcessStartInfo("git")
+        psi.RedirectStandardOutput <- true
+        psi.RedirectStandardError <- true
+        ("-C" :: root :: args) |> List.iter psi.ArgumentList.Add
+        use p = Diagnostics.Process.Start psi |> nonNull
+        let out = p.StandardOutput.ReadToEnd()
+        p.WaitForExit()
+        p.ExitCode, out
+
+    /// After the freeze the lock is anchored to the release tag (review finding M1): the working-tree lock
+    /// must be byte-identical to the tagged one, and no frozen path may differ from the tag.
+    let anchorFailures (root: string) (anchor: string) : Failure list =
+        match git root [ "show"; anchor + ":compatibility/v1.0.0/lock.json" ] with
+        | code, _ when code <> 0 -> [ { Rule = "anchor.present"; Detail = "cannot read compatibility/v1.0.0/lock.json at " + anchor } ]
+        | _, tagged ->
+            let lockDiffers =
+                if File.Exists(lockPath root) && File.ReadAllText(lockPath root) = tagged then []
+                else [ { Rule = "anchor.lock"; Detail = "compatibility/v1.0.0/lock.json differs from " + anchor } ]
+            let changed =
+                match git root ([ "diff"; "--name-only"; anchor; "--" ] @ frozenRoots) with
+                | 0, out -> out.Split('\n', StringSplitOptions.RemoveEmptyEntries) |> List.ofArray
+                | _ -> [ "<git diff failed>" ]
+            let untracked =
+                match git root ([ "ls-files"; "--others"; "--exclude-standard"; "--" ] @ frozenRoots) with
+                | 0, out -> out.Split('\n', StringSplitOptions.RemoveEmptyEntries) |> List.ofArray
+                | _ -> []
+            lockDiffers @ ((changed @ untracked) |> List.map (fun f -> { Rule = "anchor.frozen-tree"; Detail = f + " differs from " + anchor }))
+
     /// Compare the tree against the lock, then run full dataset verification.
     let run (root: string) : Failure list =
         if not (File.Exists(lockPath root)) then [ { Rule = "lock.present"; Detail = "compatibility/v1.0.0/lock.json is missing" } ]
         else
             let locked = File.ReadAllText(lockPath root).TrimEnd('\n') |> Json.parse |> Result.defaultWith failwith
             let current =
-                try Ok(compute root) with ex -> Error ex.Message
+                try Ok(compute root) with ex -> Error("cannot compute tree digests: " + ex.Message)
             match current with
             | Error e -> [ { Rule = "tree.readable"; Detail = e } ]
             | Ok now ->
@@ -75,8 +132,11 @@ module Gate =
                 let orderRule =
                     if listOf "eventTypes" locked = listOf "eventTypes" now then [] else [ { Rule = "event-registry.order"; Detail = "registered event types changed" } ]
                 let verification =
-                    Dataset.verify root |> List.filter (fun c -> not c.Passed) |> List.map (fun c -> { Rule = "verify." + c.Name; Detail = c.Detail })
+                    try Dataset.verify root |> List.filter (fun c -> not c.Passed) |> List.map (fun c -> { Rule = "verify." + c.Name; Detail = c.Detail })
+                    with ex -> [ { Rule = "verify.exception"; Detail = ex.Message } ]
                 scalar "engine.pinned" "engineCommit"
+                @ scalar "engine.source" "engineSourceSha256"
+                @ scalar "toolchain.sdk" "dotnetSdk"
                 @ scalar "schema.identity" "schemaBundleSha256"
                 @ listRule "event-registry" "eventTypes" @ orderRule
                 @ listRule "replay.semantics" "expectedStates"
@@ -99,6 +159,14 @@ module Gate =
                 Directory.CreateDirectory(Path.GetDirectoryName target |> nonNull) |> ignore
                 File.Copy(f, target, true)))
         File.Copy(Path.Combine(src, "engine.lock.json"), Path.Combine(dst, "engine.lock.json"), true)
+        if File.Exists(Path.Combine(src, "global.json")) then File.Copy(Path.Combine(src, "global.json"), Path.Combine(dst, "global.json"), true)
+        Directory.GetFiles(Path.Combine(src, ".engine", "src", "engine"), "*", SearchOption.AllDirectories)
+        |> Array.filter (fun f -> not (f.Contains "/bin/" || f.Contains "/obj/"))
+        |> Array.append [| Path.Combine(src, ".engine", "Directory.Build.props") |]
+        |> Array.iter (fun f ->
+            let target = Path.Combine(dst, Path.GetRelativePath(src, f))
+            Directory.CreateDirectory(Path.GetDirectoryName target |> nonNull) |> ignore
+            File.Copy(f, target, true))
 
     /// Gate 7: deliberate mutations, each of which MUST make the gate fail; the unmutated copy MUST pass.
     let selfTest (root: string) : (string * bool * string) list =
@@ -135,6 +203,15 @@ module Gate =
               (fun r ->
                   let p = Path.Combine(r, "engine.lock.json")
                   File.WriteAllText(p, File.ReadAllText(p).Replace("55f49f61c939a3a780cee592f36f732a1328f981", "0000000000000000000000000000000000000000")))
+              "engine semantics relaxed: delete the CAUSE.NO_MECHANISM rule from the engine source",
+              (fun r ->
+                  let p = Path.Combine(r, ".engine", "src", "engine", "Decide.fs")
+                  File.WriteAllText(p, File.ReadAllText(p).Replace("| None -> [ err \"CAUSE.NO_MECHANISM\" \"§15.8\" \"The causal mechanism is not stated.\" ]", "| None -> []")))
+              "anchored relock: weaken CONTRACT.md then regenerate the lock (must fail against the tag)",
+              (fun r ->
+                  let p = Path.Combine(r, "contract", "v1.0.0", "CONTRACT.md")
+                  File.WriteAllText(p, File.ReadAllText(p).Replace("Unknown fields are\n   rejected, never ignored.", "Unknown fields are\n   ignored."))
+                  writeLock r)
               "unapproved fixture added: extra investigation directory",
               (fun r ->
                   let d = Path.Combine(Layout.investigations r, "00000000-0000-4000-8000-000000000001")
@@ -146,8 +223,14 @@ module Gate =
             copyTree root scratch
             let outcome =
                 try
+                    // Each scratch copy is a git repository tagged at its unmutated state, so the anchor applies.
+                    let g args = git scratch args |> ignore
+                    g [ "init"; "-q" ]
+                    g [ "-c"; "user.name=selftest"; "-c"; "user.email=selftest@invalid"; "add"; "-A" ]
+                    g [ "-c"; "user.name=selftest"; "-c"; "user.email=selftest@invalid"; "commit"; "-q"; "-m"; "frozen" ]
+                    g [ "tag"; "causa-storage-v1.0.0" ]
                     mutate scratch
-                    run scratch
+                    run scratch @ anchorFailures scratch "causa-storage-v1.0.0"
                 with ex -> [ { Rule = "exception"; Detail = ex.Message } ]
             Directory.Delete(scratch, true)
             let shouldPass = name.StartsWith "unmutated"

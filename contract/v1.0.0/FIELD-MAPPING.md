@@ -74,8 +74,8 @@ Every payload key is required. `nullable` = the F# `option`, encoded as `null` w
 | wire field | F# element | F# type | JSON type | nullable | constraint | meaning |
 |---|---|---|---|---|---|---|
 | `evidenceId` | `Item1` | EvidenceId | uuid | no | lowercase canonical, non-nil | Evidence id. |
-| `contentKind` | `Item2 (case)` | EvidenceContent | enum contentKind | no | text \| artifact | text | artifact (TextEvidence | ArtifactEvidence). |
-| `content` | `Item2 (payload)` | NonEmptyText | uri string | string | no | non-blank, verbatim | Text verbatim, or the absolute http(s) artifact URL. |
+| `contentKind` | `Item2 (case)` | EvidenceContent | enum contentKind | no | text \| artifact | text (TextEvidence) or artifact (ArtifactEvidence). |
+| `content` | `Item2 (payload)` | NonEmptyText (text) or string (artifact URL) | string | no | non-blank, verbatim | Text verbatim, or the absolute http(s) artifact URL. |
 | `category` | `Item3` | EvidenceCategory | enum evidenceCategory | no | directObservation \| measurement \| log \| document \| experimentResult \| testimony \| externalReference | Kind of evidence. |
 | `source` | `source` | NonEmptyText | string | no | non-blank, verbatim | Provenance: where it came from (R3.2). |
 | `capturedAt` | `Item5` | DateTimeOffset option | timestamp | yes | UTC, millisecond, Z | When it was captured, if known. |
@@ -102,7 +102,7 @@ Every payload key is required. `nullable` = the F# `option`, encoded as `null` w
 | `relationshipId` | `Item1` | RelationshipId | uuid | no | lowercase canonical, non-nil | Relationship id. |
 | `evidenceId` | `Item2` | EvidenceId | uuid | no | lowercase canonical, non-nil | Evidence. |
 | `hypothesisId` | `Item3` | HypothesisId | uuid | no | lowercase canonical, non-nil | Hypothesis. |
-| `kind` | `Item4` | RelationshipKind | enum relationshipKind | no | supports \| contradicts \| discriminates \| insufficient | supports | contradicts | discriminates | insufficient. |
+| `kind` | `Item4` | RelationshipKind | enum relationshipKind | no | supports \| contradicts \| discriminates \| insufficient | supports, contradicts, discriminates or insufficient. |
 | `rationale` | `Item5` | NonEmptyText option | string | yes | non-blank, verbatim | Why, if stated. |
 
 ### `UnknownIdentified`
@@ -225,7 +225,7 @@ Every payload key is required. `nullable` = the F# `option`, encoded as `null` w
 | wire field | F# element | F# type | JSON type | nullable | constraint | meaning |
 |---|---|---|---|---|---|---|
 | `correctiveActionId` | `Item1` | CorrectiveActionId | uuid | no | lowercase canonical, non-nil | Corrective action id. |
-| `kind` | `Item2` | CorrectiveActionKind | enum correctiveActionKind | no | mitigation \| workaround \| correction \| prevention | mitigation | workaround | correction | prevention (R7.2). |
+| `kind` | `Item2` | CorrectiveActionKind | enum correctiveActionKind | no | mitigation \| workaround \| correction \| prevention | mitigation, workaround, correction or prevention (R7.2). |
 | `description` | `Item3` | NonEmptyText | string | no | non-blank, verbatim | What will be done. |
 | `targetCauseIds` | `Item4` | CausalAssertionId list | array<uuid> | no | ordered, distinct | Causes it addresses. |
 
@@ -251,7 +251,7 @@ Every payload key is required. `nullable` = the F# `option`, encoded as `null` w
 |---|---|---|---|---|---|---|
 | `verificationId` | `Item1` | VerificationId | uuid | no | lowercase canonical, non-nil | Verification id. |
 | `criterionId` | `Item2` | CriterionId | uuid | no | lowercase canonical, non-nil | Criterion verified. |
-| `outcome` | `Item3` | VerificationOutcome | enum verificationOutcome | no | satisfied \| failed \| inconclusive | satisfied | failed | inconclusive. |
+| `outcome` | `Item3` | VerificationOutcome | enum verificationOutcome | no | satisfied \| failed \| inconclusive | satisfied, failed or inconclusive. |
 | `evidenceIds` | `Item4` | EvidenceId list | array<uuid> | no | ordered, distinct | Evidence cited (required when satisfied, R7.4). |
 
 ### `ConclusionRecorded`

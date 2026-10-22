@@ -17,9 +17,7 @@ module LiveTests =
     let private pass name detail commits = { Name = name; Passed = true; Detail = detail; Commits = commits }
     let private failT name detail commits = { Name = name; Passed = false; Detail = detail; Commits = commits }
 
-    let private now () =
-        let t = DateTimeOffset.UtcNow
-        DateTimeOffset(t.Ticks - t.Ticks % TimeSpan.TicksPerMillisecond, TimeSpan.Zero)
+    let private now () = Timestamp.truncateToMillisecond DateTimeOffset.UtcNow
 
     let private outcomeText (o: SyncOutcome) =
         match o with

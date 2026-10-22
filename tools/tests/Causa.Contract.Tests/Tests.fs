@@ -50,8 +50,17 @@ let ``schema enumerations equal the codec enumerations`` () =
     let defs = match Negatives.get [ "$defs" ] common with JObj o -> o | _ -> []
     let values name = match Json.field name defs with Some(JObj d) -> (match Json.field "enum" d with Some(JArr xs) -> xs |> List.map (function JStr s -> s | _ -> "") | _ -> []) | _ -> []
     [ "lifecycle", WireEnum.values Enums.lifecycle; "hypothesisState", WireEnum.values Enums.hypothesisState
-      "correctiveActionState", WireEnum.values Enums.correctiveActionState; "proposalKind", WireEnum.values Enums.proposalKind
-      "lifecycleCommand", Enums.lifecycleCommands |> List.map snd; "hypothesisCommand", WireEnum.values Enums.hypothesisCommand ]
+      "unknownState", WireEnum.values Enums.unknownState; "materiality", WireEnum.values Enums.materiality
+      "assumptionState", WireEnum.values Enums.assumptionState; "contradictionState", WireEnum.values Enums.contradictionState
+      "actionState", WireEnum.values Enums.actionState; "actionKind", WireEnum.values Enums.actionKind
+      "causeState", WireEnum.values Enums.causeState; "causeRole", WireEnum.values Enums.causeRole
+      "correctiveActionState", WireEnum.values Enums.correctiveActionState; "correctiveActionKind", WireEnum.values Enums.correctiveActionKind
+      "evidenceCategory", WireEnum.values Enums.evidenceCategory; "verificationStatus", WireEnum.values Enums.verificationStatus
+      "relationshipKind", WireEnum.values Enums.relationshipKind; "predictionStrength", WireEnum.values Enums.predictionStrength
+      "predictionTiming", WireEnum.values Enums.predictionTiming; "verificationOutcome", WireEnum.values Enums.verificationOutcome
+      "conclusionStrength", WireEnum.values Enums.conclusionStrength; "proposalKind", WireEnum.values Enums.proposalKind
+      "proposalState", WireEnum.values Enums.proposalState; "lifecycleCommand", Enums.lifecycleCommands |> List.map snd
+      "hypothesisCommand", WireEnum.values Enums.hypothesisCommand; "contentKind", Enums.contentKinds ]
     |> List.iter (fun (name, codec) -> Assert.Equal<string list>(codec, values name))
 
 [<Fact>]
@@ -119,3 +128,36 @@ let ``generation is deterministic`` () =
 let ``frozen dataset verifies`` () =
     let failed = Dataset.verify repoRoot |> List.filter (fun c -> not c.Passed)
     Assert.True(failed.IsEmpty, String.Join("\n", failed |> List.map (fun c -> c.Name + ": " + c.Detail)))
+
+[<Fact>]
+let ``schema enumeration coverage is complete`` () =
+    let common = schemas.Value.Documents[Store.schemaIds.Envelope.Replace("event-envelope", "common")]
+    let defs = match Negatives.get [ "$defs" ] common with JObj o -> o | _ -> []
+    // Every plain enumeration in common.schema.json except transition-target subsets is checked above.
+    let enumNames = defs |> List.choose (fun (k, v) -> match v with JObj d when (Json.field "enum" d).IsSome && not (k.EndsWith "Target") -> Some k | _ -> None)
+    Assert.Equal(24, enumNames.Length)
+
+let private loaded events = Store.build schemas.Value events |> Result.defaultWith (fun e -> failwith e.Detail)
+
+[<Fact>]
+let ``rebase drops a pending command that already landed remotely (review M4)`` () =
+    let events = runs.Value.Head.Events
+    // Split on a command-group boundary (a group must never be cut in half).
+    let cut = [ 20 .. events.Length - 3 ] |> List.find (fun i -> (List.item (i - 1) events).CommandId <> (List.item i events).CommandId)
+    let baseEvents, rest = List.splitAt cut events
+    let ours = rest |> List.takeWhile (fun e -> e.CommandId = rest.Head.CommandId)
+    let others = rest |> List.skip ours.Length |> List.takeWhile (fun e -> e.CommandId = (List.item ours.Length rest).CommandId)
+    let baseFiles, _ = loaded baseEvents
+    let remoteFiles, remoteLoaded = loaded (baseEvents @ ours @ others)
+    let remote : Causa.GitHub.Sync.Remote =
+        { Token = { HeadCommit = "remote"; TreeSha = "tree" }; Files = Some remoteFiles; Loaded = Some remoteLoaded; BlobShas = [] }
+    let local : Causa.GitHub.LocalState =
+        { RunId = "unit"; InvestigationId = Uuid.text remoteLoaded.InvestigationId; Synced = Some baseFiles; SyncedToken = None; Pending = ours }
+    match Causa.GitHub.Sync.rebase schemas.Value local remote with
+    | Ok rebased -> Assert.Empty(rebased.Pending)
+    | Error e -> failwithf "rebase failed: %s %s" e.Code e.Detail
+    // Same command id remotely but different events: a real conflict, never a silent re-decision.
+    let tampered = ours |> List.map (fun e -> { e with Actor = Actor.human "someone-else" })
+    match Causa.GitHub.Sync.rebase schemas.Value { local with Pending = tampered } remote with
+    | Error e -> Assert.Equal(Codes.correlationReused, e.Code)
+    | Ok _ -> failwith "a conflicting command id was accepted"

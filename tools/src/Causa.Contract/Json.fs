@@ -91,10 +91,10 @@ module Json =
                     |> Result.map JObj
         | kind -> Error(path + ": unsupported JSON value kind " + string kind)
 
-    /// Strict parse of one complete JSON text (no comments, trailing commas, NaN, BOM).
+    /// Strict parse of one complete JSON text (no comments, trailing commas, NaN, BOM; nesting depth <= 128, CONTRACT §2.3).
     let parse (text: string) : Result<JValue, string> =
         try
-            let options = JsonDocumentOptions(AllowTrailingCommas = false, CommentHandling = JsonCommentHandling.Disallow, MaxDepth = 64)
+            let options = JsonDocumentOptions(AllowTrailingCommas = false, CommentHandling = JsonCommentHandling.Disallow, MaxDepth = 128)
             use doc = JsonDocument.Parse(text, options)
             ofElement "$" doc.RootElement
         with

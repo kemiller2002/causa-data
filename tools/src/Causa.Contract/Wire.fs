@@ -66,6 +66,12 @@ module Timestamp =
         if utc.Ticks % TimeSpan.TicksPerMillisecond <> 0L then None
         else Some(utc.ToString(format, CultureInfo.InvariantCulture))
 
+    /// CONTRACT §2.9: the command boundary MUST supply millisecond-truncated UTC (e.g. for RequestedAt),
+    /// because writers refuse sub-millisecond instants rather than silently changing them.
+    let truncateToMillisecond (d: DateTimeOffset) =
+        let utc = d.UtcDateTime
+        DateTimeOffset(DateTime(utc.Ticks - utc.Ticks % TimeSpan.TicksPerMillisecond, DateTimeKind.Utc))
+
     let tryParse (s: string) : DateTimeOffset option =
         match DateTime.TryParseExact(s, format, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal ||| DateTimeStyles.AssumeUniversal) with
         | true, d -> Some(DateTimeOffset(DateTime.SpecifyKind(d, DateTimeKind.Utc)))

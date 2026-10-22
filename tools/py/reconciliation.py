@@ -52,8 +52,8 @@ ENGINE = {
     ],
     "EvidenceAdmitted": [
         ("evidenceId", "Item1", "EvidenceId", "Evidence id."),
-        ("contentKind", "Item2 (case)", "EvidenceContent", "text | artifact (TextEvidence | ArtifactEvidence)."),
-        ("content", "Item2 (payload)", "NonEmptyText | uri string", "Text verbatim, or the absolute http(s) artifact URL."),
+        ("contentKind", "Item2 (case)", "EvidenceContent", "text (TextEvidence) or artifact (ArtifactEvidence)."),
+        ("content", "Item2 (payload)", "NonEmptyText (text) or string (artifact URL)", "Text verbatim, or the absolute http(s) artifact URL."),
         ("category", "Item3", "EvidenceCategory", "Kind of evidence."),
         ("source", "source", "NonEmptyText", "Provenance: where it came from (R3.2)."),
         ("capturedAt", "Item5", "DateTimeOffset option", "When it was captured, if known."),
@@ -71,7 +71,7 @@ ENGINE = {
         ("relationshipId", "Item1", "RelationshipId", "Relationship id."),
         ("evidenceId", "Item2", "EvidenceId", "Evidence."),
         ("hypothesisId", "Item3", "HypothesisId", "Hypothesis."),
-        ("kind", "Item4", "RelationshipKind", "supports | contradicts | discriminates | insufficient."),
+        ("kind", "Item4", "RelationshipKind", "supports, contradicts, discriminates or insufficient."),
         ("rationale", "Item5", "NonEmptyText option", "Why, if stated."),
     ],
     "UnknownIdentified": [
@@ -149,7 +149,7 @@ ENGINE = {
     ],
     "CorrectiveActionRecorded": [
         ("correctiveActionId", "Item1", "CorrectiveActionId", "Corrective action id."),
-        ("kind", "Item2", "CorrectiveActionKind", "mitigation | workaround | correction | prevention (R7.2)."),
+        ("kind", "Item2", "CorrectiveActionKind", "mitigation, workaround, correction or prevention (R7.2)."),
         ("description", "Item3", "NonEmptyText", "What will be done."),
         ("targetCauseIds", "Item4", "CausalAssertionId list", "Causes it addresses."),
     ],
@@ -166,7 +166,7 @@ ENGINE = {
     "VerificationRecorded": [
         ("verificationId", "Item1", "VerificationId", "Verification id."),
         ("criterionId", "Item2", "CriterionId", "Criterion verified."),
-        ("outcome", "Item3", "VerificationOutcome", "satisfied | failed | inconclusive."),
+        ("outcome", "Item3", "VerificationOutcome", "satisfied, failed or inconclusive."),
         ("evidenceIds", "Item4", "EvidenceId list", "Evidence cited (required when satisfied, R7.4)."),
     ],
     "ConclusionRecorded": [
@@ -392,10 +392,12 @@ def main():
     md += ["", "## Payloads", ""]
     for et in ENGINE:
         md += [f"### `{et}`", "", "| wire field | F# element | F# type | JSON type | nullable | constraint | meaning |", "|---|---|---|---|---|---|---|"]
+        def cell(x):
+            return str(x).replace("|", "\\|")
         for r in (r for r in rows if r["eventType"] == et):
             wf = f"`{r['wireField']}`" if r["wireField"] else "*(envelope)*"
-            md.append(f"| {wf} | `{r['fsharpElement']}` | {r['fsharpType']} | {r['jsonType'] or '—'} | "
-                      f"{'—' if r['nullable'] is None else ('yes' if r['nullable'] else 'no')} | {r['constraints'] or '—'} | {r['semantic']} |")
+            md.append(f"| {wf} | `{r['fsharpElement']}` | {cell(r['fsharpType'])} | {cell(r['jsonType'] or '—')} | "
+                      f"{'—' if r['nullable'] is None else ('yes' if r['nullable'] else 'no')} | {r['constraints'] or '—'} | {cell(r['semantic'])} |")
         md.append("")
     md += ["## Enumerations (F# union case → wire value)", "",
            "Engine prefixes that exist only to avoid F# name collisions are dropped. The F# case names are those of the "

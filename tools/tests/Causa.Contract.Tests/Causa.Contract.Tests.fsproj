@@ -12,5 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/Causa.Tool/Causa.Tool.fsproj" />
+    <ProjectReference Include="../../src/Causa.GitHub/Causa.GitHub.fsproj" />
   </ItemGroup>
 </Project>

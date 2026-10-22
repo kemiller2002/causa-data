@@ -92,6 +92,9 @@ module GitBackend =
             let blob (sha: string) = task { let! r = git None [ "cat-file"; "blob"; sha ] in return ok r |> Result.map (fun r -> r.Out) }
             let treeOf (commit: string) =
                 task {
+                    match! revParse (commit + "^{tree}") with
+                    | Ok t -> return Ok t
+                    | Error _ ->
                     match! fetch commit ("refs/causa/probe") with
                     | Error f -> return Error f
                     | Ok _ -> return! revParse (commit + "^{tree}")
@@ -125,13 +128,13 @@ module GitBackend =
                         | Ok entries, None ->
                             let index = Path.Combine(dir, "causa-index-" + Guid.NewGuid().ToString("N"))
                             let withIndex = run dir [ "GIT_INDEX_FILE", index ]
-                            let! _ = withIndex None [ "read-tree"; baseToken.TreeSha ]
+                            let! readTree = withIndex None [ "read-tree"; baseToken.TreeSha ]
                             // One update for all entries: the index is a single-writer file.
                             let info = entries |> List.map (fun (p, s) -> "100644 " + s + "\t" + p + "\n") |> String.concat ""
                             let! update = withIndex (Some(Encoding.UTF8.GetBytes info)) [ "update-index"; "--add"; "--index-info" ]
                             let! tree = withIndex None [ "write-tree" ]
                             if File.Exists index then File.Delete index
-                            match [ update ] |> List.tryFind (fun r -> r.Code <> 0), ok tree, halt BeforeCommit with
+                            match [ readTree; update ] |> List.tryFind (fun r -> r.Code <> 0), ok tree, halt BeforeCommit with
                             | Some bad, _, _ -> return Error(classify bad)
                             | _, Error e, _ -> return Error e
                             | _, _, Some e -> return e

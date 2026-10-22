@@ -115,8 +115,13 @@ let main argv =
         Gate.writeLock (Path.GetFullPath root)
         printfn "wrote %s" (Gate.lockPath (Path.GetFullPath root))
         0
-    | [ "gate"; root ] ->
-        let failures = Gate.run (Path.GetFullPath root)
+    | "gate" :: root :: rest ->
+        let full = Path.GetFullPath root
+        let anchored =
+            match rest with
+            | [ "--anchor"; tag ] -> Gate.anchorFailures full tag
+            | _ -> []
+        let failures = Gate.run full @ anchored
         printfn "%s" (Json.canonical (Gate.report failures) |> Result.defaultValue "")
         if failures.IsEmpty then 0 else 1
     | [ "gate-selftest"; root ] ->

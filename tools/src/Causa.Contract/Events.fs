@@ -278,12 +278,20 @@ module EventWire =
             else Ok [ "proposalId", id pid; "targetId", uuid target ]
         | ProposalWasRejected(pid, reason) -> Ok [ "proposalId", id pid; "reason", text reason ]
 
+    let rec private containsNil (v: JValue) =
+        match v with
+        | JStr "00000000-0000-0000-0000-000000000000" -> true
+        | JArr xs -> xs |> List.exists containsNil
+        | JObj o -> o |> List.exists (snd >> containsNil)
+        | _ -> false
+
     let encode (e: Event) : Result<JValue, CausaError> =
         result {
             let! at = ts "occurredAt" e.At
             let! actor = encodeActor e.Actor
             let! payload = encodePayload e
             do! if e.CommandId = Guid.Empty then unrepresentable "command id is the nil UUID" else Ok()
+            do! if e.Investigation.Value = Guid.Empty || containsNil (JObj payload) then unrepresentable "an identifier is the nil UUID" else Ok()
             return
                 JObj
                     [ "formatVersion", JStr Contract.formatVersion

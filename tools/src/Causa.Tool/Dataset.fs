@@ -126,6 +126,26 @@ module Negatives =
         let forged = extra |> List.map (EventWire.decode >> Layout.orFail >> fun d -> d.Event)
         Store.buildUnchecked (base'.Events @ forged) |> Layout.orFail
 
+    /// Like forgedHistory, but asserts (at generation time) that the pinned engine refuses the last forged
+    /// command group for exactly `refusal` and nothing else, or emits different events when `refusal` = "MISMATCH".
+    /// A more lenient engine would then accept the fixture and fail the gate (review finding M2).
+    let private soleRefusal (base': Loaded) (extra: JValue list) (refusal: string) =
+        let forged = extra |> List.map (EventWire.decode >> Layout.orFail >> fun d -> d.Event)
+        let lastCorr = (List.last forged).CommandId
+        let before = base'.Events @ (forged |> List.filter (fun e -> e.CommandId <> lastCorr))
+        let group = forged |> List.filter (fun e -> e.CommandId = lastCorr)
+        let first = group.Head
+        let prior = Evolve.replay before
+        match History.commandOf first.Investigation (group |> List.map (fun e -> e.Body)) with
+        | None -> failwithf "negative for %s: forged group maps to no command" refusal
+        | Some command ->
+            let env = { CommandId = first.CommandId; Investigation = first.Investigation; ExpectedVersion = None; Actor = first.Actor; RequestedAt = first.At; Command = command }
+            match Decide.decide prior env, refusal with
+            | Error errors, r when errors |> List.map (fun e -> e.Code) = [ r ] -> ()
+            | Ok bodies, "MISMATCH" when bodies <> (group |> List.map (fun e -> e.Body)) -> ()
+            | other, r -> failwithf "negative for %s is not a sole refusal: %A" r other
+        Store.buildUnchecked (base'.Events @ forged) |> Layout.orFail
+
     let private dropEvent (n: int) (vs: JValue list) = vs |> List.indexed |> List.filter (fun (i, _) -> i <> n) |> List.map snd
 
     let build (byKey: Map<string, InvestigationFiles * Loaded>) : Negative list =
@@ -248,7 +268,180 @@ module Negatives =
                let f = withEvents b (ndjson vs) None (Some(int64 vs.Length))
                let m = parse f.Manifest |> set [ "createdAt" ] (get [ "occurredAt" ] vs.Head)
                investigationBody { f with Manifest = file m })
+          // ---- every framing / syntax / canonical rule (review M2) ----
+          inv "events-crlf" Codes.encoding "events.ndjson uses CRLF line endings."
+              { a with Events = utf8.GetBytes((utf8.GetString a.Events).Replace("\n", "\r\n")) }
+          inv "events-missing-final-lf" Codes.encoding "events.ndjson does not end with LF."
+              { a with Events = utf8.GetBytes((utf8.GetString a.Events).TrimEnd('\n')) }
+          inv "events-blank-line" Codes.encoding "events.ndjson contains a blank line between events."
+              { a with Events = utf8.GetBytes((utf8.GetString a.Events).Replace("}\n{", "}\n\n{")) }
+          inv "events-invalid-utf8" Codes.encoding "events.ndjson contains a byte sequence that is not UTF-8 (0xC3 0x28)."
+              { a with Events = Array.concat [ Array.sub a.Events 0 40; [| 0xC3uy; 0x28uy |]; Array.sub a.Events 40 (a.Events.Length - 40) ] }
+          inv "events-empty" Codes.encoding "events.ndjson is empty." { a with Events = [||] }
+          inv "snapshot-missing-final-lf" Codes.encoding "snapshot.json does not end with LF."
+              { a with Snapshot = utf8.GetBytes((utf8.GetString a.Snapshot).TrimEnd('\n')) }
+          inv "event-line-non-canonical" Codes.nonCanonical "One event line has a space after a colon (valid JSON, not RFC 8785)."
+              (let t = (utf8.GetString a.Events).TrimEnd('\n').Split('\n')
+               { a with Events = utf8.GetBytes(String.Join("\n", Array.append [| t[0].Replace("\"aggregateVersion\":1", "\"aggregateVersion\": 1") |] t[1..]) + "\n") })
+          inv "snapshot-non-canonical" Codes.nonCanonical "snapshot.json has a space after its first colon (valid JSON, not RFC 8785)."
+              (let t = utf8.GetString a.Snapshot
+               let i = t.IndexOf "\":"
+               { a with Snapshot = utf8.GetBytes(t.Substring(0, i + 2) + " " + t.Substring(i + 2)) })
+          inv "negative-zero" Codes.nonCanonical "aggregateVersion is written as -0 on the first event."
+              (let t = (utf8.GetString a.Events)
+               { a with Events = utf8.GetBytes(t.Substring(0, t.IndexOf "\"aggregateVersion\":1,") + "\"aggregateVersion\":-0," + t.Substring(t.IndexOf "\"aggregateVersion\":1," + 21)) })
+          inv "float-number" Codes.jsonMalformed "aggregateVersion is written as 1.0 (integers only)."
+              (let t = (utf8.GetString a.Events)
+               { a with Events = utf8.GetBytes(t.Substring(0, t.IndexOf "\"aggregateVersion\":1,") + "\"aggregateVersion\":1.0," + t.Substring(t.IndexOf "\"aggregateVersion\":1," + 21)) })
+          inv "integer-out-of-range" Codes.jsonMalformed "aggregateVersion is 9007199254740992 (outside the safe integer range)."
+              (let t = (utf8.GetString a.Events)
+               { a with Events = utf8.GetBytes(t.Substring(0, t.IndexOf "\"aggregateVersion\":1,") + "\"aggregateVersion\":9007199254740992," + t.Substring(t.IndexOf "\"aggregateVersion\":1," + 21)) })
+          inv "lone-surrogate" Codes.jsonMalformed "An observation contains an unpaired UTF-16 surrogate (escaped \\ud800)."
+              (let t = (utf8.GetString a.Events).TrimEnd('\n').Split('\n')
+               { a with Events = utf8.GetBytes(String.Join("\n", Array.concat [ t[0..1]; [| t[2].Replace("\"original\":\"", "\"original\":\"\\ud800") |]; t[3..] ]) + "\n") })
+          inv "nesting-too-deep" Codes.jsonMalformed "An event nests arrays 130 levels deep (readers MUST NOT accept depth > 128)."
+              (let t = (utf8.GetString a.Events).TrimEnd('\n').Split('\n')
+               let deep = String.replicate 130 "[" + String.replicate 130 "]"
+               { a with Events = utf8.GetBytes(String.Join("\n", Array.append [| t[0].Replace("\"payload\":{", "\"payload\":{\"deep\":" + deep + ",") |] t[1..]) + "\n") })
+          // ---- schema-level value rules ----
+          inv "calendar-invalid-occurred-at" Codes.schemaViolation "An occurredAt is 2026-02-30 (not a calendar date)."
+              (mutateLine a 2 (set [ "occurredAt" ] (JStr "2026-02-30T10:08:00.000Z")))
+          inv "calendar-invalid-manifest-created-at" Codes.schemaViolation "The manifest createdAt is 2026-02-30 (not a calendar date)."
+              (let m = parse a.Manifest in { a with Manifest = file (set [ "createdAt" ] (JStr "2026-02-30T10:00:00.000Z") m) })
+          inv "non-string-format-version" Codes.schemaViolation "An event's formatVersion is the integer 1 (non-string versions are schema violations, not unsupported versions)."
+              (mutateLine a 1 (set [ "formatVersion" ] (JInt 1L)))
+          inv "nil-uuid" Codes.schemaViolation "An observationId is the nil UUID."
+              (mutateLine a 2 (set [ "payload"; "observationId" ] (JStr "00000000-0000-0000-0000-000000000000")))
+          inv "uppercase-uuid" Codes.schemaViolation "A hypothesisId is written in upper case."
+              (mutateLine a hA (fun v -> match get [ "payload"; "hypothesisId" ] v with JStr s -> set [ "payload"; "hypothesisId" ] (JStr(s.ToUpperInvariant())) v | _ -> v))
+          inv "blank-text" Codes.schemaViolation "A hypothesis statement consists only of spaces."
+              (mutateLine a hA (set [ "payload"; "statement" ] (JStr "   ")))
+          inv "ideographic-space-text" Codes.schemaViolation "A hypothesis statement consists only of U+3000 (engine whitespace)."
+              (mutateLine a hA (set [ "payload"; "statement" ] (JStr "\u3000\u3000")))
+          inv "artifact-not-http" Codes.schemaViolation "An artifact evidence URL uses ftp:// (only absolute http(s) URLs are allowed)."
+              (let i = lines b |> List.findIndex (fun v -> get [ "payload"; "contentKind" ] v = JStr "artifact")
+               mutateLine b i (set [ "payload"; "content" ] (JStr "ftp://example.invalid/synthetic/resolver-query-log.txt")))
+          // ---- manifest consistency (every stage-8 rule) ----
+          inv "manifest-wrong-investigation-id" Codes.manifestMismatch "The manifest names a different investigation than its directory and events."
+              (let m = parse a.Manifest in { a with Manifest = file (set [ "investigationId" ] (get [ "investigationId" ] (List.head (lines b))) m) })
+          inv "manifest-event-count-mismatch" Codes.manifestMismatch "The manifest eventCount is one less than the number of lines."
+              (let m = parse a.Manifest in { a with Manifest = file (set [ "eventCount" ] (JInt(int64 (lines a).Length - 1L)) m) })
+          inv "manifest-created-at-mismatch" Codes.manifestMismatch "The manifest createdAt is not the first event's occurredAt."
+              (let m = parse a.Manifest in { a with Manifest = file (set [ "createdAt" ] (JStr "2026-09-08T09:59:00.000Z") m) })
+          inv "manifest-updated-at-mismatch" Codes.manifestMismatch "The manifest updatedAt is not the last event's occurredAt."
+              (let m = parse a.Manifest in { a with Manifest = file (set [ "updatedAt" ] (JStr "2026-09-08T12:00:00.000Z") m) })
+          // ---- engine decision rules, each the SOLE reason for refusal (review M2) ----
+          neg "engine-reopen-without-new-evidence" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "A falsified hypothesis is reopened citing only evidence admitted before the falsification (R2.5: HYPOTHESIS.REOPEN_NEEDS_NEW_EVIDENCE)."
+              (let h = lines b |> List.pick (fun v -> if get [ "payload"; "to" ] v = JStr "falsified" then Some(get [ "payload"; "hypothesisId" ] v, get [ "payload"; "evidenceIds" ] v) else None)
+               investigationBody (soleRefusal (loadedOf "intermittent-outage")
+                   [ forgedLine b "reopen-stale" "HypothesisTransitioned" human
+                         (JObj [ "hypothesisId", fst h; "from", JStr "falsified"; "to", JStr "plausible"; "command", JStr "reopen"; "reason", JStr "Reconsidering DNS."; "evidenceIds", snd h ]) 4.0 ]
+                   "HYPOTHESIS.REOPEN_NEEDS_NEW_EVIDENCE"))
+          neg "engine-evidence-supersedes-itself" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "Evidence is superseded by itself (EVIDENCE.SELF)."
+              (investigationBody (soleRefusal (loadedOf "payment-failure")
+                   [ forgedLine a "self-supersede" "EvidenceSuperseded" human (JObj [ "evidenceId", evidenceOfA; "replacementEvidenceId", evidenceOfA; "reason", JStr "Self." ]) 4.0 ]
+                   "EVIDENCE.SELF"))
+          neg "engine-cause-without-mechanism" Codes.historyInadmissible (Some "HISTORY.UNGATED_CONFIRMATION")
+              "A second, otherwise fully supported cause without a stated mechanism is confirmed (§15.8: CAUSE.NO_MECHANISM)."
+              (let members = lines d |> List.pick (fun v -> if get [ "eventType" ] v = JStr "CausalAssertionRecorded" then Some(get [ "payload"; "members" ] v) else None)
+               let cause2 = JStr(Uuid.text (ScenarioKit.guid "negative" "cause" "no-mechanism"))
+               let recordLine = forgedLine d "no-mechanism-record" "CausalAssertionRecorded" human (JObj [ "causeId", cause2; "outcome", JStr "Same regression, restated."; "members", members; "mechanism", JNull ]) 4.0
+               let confirmLine =
+                   let invId = match get [ "investigationId" ] recordLine with JStr s -> s | _ -> ""
+                   let corr = Uuid.text (ScenarioKit.guid "negative" "command" "no-mechanism-confirm")
+                   JObj [ "formatVersion", JStr "1.0.0"; "eventId", JStr(eventIdOf invId ((match get [ "aggregateVersion" ] recordLine with JInt n -> n | _ -> 0L) + 1L) corr)
+                          "investigationId", JStr invId; "aggregateVersion", JInt((match get [ "aggregateVersion" ] recordLine with JInt n -> n | _ -> 0L) + 1L)
+                          "eventType", JStr "CausalAssertionConfirmed"
+                          "occurredAt", JStr((Timestamp.tryParse (match get [ "occurredAt" ] recordLine with JStr s -> s | _ -> "") |> Option.get).AddMinutes(4.0) |> Timestamp.tryFormat |> Option.get)
+                          "actor", human; "semanticVersion", JStr "1.0.0"; "correlationId", JStr corr; "payload", JObj [ "causeId", cause2; "policy", JStr "core-default/1" ] ]
+               investigationBody (soleRefusal (loadedOf "api-latency") [ recordLine; confirmLine ] "CAUSE.NO_MECHANISM"))
+          neg "engine-verification-evidence-predates-round" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "A satisfied verification cites evidence admitted before verification started (R7.4: VERIFICATION.EVIDENCE_PREDATES_ROUND)."
+              (let crit = lines d |> List.pick (fun v -> if get [ "eventType" ] v = JStr "CriterionRecorded" then Some(get [ "payload"; "criterionId" ] v) else None)
+               let ev = lines d |> List.pick (fun v -> if get [ "eventType" ] v = JStr "EvidenceAdmitted" then Some(get [ "payload"; "evidenceId" ] v) else None)
+               investigationBody (soleRefusal (loadedOf "api-latency")
+                   [ forgedLine d "stale-verification" "VerificationRecorded" human
+                         (JObj [ "verificationId", JStr(Uuid.text (ScenarioKit.guid "negative" "verification" "stale")); "criterionId", crit; "outcome", JStr "satisfied"; "evidenceIds", JArr [ ev ] ]) 4.0 ]
+                   "VERIFICATION.EVIDENCE_PREDATES_ROUND"))
+          neg "engine-prediction-timing-forged" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "A prediction recorded after a relevant finding claims to be prospective; the engine records it as retrospective (A11)."
+              (let h2 = lines b |> List.pick (fun v -> if get [ "eventType" ] v = JStr "PredictionRecorded" then Some(get [ "payload"; "hypothesisId" ] v) else None)
+               investigationBody (soleRefusal (loadedOf "intermittent-outage")
+                   [ forgedLine b "prospective-claim" "PredictionRecorded" human
+                         (JObj [ "predictionId", JStr(Uuid.text (ScenarioKit.guid "negative" "prediction" "forged")); "hypothesisId", h2; "statement", JStr "Rotation predicts the next burst."; "strength", JStr "expected"; "timing", JStr "prospective" ]) 4.0 ]
+                   "MISMATCH"))
+          neg "engine-agent-repeats-falsified" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "An AI agent proposes, as a new hypothesis, an explanation that was already falsified (R5.4: PROPOSAL.REPEATS_NEGATIVE_KNOWLEDGE)."
+              (let st = lines b |> List.pick (fun v -> if get [ "eventType" ] v = JStr "HypothesisRecorded" then Some(get [ "payload"; "statement" ] v) else None)
+               let agent = JObj [ "actorId", JStr "assistant-01"; "kind", JStr "agent"; "provider", JStr "synthetic-provider"; "model", JStr "synthetic-model-1" ]
+               investigationBody (soleRefusal (loadedOf "intermittent-outage")
+                   [ forgedLine b "repeat-negative" "ProposalRecorded" agent
+                         (JObj [ "proposalId", JStr(Uuid.text (ScenarioKit.guid "negative" "proposal" "repeat")); "kind", JStr "hypothesis"; "text", st; "rationale", JNull ]) 4.0 ]
+                   "PROPOSAL.REPEATS_NEGATIVE_KNOWLEDGE"))
+          neg "engine-content-after-resolution" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "An observation is recorded in a resolved investigation (D-005: INVESTIGATION.NOT_OPEN)."
+              (investigationBody (soleRefusal (loadedOf "authentication-outage")
+                   [ forgedLine e "after-resolution" "ObservationRecorded" human
+                         (JObj [ "observationId", JStr(Uuid.text (ScenarioKit.guid "negative" "observation" "late")); "original", JStr "Late note."; "observedAt", JNull ]) 4.0 ]
+                   "INVESTIGATION.NOT_OPEN"))
+          neg "engine-duplicate-entity-id" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "A hypothesis is recorded with the id of an existing hypothesis (DUPLICATE_ID)."
+              (investigationBody (soleRefusal (loadedOf "payment-failure")
+                   [ forgedLine a "duplicate-id" "HypothesisRecorded" human (JObj [ "hypothesisId", unhypothesis; "statement", JStr "A different idea under an old id."; "mechanism", JNull ]) 4.0 ]
+                   "DUPLICATE_ID"))
+          neg "engine-dangling-reference" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "Evidence is related to a hypothesis that does not exist (NOT_FOUND)."
+              (investigationBody (soleRefusal (loadedOf "payment-failure")
+                   [ forgedLine a "dangling" "EvidenceRelated" human
+                         (JObj [ "relationshipId", JStr(Uuid.text (ScenarioKit.guid "negative" "relationship" "dangling")); "evidenceId", evidenceOfA
+                                 "hypothesisId", JStr(Uuid.text (ScenarioKit.guid "negative" "hypothesis" "missing")); "kind", JStr "supports"; "rationale", JNull ]) 4.0 ]
+                   "NOT_FOUND"))
+          neg "engine-confirmed-conclusion-unconfirmed-cause" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "A conclusion claims a confirmed cause that was never confirmed (R6.1: CONCLUSION.UNSUPPORTED)."
+              (investigationBody (soleRefusal (loadedOf "conflicting-metrics")
+                   [ forgedLine c "unsupported-conclusion" "ConclusionRecorded" human
+                         (JObj [ "conclusionId", JStr(Uuid.text (ScenarioKit.guid "negative" "conclusion" "unsupported")); "statement", JStr "Sampling caused it."
+                                 "strength", JStr "confirmedCause"; "causeIds", JArr [ causeId c ]; "residualUncertainty", JStr "None stated." ]) 4.0 ]
+                   "CONCLUSION.UNSUPPORTED"))
+          neg "engine-conclusion-without-residual" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "A conclusion omits residual uncertainty while a blocking unknown is open (R6.4: CONCLUSION.RESIDUAL_REQUIRED)."
+              (investigationBody (soleRefusal (loadedOf "conflicting-metrics")
+                   [ forgedLine c "no-residual" "ConclusionRecorded" human
+                         (JObj [ "conclusionId", JStr(Uuid.text (ScenarioKit.guid "negative" "conclusion" "no-residual")); "statement", JStr "Inconclusive."
+                                 "strength", JStr "plausibleExplanation"; "causeIds", JArr []; "residualUncertainty", JNull ]) 4.0 ]
+                   "CONCLUSION.RESIDUAL_REQUIRED"))
+          neg "engine-awaiting-verification-without-work" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "The investigation is marked awaiting verification with no implemented corrective action (LIFECYCLE.NO_VERIFICATION_WORK)."
+              (investigationBody (soleRefusal (loadedOf "payment-failure")
+                   [ forgedLine a "no-verification-work" "LifecycleChanged" human
+                         (JObj [ "from", JStr "active"; "to", JStr "awaitingVerification"; "command", JStr "markAwaitingVerification"; "reason", JNull ]) 4.0 ]
+                   "LIFECYCLE.NO_VERIFICATION_WORK"))
+          neg "engine-finding-for-rejected-action" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "A finding is recorded for a rejected action (ACTION.NOT_EXECUTABLE)."
+              (let rejected = lines b |> List.pick (fun v -> if get [ "payload"; "state" ] v = JStr "rejected" then Some(get [ "payload"; "actionId" ] v) else None)
+               investigationBody (soleRefusal (loadedOf "intermittent-outage")
+                   [ forgedLine b "finding-rejected" "FindingRecorded" human
+                         (JObj [ "findingId", JStr(Uuid.text (ScenarioKit.guid "negative" "finding" "rejected")); "actionId", rejected; "originalResult", JStr "Ran it anyway."; "interpretation", JNull ]) 4.0 ]
+                   "ACTION.NOT_EXECUTABLE"))
+          neg "engine-malformed-artifact-url" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "Artifact evidence has an http(s) prefix but is not a well-formed absolute URL; only the engine rule R3.5 rejects it (EVIDENCE.URL)."
+              (investigationBody (soleRefusal (loadedOf "payment-failure")
+                   [ forgedLine a "bad-url" "EvidenceAdmitted" human
+                         (JObj [ "evidenceId", JStr(Uuid.text (ScenarioKit.guid "negative" "evidence" "bad-url")); "contentKind", JStr "artifact"; "content", JStr "https://exa mple.invalid/x"
+                                 "category", JStr "log"; "source", JStr "synthetic"; "capturedAt", JNull ]) 4.0 ]
+                   "EVIDENCE.URL"))
+          neg "engine-group-time-disagreement" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "The events of one multi-event command (a finding with its action transitions) disagree on occurredAt."
+              (let vs = lines b
+               let i = vs |> List.findIndex (fun v -> get [ "eventType" ] v = JStr "FindingRecorded")
+               let shifted = vs |> List.mapi (fun n v -> if n = i then (match get [ "occurredAt" ] v with JStr s -> set [ "occurredAt" ] (JStr((Timestamp.tryParse s |> Option.get).AddMinutes(1.0) |> Timestamp.tryFormat |> Option.get)) v | _ -> v) else v)
+               let evs = shifted |> List.map (EventWire.decode >> Layout.orFail >> fun x -> x.Event)
+               investigationBody (Store.buildUnchecked evs |> Layout.orFail))
           // ---- path safety ----
+          inv "extra-file-in-directory" Codes.pathInvalid "The investigation directory contains a fourth file (notes.txt)." a
+          inv "missing-snapshot-file" Codes.pathInvalid "The investigation directory has no snapshot.json." a
           neg "path-traversal-directory" Codes.pathInvalid None "The investigation directory name is '../../fixtures' instead of a canonical UUID."
               (investigationBody { a with DirectoryId = "../../fixtures" })
           // ---- provider-level ----
@@ -273,7 +466,16 @@ module Negatives =
                             | _ -> ev)
                     Store.buildUnchecked edited |> Layout.orFail) ] ]
 
-    let toJson (n: Negative) : JValue =
+    /// File-set negatives: add or remove an entry of the `files` object.
+    let private reshapeFiles (n: Negative) =
+        let edit f = n.Body |> List.map (fun (k, v) -> if k = "files" then k, f v else k, v)
+        match n.Name with
+        | "extra-file-in-directory" -> { n with Body = edit (function JObj o -> JObj(o @ [ "notes.txt", b64 (utf8.GetBytes "synthetic note\n") ]) | v -> v) }
+        | "missing-snapshot-file" -> { n with Body = edit (function JObj o -> JObj(o |> List.filter (fst >> (<>) "snapshot.json")) | v -> v) }
+        | _ -> n
+
+    let toJson (n0: Negative) : JValue =
+        let n = reshapeFiles n0
         JObj(
             [ "formatVersion", JStr "1.0.0"; "name", JStr n.Name; "description", JStr n.Description; "expectedErrorCode", JStr n.Code
               "expectedDomainCode", (n.DomainCode |> Option.map JStr |> Option.defaultValue JNull) ]
@@ -290,17 +492,17 @@ module Dataset =
 
     let private fromBase64 (v: JValue) = match v with JObj o -> (match Json.field "base64" o with Some(JStr s) -> Convert.FromBase64String s | _ -> [||]) | _ -> [||]
 
-    let filesFrom (directoryId: string) (v: JValue) =
-        { DirectoryId = directoryId
-          Manifest = fromBase64 (Negatives.get [ "manifest.json" ] v)
-          Events = fromBase64 (Negatives.get [ "events.ndjson" ] v)
-          Snapshot = fromBase64 (Negatives.get [ "snapshot.json" ] v) }
+    /// A negative fixture's `files` object: any file names, so missing and extra files are representable.
+    let filesFrom (directoryId: string) (v: JValue) : Result<InvestigationFiles, CausaError> =
+        match v with
+        | JObj o -> o |> List.map (fun (k, x) -> k, fromBase64 x) |> Map.ofList |> Store.ofFileMap directoryId
+        | _ -> CausaError.fail Codes.schemaViolation "files must be an object"
 
     /// Evaluate a negative fixture; returns the reader's verdict (Ok = wrongly accepted).
     let evaluate (set: SchemaCheck.SchemaSet) (byKey: Map<string, InvestigationFiles * Loaded>) (fixture: JValue) : Result<unit, CausaError> =
         let str k = match Negatives.get [ k ] fixture with JStr s -> s | _ -> ""
         match str "kind" with
-        | "investigation" -> Store.validate set (filesFrom (str "directoryId") (Negatives.get [ "files" ] fixture)) |> Result.map ignore
+        | "investigation" -> filesFrom (str "directoryId") (Negatives.get [ "files" ] fixture) |> Result.bind (Store.validate set) |> Result.map ignore
         | "append" ->
             match byKey |> Map.tryFind (str "baseScenarioKey") with
             | None -> CausaError.fail Codes.schemaViolation "unknown base scenario"
@@ -311,7 +513,7 @@ module Dataset =
             match byKey |> Map.tryFind (str "baseScenarioKey") with
             | None -> CausaError.fail Codes.schemaViolation "unknown base scenario"
             | Some(files, loaded) ->
-                Store.successor set loaded files.Events (filesFrom files.DirectoryId (Negatives.get [ "files" ] fixture)) |> Result.map ignore
+                filesFrom files.DirectoryId (Negatives.get [ "files" ] fixture) |> Result.bind (Store.successor set loaded files.Events) |> Result.map ignore
         | other -> CausaError.fail Codes.schemaViolation ("unknown negative kind '" + other + "'")
 
     let generate (set: SchemaCheck.SchemaSet) : Result<Generated, string> =
@@ -402,10 +604,9 @@ module Dataset =
                     |> List.map (fun entry ->
                         let key = str "scenarioKey" entry
                         let id = str "investigationId" entry
-                        let files = Store.readDirectory (Path.Combine(Layout.investigations root, id))
-                        match Store.validate set files with
+                        match Store.readDirectory (Path.Combine(Layout.investigations root, id)) |> Result.bind (fun files -> Store.validate set files |> Result.map (fun l -> files, l)) with
                         | Error e -> key, Error(e.Code + " " + e.Detail), None
-                        | Ok loaded ->
+                        | Ok(files, loaded) ->
                             let drift =
                                 [ "eventsSha256", loaded.EventsSha256; "manifestSha256", loaded.ManifestSha256; "snapshotSha256", loaded.SnapshotSha256
                                   "expectedStateSha256", loaded.StateSha256; "expectedLifecycle", Enums.lifecycle.ToWire loaded.State.Lifecycle

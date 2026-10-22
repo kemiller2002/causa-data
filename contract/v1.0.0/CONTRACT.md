@@ -44,13 +44,14 @@ input as invalid until it is resolved through §14.
    identified by the digest of their exact bytes (§10.3).
 3. **Values.** No comments, NaN, Infinity, or floating-point numbers. Integers are JSON integers in
    `[-(2^53-1), 2^53-1]`. Non-integers, exponents and out-of-range integers are `CAUSA.JSON_MALFORMED`; `-0` parses but is
-   `CAUSA.NON_CANONICAL`. Object keys are case-sensitive and MUST be unique (`CAUSA.JSON_MALFORMED`). They are
+   `CAUSA.NON_CANONICAL`. Readers MUST accept nesting up to depth 128 and MUST reject deeper documents as
+   `CAUSA.JSON_MALFORMED`; valid v1 documents nest at most 6 levels. Object keys are case-sensitive and MUST be unique (`CAUSA.JSON_MALFORMED`). They are
    lowerCamelCase, except the file-name keys of negative-fixture `files` objects. Unpaired UTF-16 surrogates are
    invalid. U+FEFF is forbidden everywhere: as a leading BOM (`CAUSA.ENCODING`), and anywhere else, raw or escaped as
    `\ufeff`, including inside string values (`CAUSA.JSON_MALFORMED`). Writers refuse text containing it
    (`CAUSA.UNREPRESENTABLE`).
 4. **Closed structures.** Every object defined here is closed (`additionalProperties: false`). Unknown fields are
-   rejected, never ignored. v1.0.0 defines **no extension namespace** (§13.4).
+   rejected, never ignored. v1.0.0 defines **no extension namespace** (§13.5).
 5. **Required vs nullable.** v1.0.0 has **no optional keys**: every declared key MUST be present. A value that the
    domain models as an `option` is encoded as `null` when absent. `null` is allowed only where a schema says so.
 6. **Text.** Domain text (`NonEmptyText` in the engine) is stored **verbatim**: never trimmed, case-folded or
@@ -60,12 +61,19 @@ input as invalid until it is resolved through §14.
    zero-width characters such as U+200B count as non-blank.
 7. **Arrays.** Arrays are ordered and the order is significant. Identifier arrays (`evidenceIds`, `causeIds`,
    `targetHypothesisIds`, `targetCauseIds`, `basisEvidenceIds`) MUST NOT contain duplicates and are **not** sorted: they
-   preserve the order in which the domain command cited them. Snapshot entity arrays are sorted (§8.3).
+   preserve the order in which the domain command cited them. Snapshot entity arrays are sorted (§8.3). The engine
+   itself accepts a command that cites the same evidence twice, or repeats an identical causal member. Such an event
+   has no v1 wire form (`CAUSA.UNREPRESENTABLE`), so the command boundary MUST de-duplicate before deciding.
 8. **UUIDs.** Lowercase, hyphenated, 36 characters (`^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`).
    The nil UUID is invalid. Any UUID version is accepted.
 9. **Timestamps.** RFC 3339 UTC with exactly three fractional digits and `Z`: `2026-10-22T12:00:00.000Z`. The value MUST be
    a real proleptic-Gregorian instant in years `0001`–`9999` (no `02-30`, no leap second `60`). Calendar validity is a
-   stage-7 rule even though the schema pattern cannot express it. Writers MUST refuse instants with sub-millisecond precision
+   stage-7 rule carried by the `timestamp` definition in `common.schema.json`, for every timestamp in every file,
+   even though the schema pattern cannot express it. **The command boundary MUST supply millisecond-truncated UTC**
+   (for example, the engine's `RequestedAt`). A runtime clock such as `DateTimeOffset.UtcNow` has 100 ns ticks, and
+   the engine accepts those, but a v1 writer refuses them. Histories in the rehearsal's legacy `rci.events/v1` format
+   (7-digit fractions) carry sub-millisecond instants; migrating them would change their meaning, so they are not
+   migrated silently. Writers MUST refuse instants with sub-millisecond precision
    rather than truncate them (`CAUSA.UNREPRESENTABLE`). Time zone offsets are not preserved. Only the instant is
    semantic.
 10. **Enumerations.** Persisted as lowerCamelCase strings from closed sets (§6). There is no fallback `other` value.
@@ -1059,9 +1067,23 @@ preserves it byte-for-byte by not rewriting the source.
 
 ## 14. Compatibility gate
 
-`compatibility/v1.0.0/lock.json` (with `engine.lock.json` at the repository root) pins the schema identity, the digest of every schema file, every frozen file digest, every
-golden digest, every expected state digest, every negative fixture's expected code, and the engine commit. `causa gate .`
-recomputes all of them and runs full verification. Any difference is a failure.
+`compatibility/v1.0.0/lock.json` (with `engine.lock.json` and `global.json` at the repository root) pins:
+
+- the schema identity and the digest of every frozen file;
+- every expected state digest, and every negative fixture's expected code;
+- the engine commit, plus a **content hash of the engine source** that is compiled (`engineSourceSha256`);
+- the .NET SDK version (`global.json`, `rollForward: disable`).
+
+`causa gate .` recomputes all of them and runs full verification; any difference is a failure.
+
+After the freeze, the gate is **anchored to the release tag**: `causa gate . --anchor causa-storage-v1.0.0`
+additionally requires the working-tree lock to be byte-identical to the lock in the tag, and every frozen path
+(`contract/v1.0.0`, `fixtures/v1.0.0`, `compatibility/v1.0.0`, `engine.lock.json`, `global.json`) to equal the tag.
+Regenerating the lock in the same change therefore cannot launder a modification.
+
+The negative fixtures cover every reader stage rule and, one rule per fixture, the engine's decision rules. Each
+engine-rule fixture is the **sole** reason for refusal, which the generator asserts against the pinned engine. So a
+more lenient reader or engine accepts at least one negative and fails the gate.
 
 ## 15. Security
 

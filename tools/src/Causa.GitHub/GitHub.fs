@@ -182,9 +182,13 @@ module Provider =
                     | _ -> Error(Other "blob response is not base64"))
         }
 
+    /// 409/422 mean "not a fast-forward" only for the ref update; elsewhere they are plain failures.
+    let private notRef (r: Result<'T, Failure>) = r |> Result.mapError (function NotFastForward m -> Other m | f -> f)
+
     let private createBlob (c: Config) (send: Transport) (bytes: byte[]) =
         task {
-            let! r = call send { Method = "POST"; Path = repo c + "/git/blobs"; Body = Some(JObj [ "content", JStr(Convert.ToBase64String bytes); "encoding", JStr "base64" ]) }
+            let! r0 = call send { Method = "POST"; Path = repo c + "/git/blobs"; Body = Some(JObj [ "content", JStr(Convert.ToBase64String bytes); "encoding", JStr "base64" ]) }
+            let r = notRef r0
             return r |> Result.bind (fun v -> str [ "sha" ] v |> Option.map Ok |> Option.defaultValue (Error(Other "blob create without sha")))
         }
 
@@ -192,15 +196,18 @@ module Provider =
     let changedPaths (c: Config) (send: Transport) (baseCommit: string) (commit: string) : Task<Result<string list, Failure>> =
         task {
             let! r = call send { Method = "GET"; Path = repo c + "/compare/" + baseCommit + "..." + commit; Body = None }
+            // Fail closed: a missing or possibly truncated file list (compare API cap: 300) is an error.
             return
-                r
-                |> Result.map (fun v ->
+                notRef r
+                |> Result.bind (fun v ->
                     match v with
                     | JObj o ->
                         match Json.field "files" o with
-                        | Some(JArr fs) -> fs |> List.choose (str [ "filename" ])
-                        | _ -> []
-                    | _ -> [])
+                        | Some(JArr fs) when fs.Length < 300 ->
+                            Ok(fs |> List.collect (fun f -> [ str [ "filename" ] f; str [ "previous_filename" ] f ] |> List.choose id))
+                        | Some(JArr _) -> Error(Other "compare response may be truncated (300 files)")
+                        | _ -> Error(Other "compare response without a file list")
+                    | _ -> Error(Other "compare response is not an object"))
         }
 
     /// One commit containing every file of the semantic transition, published by a
@@ -239,14 +246,16 @@ module Provider =
                         JObj
                             [ "base_tree", JStr baseToken.TreeSha
                               "tree", JArr(entries |> List.map (fun (p, s) -> JObj [ "path", JStr p; "mode", JStr "100644"; "type", JStr "blob"; "sha", JStr s ])) ]
-                    let! t = call send { Method = "POST"; Path = repo c + "/git/trees"; Body = Some tree }
+                    let! t0 = call send { Method = "POST"; Path = repo c + "/git/trees"; Body = Some tree }
+                    let t = notRef t0
                     match t |> Result.map (str [ "sha" ]), halt BeforeCommit with
                     | Error e, _ -> return Error e
                     | Ok None, _ -> return Error(Other "tree create without sha")
                     | _, Some e -> return e
                     | Ok(Some treeSha), None ->
                         let commit = JObj [ "message", JStr message; "tree", JStr treeSha; "parents", JArr [ JStr baseToken.HeadCommit ] ]
-                        let! cm = call send { Method = "POST"; Path = repo c + "/git/commits"; Body = Some commit }
+                        let! cm0 = call send { Method = "POST"; Path = repo c + "/git/commits"; Body = Some commit }
+                        let cm = notRef cm0
                         match cm |> Result.map (str [ "sha" ]) with
                         | Error e -> return Error e
                         | Ok None -> return Error(Other "commit create without sha")

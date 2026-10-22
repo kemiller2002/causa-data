@@ -25,9 +25,11 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.x"
+          global-json-file: global.json
       - run: tools/fetch-engine.sh
       - run: dotnet build tools/src/Causa.Tool -c Release
       - name: Phase A (create, load, append) then phase B in a separate process

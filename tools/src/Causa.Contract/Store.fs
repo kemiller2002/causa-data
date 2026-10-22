@@ -318,8 +318,21 @@ module Store =
             return loaded
         }
 
-    let readDirectory (dir: string) : InvestigationFiles =
-        { DirectoryId = Path.GetFileName(Path.TrimEndingDirectorySeparator dir) |> nonNull
-          Manifest = File.ReadAllBytes(Path.Combine(dir, "manifest.json"))
-          Events = File.ReadAllBytes(Path.Combine(dir, "events.ndjson"))
-          Snapshot = File.ReadAllBytes(Path.Combine(dir, "snapshot.json")) }
+    /// CONTRACT §3.2-§3.3: a canonical directory name and exactly the three files. Runs before any
+    /// file is read so that path problems are always the primary code (stage 1).
+    let ofFileMap (directoryId: string) (files: Map<string, byte[]>) : Result<InvestigationFiles, CausaError> =
+        match Uuid.tryParse directoryId with
+        | None -> fail Codes.pathInvalid ("investigation directory '" + directoryId + "' is not a canonical lowercase UUID")
+        | Some _ ->
+            let names = files |> Map.toList |> List.map fst |> List.sort
+            if names <> List.sort fileNames then
+                fail Codes.pathInvalid ("investigation directory must contain exactly " + String.Join(", ", fileNames) + "; found: " + String.Join(", ", names))
+            else Ok { DirectoryId = directoryId; Manifest = files["manifest.json"]; Events = files["events.ndjson"]; Snapshot = files["snapshot.json"] }
+
+    /// Read a directory; every entry counts, including hidden files and subdirectories.
+    let readDirectory (dir: string) : Result<InvestigationFiles, CausaError> =
+        let id = Path.GetFileName(Path.TrimEndingDirectorySeparator dir) |> nonNull
+        let entries = Directory.GetFileSystemEntries dir |> List.ofArray
+        let subdirs = entries |> List.filter Directory.Exists
+        if not subdirs.IsEmpty then fail Codes.pathInvalid ("investigation directory contains a subdirectory: " + (Path.GetFileName(subdirs.Head) |> nonNull))
+        else entries |> List.map (fun p -> (Path.GetFileName p |> nonNull), File.ReadAllBytes p) |> Map.ofList |> ofFileMap id

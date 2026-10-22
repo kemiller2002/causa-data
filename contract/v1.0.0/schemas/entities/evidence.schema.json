@@ -55,5 +55,26 @@
     "provenance": {
       "$ref": "../actor.schema.json#/$defs/provenance"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "contentKind": {
+            "const": "artifact"
+          }
+        },
+        "required": [
+          "contentKind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "$ref": "../common.schema.json#/$defs/httpUrl"
+          }
+        }
+      }
+    }
+  ]
 }

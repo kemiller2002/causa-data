@@ -17,9 +17,11 @@ jobs:
       DOTNET_NOLOGO: "1"
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.x"
+          global-json-file: global.json
       - name: Install Python validator
         run: python3 -m pip install --quiet "jsonschema==4.26.0"
       - name: Fetch pinned domain engine
@@ -40,8 +42,14 @@ jobs:
         run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll verify .
       - name: Deterministic regeneration
         run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll reproduce .
-      - name: Compatibility gate (lock)
-        run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll gate .
+      - name: Compatibility gate (lock; anchored to the release tag once it exists)
+        run: |
+          if git rev-parse -q --verify "refs/tags/causa-storage-v1.0.0" >/dev/null; then
+            dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll gate . --anchor causa-storage-v1.0.0
+          else
+            echo "pre-freeze: no release tag yet, gate runs unanchored"
+            dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll gate .
+          fi
       - name: Gate self-test (deliberate breaking mutations must fail)
         run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll gate-selftest .
       - name: Consumer - rehearsal engine via adapter

@@ -125,7 +125,15 @@ module SchemaCheck =
                 match kw "$ref" with
                 | Some(JStr r) ->
                     match resolve set baseId r with
-                    | Ok(docId, target) -> validate set docId target path v
+                    | Ok(docId, target) ->
+                        let structural = validate set docId target path v
+                        // CONTRACT §2.9: the `timestamp` definition also requires a real calendar instant.
+                        let calendar =
+                            match v with
+                            | JStr s when structural.IsEmpty && docId.EndsWith "/common.schema.json" && Uri(Uri(baseId), r).Fragment = "#/$defs/timestamp" && (Timestamp.tryParse s).IsNone ->
+                                here ("'" + s + "' is not a real calendar instant")
+                            | _ -> []
+                        structural @ calendar
                     | Error e -> here e
                 | _ -> []
             let typeErrors =

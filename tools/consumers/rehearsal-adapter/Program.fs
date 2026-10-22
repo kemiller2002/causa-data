@@ -43,7 +43,7 @@ let verify (root: string) : Check list =
         |> List.map (fun entry ->
             let id = str (field "investigationId" entry)
             let key = str (field "scenarioKey" entry)
-            let files = Store.readDirectory (Path.Combine(root, "fixtures", "v1.0.0", "investigations", id))
+            let files = Store.readDirectory (Path.Combine(root, "fixtures", "v1.0.0", "investigations", id)) |> Result.defaultWith (fun e -> failwith (e.Code + " " + e.Detail))
             match Store.validate set files, rehearsalDecode id files.Events with
             | Error e, _ -> [ check ("rehearsal " + key) false ("reference reader refused: " + e.Code) ], None
             | _, Error e -> [ check ("rehearsal " + key) false ("rehearsal EventCodec.decode refused: " + e) ], None
@@ -78,17 +78,22 @@ let verify (root: string) : Check list =
             let expected = str (field "expectedErrorCode" fx)
             let expectedDomain = match field "expectedDomainCode" fx with JStr s -> Some s | _ -> None
             let b64 v = match field "base64" v with JStr s -> Convert.FromBase64String s | _ -> [||]
-            let filesOf v dir = { DirectoryId = dir; Manifest = b64 (field "manifest.json" v); Events = b64 (field "events.ndjson" v); Snapshot = b64 (field "snapshot.json" v) }
+            let filesOf v dir =
+                match v with
+                | JObj o -> o |> List.map (fun (k, x) -> k, b64 x) |> Map.ofList |> Store.ofFileMap dir
+                | _ -> CausaError.fail Codes.schemaViolation "files must be an object"
             // Adapter verdict: v1 front-end (contract stages 1-13) + rehearsal decode + History.validate.
             let adapterVerdict, rawRehearsal =
                 match str (field "kind" fx) with
                 | "investigation" ->
-                    let files = filesOf (field "files" fx) (str (field "directoryId" fx))
-                    let raw =
-                        match rehearsalDecode files.DirectoryId files.Events with
-                        | Error e -> "rejected (" + e.Split(':')[0] + ")"
-                        | Ok(_, evs) -> match History.validate evs with [] -> "ACCEPTED" | e :: _ -> "rejected (" + e.Code + ")"
-                    (match Store.validate set files with Ok _ -> Ok() | Error e -> Error e), raw
+                    match filesOf (field "files" fx) (str (field "directoryId" fx)) with
+                    | Error e -> Error e, "n/a (file set refused before decoding)"
+                    | Ok files ->
+                        let raw =
+                            match rehearsalDecode files.DirectoryId files.Events with
+                            | Error e -> "rejected (" + e.Split(':')[0] + ")"
+                            | Ok(_, evs) -> match History.validate evs with [] -> "ACCEPTED" | e :: _ -> "rejected (" + e.Code + ")"
+                        (match Store.validate set files with Ok _ -> Ok() | Error e -> Error e), raw
                 | "append" ->
                     let files, loaded = byKey[str (field "baseScenarioKey" fx)]
                     let expectedVersion = match field "expectedAggregateVersion" fx with JInt n -> n | _ -> -1L
@@ -96,15 +101,17 @@ let verify (root: string) : Check list =
                     verdict, "n/a (the rehearsal adapter compares blob SHA only; no aggregate-version token)"
                 | _ ->
                     let files, loaded = byKey[str (field "baseScenarioKey" fx)]
-                    let candidate = filesOf (field "files" fx) files.DirectoryId
-                    let raw =
-                        match rehearsalDecode files.DirectoryId candidate.Events with
-                        | Ok(_, evs) ->
-                            match Reconcile.plan loaded.Events evs with
-                            | Reconcile.Diverged _ -> "rejected (Reconcile.Diverged)"
-                            | p -> "ACCEPTED (" + string p + ")"
-                        | Error e -> "rejected (" + e + ")"
-                    (Store.successor set loaded files.Events candidate |> Result.map ignore), raw
+                    match filesOf (field "files" fx) files.DirectoryId with
+                    | Error e -> Error e, "n/a"
+                    | Ok candidate ->
+                        let raw =
+                            match rehearsalDecode files.DirectoryId candidate.Events with
+                            | Ok(_, evs) ->
+                                match Reconcile.plan loaded.Events evs with
+                                | Reconcile.Diverged _ -> "rejected (Reconcile.Diverged)"
+                                | p -> "ACCEPTED (" + string p + ")"
+                            | Error e -> "rejected (" + e + ")"
+                        (Store.successor set loaded files.Events candidate |> Result.map ignore), raw
             let ok =
                 match adapterVerdict with
                 | Error e -> e.Code = expected && (expectedDomain.IsNone || e.DomainCode = expectedDomain)
@@ -138,7 +145,7 @@ let verify (root: string) : Check list =
                 File.WriteAllBytes(Path.Combine(dir, "manifest.json"), newFiles.Manifest)
                 File.WriteAllBytes(Path.Combine(dir, "events.ndjson"), newFiles.Events)
                 File.WriteAllBytes(Path.Combine(dir, "snapshot.json"), newFiles.Snapshot)
-                let reloaded = Store.validate set (Store.readDirectory dir)
+                let reloaded = Store.readDirectory dir |> Result.bind (Store.validate set)
                 let ok = newLines = referenceLines && (match reloaded with Ok l -> l.State.Version = loaded.State.Version + 1L | _ -> false)
                 check "append via rehearsal encoder" ok (sprintf "new event encoded by rehearsal EventCodec.encode -> v1 bytes identical to reference encoder: %b; isolated workspace reload at version %d" (newLines = referenceLines) newLoaded.State.Version)
     let after = fixturesDigest root

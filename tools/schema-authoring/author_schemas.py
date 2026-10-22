@@ -266,17 +266,22 @@ def envelope():
 ENTITIES = {}
 
 
-def entity(file, props, description):
+def entity(file, props, description, extra=None):
     props = dict(props)
-    ENTITIES[file] = closed(props, description)
+    ENTITIES[file] = closed(props, description, extra)
 
 
 def define_entities():
     prov = ref("actor.schema.json", "provenance")
+    hyp_rules = [("markPlausible", "plausible"), ("markSupported", "supported"), ("markWeakened", "weakened"),
+                 ("falsify", "falsified"), ("supersede", "superseded"), ("reopen", "plausible")]
     entity("hypothesis-change", {"from": c("hypothesisState"), "to": c("hypothesisTarget"), "command": c("hypothesisCommand"),
                                  "reason": c("text"), "evidenceIds": c("uuidList"), "at": c("timestamp"),
                                  "aggregateVersion": c("aggregateVersion")},
-           "One entry of a hypothesis's change history, in history order.")
+           "One entry of a hypothesis's change history, in history order.",
+           {"allOf": [cond("command", cmd, {"properties": {"to": {"const": to}}}) for cmd, to in hyp_rules]
+                     + [cond("command", cmd, {"properties": {"evidenceIds": c("nonEmptyUuidList")}})
+                        for cmd in ["markSupported", "markWeakened", "falsify", "reopen"]]})
     entity("causal-member", {"hypothesisId": c("uuid"), "role": c("causeRole")}, "A member of a causal assertion.")
     entity("observation", {"id": c("uuid"), "original": c("text"), "observedAt": c("nullableTimestamp"), "provenance": prov},
            "Observation projection.")
@@ -286,7 +291,8 @@ def define_entities():
     entity("evidence", {"id": c("uuid"), "contentKind": c("contentKind"), "content": c("text"), "category": c("evidenceCategory"),
                         "source": c("text"), "capturedAt": c("nullableTimestamp"), "verification": c("verificationStatus"),
                         "supersededBy": {"oneOf": [c("uuid"), {"type": "null"}]}, "admittedAtVersion": c("aggregateVersion"),
-                        "provenance": prov}, "Evidence projection. admittedAtVersion is the aggregateVersion that admitted it.")
+                        "provenance": prov}, "Evidence projection. admittedAtVersion is the aggregateVersion that admitted it.",
+           {"allOf": [cond("contentKind", "artifact", {"properties": {"content": c("httpUrl")}})]})
     entity("relationship", {"id": c("uuid"), "evidenceId": c("uuid"), "hypothesisId": c("uuid"), "kind": c("relationshipKind"),
                             "rationale": c("nullableText"), "provenance": prov}, "Evidence-hypothesis relationship projection.")
     entity("unknown", {"id": c("uuid"), "question": c("text"), "materiality": c("materiality"), "state": c("unknownState"),
@@ -314,7 +320,8 @@ def define_entities():
     entity("criterion", {"id": c("uuid"), "correctiveActionId": c("uuid"), "expectedOutcome": c("text"), "method": c("nullableText"),
                          "provenance": prov}, "Verification criterion projection.")
     entity("verification", {"id": c("uuid"), "criterionId": c("uuid"), "outcome": c("verificationOutcome"), "evidenceIds": c("uuidList"),
-                            "recordedAtVersion": c("aggregateVersion"), "provenance": prov}, "Verification projection.")
+                            "recordedAtVersion": c("aggregateVersion"), "provenance": prov}, "Verification projection.",
+           {"allOf": [cond("outcome", "satisfied", {"properties": {"evidenceIds": c("nonEmptyUuidList")}})]})
     entity("conclusion", {"id": c("uuid"), "statement": c("text"), "strength": c("conclusionStrength"), "causeIds": c("uuidList"),
                           "residualUncertainty": c("nullableText"), "recordedAtVersion": c("aggregateVersion"), "provenance": prov},
            "Conclusion projection; the current conclusion is the one with the highest recordedAtVersion.")
@@ -377,7 +384,8 @@ def root_manifest():
 
 def negative_fixture():
     file = closed({"base64": {"type": "string", "pattern": "^[A-Za-z0-9+/]*={0,2}$"}})
-    files = closed({"manifest.json": file, "events.ndjson": file, "snapshot.json": file})
+    files = {"type": "object", "additionalProperties": file,
+             "description": "Directory entries by file name; any names, so missing and extra files are representable (CONTRACT §3.3)."}
     common_props = {"formatVersion": c("formatVersion"), "name": c("slug"), "description": c("text"),
                     "expectedErrorCode": c("errorCode"), "expectedDomainCode": {"oneOf": [{"type": "string", "pattern": "^[A-Z]+(\\.[A-Z_]+)+$"}, {"type": "null"}]}}
     inv = closed(dict(common_props, kind={"const": "investigation"}, directoryId={"type": "string", "minLength": 1}, files=files))

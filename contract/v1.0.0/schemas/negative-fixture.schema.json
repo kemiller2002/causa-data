@@ -50,53 +50,20 @@
         },
         "files": {
           "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "manifest.json",
-            "events.ndjson",
-            "snapshot.json"
-          ],
-          "properties": {
-            "manifest.json": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "base64"
-              ],
-              "properties": {
-                "base64": {
-                  "type": "string",
-                  "pattern": "^[A-Za-z0-9+/]*={0,2}$"
-                }
-              }
-            },
-            "events.ndjson": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "base64"
-              ],
-              "properties": {
-                "base64": {
-                  "type": "string",
-                  "pattern": "^[A-Za-z0-9+/]*={0,2}$"
-                }
-              }
-            },
-            "snapshot.json": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "base64"
-              ],
-              "properties": {
-                "base64": {
-                  "type": "string",
-                  "pattern": "^[A-Za-z0-9+/]*={0,2}$"
-                }
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "base64"
+            ],
+            "properties": {
+              "base64": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9+/]*={0,2}$"
               }
             }
-          }
+          },
+          "description": "Directory entries by file name; any names, so missing and extra files are representable (CONTRACT §3.3)."
         }
       }
     },
@@ -207,53 +174,20 @@
         },
         "files": {
           "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "manifest.json",
-            "events.ndjson",
-            "snapshot.json"
-          ],
-          "properties": {
-            "manifest.json": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "base64"
-              ],
-              "properties": {
-                "base64": {
-                  "type": "string",
-                  "pattern": "^[A-Za-z0-9+/]*={0,2}$"
-                }
-              }
-            },
-            "events.ndjson": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "base64"
-              ],
-              "properties": {
-                "base64": {
-                  "type": "string",
-                  "pattern": "^[A-Za-z0-9+/]*={0,2}$"
-                }
-              }
-            },
-            "snapshot.json": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "base64"
-              ],
-              "properties": {
-                "base64": {
-                  "type": "string",
-                  "pattern": "^[A-Za-z0-9+/]*={0,2}$"
-                }
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "base64"
+            ],
+            "properties": {
+              "base64": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9+/]*={0,2}$"
               }
             }
-          }
+          },
+          "description": "Directory entries by file name; any names, so missing and extra files are representable (CONTRACT §3.3)."
         }
       }
     }

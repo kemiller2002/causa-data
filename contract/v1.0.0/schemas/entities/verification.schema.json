@@ -32,5 +32,26 @@
     "provenance": {
       "$ref": "../actor.schema.json#/$defs/provenance"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "satisfied"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidenceIds": {
+            "$ref": "../common.schema.json#/$defs/nonEmptyUuidList"
+          }
+        }
+      }
+    }
+  ]
 }
