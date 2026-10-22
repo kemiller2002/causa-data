@@ -120,6 +120,8 @@ let main argv =
         let anchored =
             match rest with
             | [ "--anchor"; tag ] -> Gate.anchorFailures full tag
+            | _ when File.Exists(Gate.releaseMarker full) ->
+                [ { Gate.Rule = "anchor.required"; Gate.Detail = "compatibility/v1.0.0/RELEASE exists: the gate must run with --anchor <release tag>" } ]
             | _ -> []
         let failures = Gate.run full @ anchored
         printfn "%s" (Json.canonical (Gate.report failures) |> Result.defaultValue "")

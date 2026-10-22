@@ -16,21 +16,56 @@ module Gate =
         |> List.map (fun p -> Layout.posix (Path.GetRelativePath(root, p)), Json.sha256Hex (File.ReadAllBytes p))
         |> List.sortWith (fun (a, _) (b, _) -> String.CompareOrdinal(a, b))
 
-    /// Content hash of the engine source actually compiled (CONTRACT §14): every *.fs / *.fsproj under
-    /// .engine/src/engine plus the engine's Directory.Build.props, as sorted "path:sha256" lines.
+    let private exec (exe: string) (args: string list) =
+        let psi = Diagnostics.ProcessStartInfo(exe)
+        psi.RedirectStandardOutput <- true
+        psi.RedirectStandardError <- true
+        args |> List.iter psi.ArgumentList.Add
+        use p = Diagnostics.Process.Start psi |> nonNull
+        let out = p.StandardOutput.ReadToEnd()
+        p.StandardError.ReadToEnd() |> ignore
+        p.WaitForExit()
+        p.ExitCode, out
+
+    /// Hash of everything MSBuild actually builds the engine from (review findings M2, M2-bis):
+    /// every imported project file outside the dotnet installation (Directory.Build.props/targets
+    /// anywhere up the tree, the fsproj, ...; restore-generated obj/ files excluded), every evaluated
+    /// Compile item with its content, and the PackageReference id/version list. A file planted
+    /// anywhere outside the pinned SDK that MSBuild imports changes this hash.
     let engineSourceSha256 (root: string) =
-        let engine = Path.Combine(root, ".engine")
-        if not (Directory.Exists(Path.Combine(engine, "src", "engine"))) then "missing"
+        let proj = Path.Combine(root, ".engine", "src", "engine", "App.Engine.fsproj")
+        if not (File.Exists proj) then "missing"
         else
-            Directory.GetFiles(Path.Combine(engine, "src", "engine"), "*", SearchOption.AllDirectories)
-            |> Array.filter (fun f -> (f.EndsWith ".fs" || f.EndsWith ".fsproj") && not (f.Contains "/bin/" || f.Contains "/obj/"))
-            |> Array.append [| Path.Combine(engine, "Directory.Build.props") |]
-            |> Array.filter File.Exists
-            |> Array.map (fun f -> Layout.posix (Path.GetRelativePath(engine, f)) + ":" + Json.sha256Hex (File.ReadAllBytes f))
-            |> Array.sortWith (fun a b -> String.CompareOrdinal(a, b))
-            |> String.concat "\n"
-            |> Json.strictUtf8.GetBytes
-            |> Json.sha256Hex
+            let pp = Path.Combine(Path.GetTempPath(), "causa-engine-pp-" + Guid.NewGuid().ToString("N") + ".xml")
+            let _ = exec "dotnet" [ "msbuild"; proj; "-nologo"; "-pp:" + pp ]
+            let preprocessed = if File.Exists pp then File.ReadAllText pp else ""
+            if File.Exists pp then File.Delete pp
+            let code, evaluation = exec "dotnet" [ "msbuild"; proj; "-nologo"; "-getProperty:MSBuildBinPath"; "-getItem:Compile"; "-getItem:PackageReference" ]
+            match code, Json.parse evaluation with
+            | 0, Ok ev ->
+                let dotnetRoot =
+                    match Negatives.get [ "Properties"; "MSBuildBinPath" ] ev with
+                    | JStr bin -> (DirectoryInfo(bin).Parent |> nonNull).Parent |> nonNull |> fun d -> d.FullName
+                    | _ -> "\u0000"
+                let engineDir = Path.GetDirectoryName proj |> nonNull
+                let imports =
+                    Text.RegularExpressions.Regex.Matches(preprocessed, @"^(/[^\n<>""]+\.(?:props|targets|fsproj|csproj|proj))\s*$", Text.RegularExpressions.RegexOptions.Multiline)
+                    |> Seq.map (fun (m: Text.RegularExpressions.Match) -> m.Groups[1].Value)
+                    |> Seq.filter (fun (f: string) -> not (f.StartsWith dotnetRoot) && not (f.StartsWith(Path.Combine(engineDir, "obj"))))
+                    |> Seq.distinct
+                    |> List.ofSeq
+                let items key = match Negatives.get [ "Items"; key ] ev with JArr xs -> xs | _ -> []
+                let compile =
+                    items "Compile" |> List.map (fun i -> match Negatives.get [ "FullPath" ] i with JStr f -> f | _ -> "")
+                let rel (f: string) = if f.StartsWith root then Layout.posix (Path.GetRelativePath(root, f)) else "external:" + f
+                let fileLines = (imports @ compile) |> List.distinct |> List.map (fun f -> rel f + ":" + (if File.Exists f then Json.sha256Hex (File.ReadAllBytes f) else "missing"))
+                let packages = items "PackageReference" |> List.map (fun i -> "package:" + (match Negatives.get [ "Identity" ] i with JStr s -> s | _ -> "") + "@" + (match Negatives.get [ "Version" ] i with JStr s -> s | _ -> ""))
+                (fileLines @ packages)
+                |> List.sortWith (fun a b -> String.CompareOrdinal(a, b))
+                |> String.concat "\n"
+                |> Json.strictUtf8.GetBytes
+                |> Json.sha256Hex
+            | _ -> "msbuild-evaluation-failed"
 
     let private sdkVersion (root: string) =
         let p = Path.Combine(root, "global.json")
@@ -81,15 +116,11 @@ module Gate =
 
     let frozenRoots = [ "contract/v1.0.0"; "fixtures/v1.0.0"; "compatibility/v1.0.0"; "engine.lock.json"; "global.json" ]
 
-    let private git (root: string) (args: string list) =
-        let psi = Diagnostics.ProcessStartInfo("git")
-        psi.RedirectStandardOutput <- true
-        psi.RedirectStandardError <- true
-        ("-C" :: root :: args) |> List.iter psi.ArgumentList.Add
-        use p = Diagnostics.Process.Start psi |> nonNull
-        let out = p.StandardOutput.ReadToEnd()
-        p.WaitForExit()
-        p.ExitCode, out
+    /// compatibility/v1.0.0/RELEASE exists from the freeze commit onwards; when present, the anchored
+    /// check is mandatory and a missing tag is a failure, never a silent fallback (review residual on M1).
+    let releaseMarker root = Path.Combine(root, "compatibility", "v1.0.0", "RELEASE")
+
+    let private git (root: string) (args: string list) = exec "git" ("-C" :: root :: args)
 
     /// After the freeze the lock is anchored to the release tag (review finding M1): the working-tree lock
     /// must be byte-identical to the tagged one, and no frozen path may differ from the tag.
@@ -207,6 +238,11 @@ module Gate =
               (fun r ->
                   let p = Path.Combine(r, ".engine", "src", "engine", "Decide.fs")
                   File.WriteAllText(p, File.ReadAllText(p).Replace("| None -> [ err \"CAUSE.NO_MECHANISM\" \"§15.8\" \"The causal mechanism is not stated.\" ]", "| None -> []")))
+              "engine build input planted: repo-root Directory.Build.targets swapping a Compile item",
+              (fun r ->
+                  File.WriteAllText(
+                      Path.Combine(r, "Directory.Build.targets"),
+                      "<Project><Target Name=\"Swap\" BeforeTargets=\"CoreCompile\"><ItemGroup><Compile Remove=\"Decide.fs\" /></ItemGroup></Target></Project>\n"))
               "anchored relock: weaken CONTRACT.md then regenerate the lock (must fail against the tag)",
               (fun r ->
                   let p = Path.Combine(r, "contract", "v1.0.0", "CONTRACT.md")

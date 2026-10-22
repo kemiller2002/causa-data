@@ -1079,7 +1079,12 @@ preserves it byte-for-byte by not rewriting the source.
 
 - the schema identity and the digest of every frozen file;
 - every expected state digest, and every negative fixture's expected code;
-- the engine commit, plus a **content hash of the engine source** that is compiled (`engineSourceSha256`);
+- the engine commit, plus `engineSourceSha256`: a content hash of **everything MSBuild builds the engine from**:
+  - every imported project file outside the dotnet installation, as listed by the MSBuild preprocessor — so a
+    `Directory.Build.props`/`.targets` planted anywhere up the tree is caught. Restore-generated `obj/` files are
+    excluded;
+  - every evaluated `Compile` item, with its content;
+  - the `PackageReference` id/version list. NuGet package content is taken as immutable per version;
 - the .NET SDK version (`global.json`, `rollForward: disable`).
 
 `causa gate .` recomputes all of them and runs full verification; any difference is a failure.
@@ -1087,11 +1092,17 @@ preserves it byte-for-byte by not rewriting the source.
 After the freeze, the gate is **anchored to the release tag**: `causa gate . --anchor causa-storage-v1.0.0`
 additionally requires the working-tree lock to be byte-identical to the lock in the tag, and every frozen path
 (`contract/v1.0.0`, `fixtures/v1.0.0`, `compatibility/v1.0.0`, `engine.lock.json`, `global.json`) to equal the tag.
-Regenerating the lock in the same change therefore cannot launder a modification.
+Regenerating the lock in the same change therefore cannot launder a modification. From the freeze commit onwards,
+`compatibility/v1.0.0/RELEASE` exists (itself a frozen file). While it exists, `causa gate .` without `--anchor` fails
+(`anchor.required`), so a missing or deleted tag cannot silently downgrade the gate to unanchored. Protecting the tag
+from deletion on the hosting side is recommended in addition.
 
 The negative fixtures cover every reader stage rule and, one rule per fixture, the engine's decision rules. Each
 engine-rule fixture is the **sole** reason for refusal, which the generator asserts against the pinned engine. So a
-more lenient reader or engine accepts at least one negative and fails the gate.
+more lenient reader or engine accepts at least one negative and fails the gate. A rule that can never fire alone is
+covered by the fixtures of the rules it always fires with: relaxing it alone does not change which histories are
+admissible. `RESOLVE.NO_CONFIRMED_CAUSE` always fires with `RESOLVE.NO_CORRECTION`, and `RESOLVE.BLOCKING_UNKNOWN` with
+`RESOLVE.CAUSE_NO_LONGER_HOLDS`. The coverage list is in the experiment record (`ADVERSARIAL-REVIEW.md`).
 
 ## 15. Security
 

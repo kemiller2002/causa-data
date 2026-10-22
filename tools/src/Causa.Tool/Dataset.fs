@@ -129,7 +129,10 @@ module Negatives =
     /// Like forgedHistory, but asserts (at generation time) that the pinned engine refuses the last forged
     /// command group for exactly `refusal` and nothing else, or emits different events when `refusal` = "MISMATCH".
     /// A more lenient engine would then accept the fixture and fail the gate (review finding M2).
-    let private soleRefusal (base': Loaded) (extra: JValue list) (refusal: string) =
+    let rec private soleRefusal (base': Loaded) (extra: JValue list) (refusal: string) = soleRefusalOn base'.Events extra refusal
+
+    and private soleRefusalOn (baseEvents: Event list) (extra: JValue list) (refusal: string) =
+        let base' = {| Events = baseEvents |}
         let forged = extra |> List.map (EventWire.decode >> Layout.orFail >> fun d -> d.Event)
         let lastCorr = (List.last forged).CommandId
         let before = base'.Events @ (forged |> List.filter (fun e -> e.CommandId <> lastCorr))
@@ -145,6 +148,21 @@ module Negatives =
             | Ok bodies, "MISMATCH" when bodies <> (group |> List.map (fun e -> e.Body)) -> ()
             | other, r -> failwithf "negative for %s is not a sole refusal: %A" r other
         Store.buildUnchecked (base'.Events @ forged) |> Layout.orFail
+
+    /// The events of a frozen scenario before the first event matching `stop` (a mid-history base).
+    let private prefix (l: Loaded) (stop: Event -> bool) = l.Events |> List.takeWhile (stop >> not)
+
+    /// Forge several consecutive command groups (one event each) after a base history, 4 minutes apart.
+    let private chain (baseEvents: Event list) (specs: (string * string * JValue * JValue) list) : JValue list =
+        specs
+        |> List.fold
+            (fun (events: Event list, lines: JValue list) (corrName, eventType, actor, payload) ->
+                let files = Store.buildUnchecked events |> Layout.orFail
+                let line = forgedLine files corrName eventType actor payload 4.0
+                let ev = EventWire.decode line |> Layout.orFail
+                events @ [ ev.Event ], lines @ [ line ])
+            (baseEvents, [])
+        |> snd
 
     let private dropEvent (n: int) (vs: JValue list) = vs |> List.indexed |> List.filter (fun (i, _) -> i <> n) |> List.map snd
 
@@ -441,6 +459,107 @@ module Negatives =
                          (JObj [ "evidenceId", JStr(Uuid.text (ScenarioKit.guid "negative" "evidence" "bad-url")); "contentKind", JStr "artifact"; "content", JStr "https://exa mple.invalid/x"
                                  "category", JStr "log"; "source", JStr "synthetic"; "capturedAt", JNull ]) 4.0 ]
                    "EVIDENCE.URL"))
+          // ---- remaining engine decision rules (re-review): each the sole refusal ----
+          neg "engine-evidence-already-superseded" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "Evidence that is already superseded is superseded again (EVIDENCE.ALREADY_SUPERSEDED)."
+              (let sup = lines b |> List.pick (fun v -> if get [ "eventType" ] v = JStr "EvidenceSuperseded" then Some(get [ "payload"; "evidenceId" ] v) else None)
+               let other = lines b |> List.pick (fun v -> if get [ "eventType" ] v = JStr "EvidenceAdmitted" && get [ "payload"; "category" ] v = JStr "document" then Some(get [ "payload"; "evidenceId" ] v) else None)
+               investigationBody (soleRefusal (loadedOf "intermittent-outage")
+                   [ forgedLine b "resupersede" "EvidenceSuperseded" human (JObj [ "evidenceId", sup; "replacementEvidenceId", other; "reason", JStr "Again." ]) 4.0 ]
+                   "EVIDENCE.ALREADY_SUPERSEDED"))
+          neg "engine-proposal-not-active" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+              "An already rejected proposal is rejected again (PROPOSAL.NOT_ACTIVE)."
+              (let rejected = lines a |> List.pick (fun v -> if get [ "eventType" ] v = JStr "ProposalWasRejected" then Some(get [ "payload"; "proposalId" ] v) else None)
+               investigationBody (soleRefusal (loadedOf "payment-failure")
+                   [ forgedLine a "rereject" "ProposalWasRejected" human (JObj [ "proposalId", rejected; "reason", JStr "Twice." ]) 4.0 ]
+                   "PROPOSAL.NOT_ACTIVE"))
+          (let eL = loadedOf "authentication-outage"
+           let beforeResolve = prefix eL (fun ev -> match ev.Body with LifecycleChanged(_, Resolved, _, _) -> true | _ -> false)
+           let workaround = eL.Events |> List.pick (fun ev -> match ev.Body with CorrectiveActionRecorded(ca, Workaround, _, _) -> Some(JStr(Uuid.text ca.Value)) | _ -> None)
+           let f = Store.buildUnchecked beforeResolve |> Layout.orFail
+           neg "engine-verification-without-criteria" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
+               "Verification of effect starts for an implemented workaround that has no success criteria (R7.3: CORRECTION.NO_CRITERIA)."
+               (investigationBody (soleRefusalOn beforeResolve
+                   [ forgedLine f "no-criteria" "CorrectiveActionTransitioned" human (JObj [ "correctiveActionId", workaround; "state", JStr "awaitingVerificationOfEffect" ]) 4.0 ]
+                   "CORRECTION.NO_CRITERIA")))
+          // Cause gate, on api-latency just before its cause was confirmed.
+          yield!
+              (let dL = loadedOf "api-latency"
+               let beforeConfirm = prefix dL (fun ev -> match ev.Body with CausalAssertionConfirmed _ -> true | _ -> false)
+               let cause = causeId d
+               let confirm = "CausalAssertionConfirmed", human, JObj [ "causeId", cause; "policy", JStr "core-default/1" ]
+               let gate name description code (setup: (string * string * JValue * JValue) list) =
+                   let lines = chain beforeConfirm (setup @ [ (let (t, a, p) = confirm in name + "-confirm", t, a, p) ])
+                   neg name Codes.historyInadmissible (Some "HISTORY.UNGATED_CONFIRMATION") description (investigationBody (soleRefusalOn beforeConfirm lines code))
+               let g kind n = JStr(Uuid.text (ScenarioKit.guid "negative" kind n))
+               let ev (name: string) = lines d |> List.pick (fun v -> if get [ "eventType" ] v = JStr "EvidenceAdmitted" && (match get [ "payload"; "source" ] v with JStr s -> s.Contains name | _ -> false) then Some(get [ "payload"; "evidenceId" ] v) else None)
+               let members = lines d |> List.pick (fun v -> if get [ "eventType" ] v = JStr "CausalAssertionRecorded" then Some(get [ "payload"; "members" ] v) else None)
+               [ gate "engine-cause-alternative-not-addressed" "A live alternative hypothesis is ignored when the cause is confirmed (§15.7: CAUSE.ALTERNATIVE_NOT_ADDRESSED)."
+                     "CAUSE.ALTERNATIVE_NOT_ADDRESSED"
+                     [ "alt-hypothesis", "HypothesisRecorded", human, JObj [ "hypothesisId", g "hypothesis" "alternative"; "statement", JStr "A CDN change slowed responses."; "mechanism", JNull ] ]
+                 gate "engine-cause-unverified-assumption" "A material assumption is still unverified when the cause is confirmed (§15.6: CAUSE.UNVERIFIED_ASSUMPTION)."
+                     "CAUSE.UNVERIFIED_ASSUMPTION"
+                     [ "assumption", "AssumptionRecorded", human, JObj [ "assumptionId", g "assumption" "unverified"; "proposition", JStr "Traffic was constant."; "materiality", JStr "material" ] ]
+                 gate "engine-cause-open-unknown" "A material unknown is open when the cause is confirmed (§15.5: CAUSE.OPEN_UNKNOWN)."
+                     "CAUSE.OPEN_UNKNOWN"
+                     [ "unknown", "UnknownIdentified", human, JObj [ "unknownId", g "unknown" "open"; "question", JStr "Was the index rebuilt?"; "materiality", JStr "material" ] ]
+                 gate "engine-cause-open-contradiction" "A material contradiction is open when the cause is confirmed (§15.4: CAUSE.OPEN_CONTRADICTION)."
+                     "CAUSE.OPEN_CONTRADICTION"
+                     [ "contradiction", "ContradictionRecorded", human,
+                       JObj [ "contradictionId", g "contradiction" "open"; "statement", JStr "Trace and host metrics disagree."; "evidenceIds", JArr [ ev "tracing"; ev "host metrics" ]; "materiality", JStr "material" ] ]
+                 (let noRoot = g "cause" "no-root"
+                  let contributing = match members with JArr ms -> JArr(ms |> List.map (set [ "role" ] (JStr "contributingFactor"))) | m -> m
+                  let lines =
+                      chain beforeConfirm
+                          [ "no-root-record", "CausalAssertionRecorded", human, JObj [ "causeId", noRoot; "outcome", JStr "Contributing factors only."; "members", contributing; "mechanism", JStr "Both slow the query path." ]
+                            "no-root-confirm", "CausalAssertionConfirmed", human, JObj [ "causeId", noRoot; "policy", JStr "core-default/1" ] ]
+                  neg "engine-cause-no-root" Codes.historyInadmissible (Some "HISTORY.UNGATED_CONFIRMATION")
+                      "A cause whose members are all contributing factors is confirmed (R6.3: CAUSE.NO_ROOT)." (investigationBody (soleRefusalOn beforeConfirm lines "CAUSE.NO_ROOT")))
+                 neg "engine-cause-already-confirmed" Codes.historyInadmissible (Some "HISTORY.UNGATED_CONFIRMATION")
+                     "An already confirmed cause is confirmed again (CAUSE.STATE)."
+                     (investigationBody (soleRefusal dL [ forgedLine d "reconfirm" "CausalAssertionConfirmed" human (JObj [ "causeId", cause; "policy", JStr "core-default/1" ]) 4.0 ] "CAUSE.STATE")) ])
+          // Resolution gate, on authentication-outage at points before its first resolution.
+          yield!
+              (let eL = loadedOf "authentication-outage"
+               let cause = causeId e
+               let g kind n = JStr(Uuid.text (ScenarioKit.guid "negative" kind n))
+               let resolve = "LifecycleChanged", human, JObj [ "from", JStr "awaitingVerification"; "to", JStr "resolved"; "command", JStr "resolveInvestigation"; "reason", JNull ]
+               let resolveFromActive = "LifecycleChanged", human, JObj [ "from", JStr "active"; "to", JStr "resolved"; "command", JStr "resolveInvestigation"; "reason", JNull ]
+               let beforeResolve = prefix eL (fun ev -> match ev.Body with LifecycleChanged(_, Resolved, _, _) -> true | _ -> false)
+               let beforeConclusion = prefix eL (fun ev -> match ev.Body with ConclusionRecorded _ -> true | _ -> false)
+               let beforeCorrections = prefix eL (fun ev -> match ev.Body with CorrectiveActionRecorded _ -> true | _ -> false)
+               let conclusion residual =
+                   "conclusion", "ConclusionRecorded", human,
+                   JObj [ "conclusionId", g "conclusion" "negative"; "statement", JStr "The stale key cache caused the outage."; "strength", JStr "confirmedCause"
+                          "causeIds", JArr [ cause ]; "residualUncertainty", residual ]
+               let gateCase name description code baseEvents (setup: (string * string * JValue * JValue) list) (resolveSpec: string * JValue * JValue) =
+                   let t, a, p = resolveSpec
+                   let lines = chain baseEvents (setup @ [ name + "-resolve", t, a, p ])
+                   neg name Codes.historyInadmissible (Some "HISTORY.UNGATED_RESOLUTION") description (investigationBody (soleRefusalOn baseEvents lines code))
+               [ gateCase "engine-resolve-no-conclusion" "The investigation is resolved before any conclusion is recorded (R6.4: RESOLVE.NO_CONCLUSION)."
+                     "RESOLVE.NO_CONCLUSION" beforeConclusion [] resolve
+                 gateCase "engine-resolve-no-correction" "The investigation is resolved with a confirmed cause and conclusion but no root-cause correction (R7.2: RESOLVE.NO_CORRECTION)."
+                     "RESOLVE.NO_CORRECTION" beforeCorrections [ conclusion (JStr "None beyond the stated cause.") ] resolveFromActive
+                 gateCase "engine-resolve-correction-not-verified" "A root-cause correction exists but has neither criteria nor verification (R7.4: RESOLVE.CORRECTION_NOT_VERIFIED)."
+                     "RESOLVE.CORRECTION_NOT_VERIFIED" beforeCorrections
+                     [ conclusion (JStr "None beyond the stated cause.")
+                       "unverified-correction", "CorrectiveActionRecorded", human, JObj [ "correctiveActionId", g "corrective" "unverified"; "kind", JStr "correction"; "description", JStr "Patch the job."; "targetCauseIds", JArr [ cause ] ] ]
+                     resolveFromActive
+                 gateCase "engine-resolve-criterion-unsatisfied" "A second root-cause correction has an unsatisfied criterion (R7.3: RESOLVE.CRITERION_UNSATISFIED)."
+                     "RESOLVE.CRITERION_UNSATISFIED" beforeResolve
+                     [ "second-correction", "CorrectiveActionRecorded", human, JObj [ "correctiveActionId", g "corrective" "second"; "kind", JStr "correction"; "description", JStr "Also rotate keys weekly."; "targetCauseIds", JArr [ cause ] ]
+                       "second-criterion", "CriterionRecorded", human, JObj [ "criterionId", g "criterion" "second"; "correctiveActionId", g "corrective" "second"; "expectedOutcome", JStr "Weekly rotation succeeds."; "method", JNull ] ]
+                     resolve
+                 gateCase "engine-resolve-cause-no-longer-holds" "A material unknown is opened after confirmation, so the confirmed cause no longer meets the gate at resolution (RESOLVE.CAUSE_NO_LONGER_HOLDS)."
+                     "RESOLVE.CAUSE_NO_LONGER_HOLDS" beforeResolve
+                     [ "late-unknown", "UnknownIdentified", human, JObj [ "unknownId", g "unknown" "late"; "question", JStr "Did other tenants see it?"; "materiality", JStr "material" ] ]
+                     resolve
+                 gateCase "engine-resolve-residual-not-stated" "Uncertainty is accepted as residual after a conclusion that states none (R6.4: RESOLVE.RESIDUAL_NOT_STATED)."
+                     "RESOLVE.RESIDUAL_NOT_STATED" beforeConclusion
+                     [ conclusion JNull
+                       "residual-unknown", "UnknownIdentified", human, JObj [ "unknownId", g "unknown" "residual"; "question", JStr "Exact drift onset?"; "materiality", JStr "nonMaterial" ]
+                       "residual-accept", "UnknownTransitioned", human, JObj [ "unknownId", g "unknown" "residual"; "state", JStr "acceptedResidual"; "basis", JStr "Not needed for the fix." ] ]
+                     resolve ])
           neg "engine-group-time-disagreement" Codes.historyInadmissible (Some "HISTORY.INADMISSIBLE_EVENT")
               "The events of one multi-event command (a finding with its action transitions) disagree on occurredAt."
               (let vs = lines b
