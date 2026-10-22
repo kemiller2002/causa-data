@@ -303,6 +303,15 @@ module Negatives =
               (let t = (utf8.GetString a.Events).TrimEnd('\n').Split('\n')
                let deep = String.replicate 130 "[" + String.replicate 130 "]"
                { a with Events = utf8.GetBytes(String.Join("\n", Array.append [| t[0].Replace("\"payload\":{", "\"payload\":{\"deep\":" + deep + ",") |] t[1..]) + "\n") })
+          // Boundary: event (1) > payload (2) > arrays. 127 arrays = depth 129; 126 arrays = depth 128.
+          inv "nesting-depth-129" Codes.jsonMalformed "An event nests to depth 129 (top-level object = depth 1); one level beyond the limit."
+              (let t = (utf8.GetString a.Events).TrimEnd('\n').Split('\n')
+               let deep = String.replicate 127 "[" + String.replicate 127 "]"
+               { a with Events = utf8.GetBytes(String.Join("\n", Array.append [| t[0].Replace("\"payload\":{", "\"payload\":{\"deep\":" + deep + ",") |] t[1..]) + "\n") })
+          inv "nesting-depth-128" Codes.schemaViolation "An event nests to exactly depth 128 (the limit): it parses and is canonical, then fails the schema (undeclared payload field 'deep')."
+              (let t = (utf8.GetString a.Events).TrimEnd('\n').Split('\n')
+               let deep = String.replicate 126 "[" + String.replicate 126 "]"
+               { a with Events = utf8.GetBytes(String.Join("\n", Array.append [| t[0].Replace("\"payload\":{", "\"payload\":{\"deep\":" + deep + ",") |] t[1..]) + "\n") })
           // ---- schema-level value rules ----
           inv "calendar-invalid-occurred-at" Codes.schemaViolation "An occurredAt is 2026-02-30 (not a calendar date)."
               (mutateLine a 2 (set [ "occurredAt" ] (JStr "2026-02-30T10:08:00.000Z")))

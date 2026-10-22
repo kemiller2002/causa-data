@@ -32,6 +32,9 @@ let readJsonDoc (path: string) (validator: JsonValue -> string list) : Result<Js
         let! text = Wire.jsonFileText bytes |> Result.mapError (fun e -> $"CAUSA.ENCODING: {e}")
         let! doc = Json.parse text |> Result.mapError (fun e -> $"CAUSA.JSON_MALFORMED: {e}")
         do! if canonical doc = text then Ok() else Error "CAUSA.NON_CANONICAL: not RFC 8785 canonical"
+        do! match field "formatVersion" doc with
+            | Some(JString v) when v <> "1.0.0" -> Error $"CAUSA.UNSUPPORTED_VERSION: formatVersion \"{v}\""
+            | _ -> Ok()
         do! match validator doc with
             | [] -> Ok()
             | e :: _ -> Error $"CAUSA.SCHEMA_VIOLATION: {e}"
@@ -186,7 +189,7 @@ let private investigationChecks (contractDir: string) (fixturesDir: string) (sce
                          if int "commands" s <> Some(int64 (groups + refusals)) then
                              $"""commands: declared {int "commands" s}, persisted groups {groups} + refusals {refusals}""" ]
                    if problems.IsEmpty then pass (n "scenario-summary") $"{types.Length} event types, {v.WireEvents.Length} events, {groups} command groups + {refusals} refusals"
-                   else failc (n "scenario-summary") (String.Join("; ", problems))) ],
+                   else failc (n "scenario-summary") ("CAUSA.GOLDEN_MISMATCH: " + String.Join("; ", problems))) ],
             loaded
 
 // ---------------------------------------------------------------- negative fixtures (§12.2, §9.2, §9.3)
@@ -197,11 +200,13 @@ let private b64 (name: string) (o: JsonValue) : Result<byte[], string> =
     | None -> Error $"no base64 for {name}"
 
 let private fileSetOf (dirName: string) (files: JsonValue) : Result<FileSet, string> =
+    // `files` may name any entries (§3.3); a missing one reads as empty and stage 1 reports it.
+    let listing = match files with JObject ms -> ms |> List.map fst | _ -> []
+    let bytesOf name = if List.contains name listing then b64 name files else Ok [||]
     result {
-        let! m = b64 "manifest.json" files
-        let! e = b64 "events.ndjson" files
-        let! s = b64 "snapshot.json" files
-        let listing = match files with JObject ms -> ms |> List.map fst | _ -> []
+        let! m = bytesOf "manifest.json"
+        let! e = bytesOf "events.ndjson"
+        let! s = bytesOf "snapshot.json"
         return { DirectoryName = dirName; Listing = listing; Manifest = m; Events = e; Snapshot = s }
     }
 

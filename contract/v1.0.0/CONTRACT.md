@@ -45,7 +45,9 @@ input as invalid until it is resolved through §14.
 3. **Values.** No comments, NaN, Infinity, or floating-point numbers. Integers are JSON integers in
    `[-(2^53-1), 2^53-1]`. Non-integers, exponents and out-of-range integers are `CAUSA.JSON_MALFORMED`; `-0` parses but is
    `CAUSA.NON_CANONICAL`. Readers MUST accept nesting up to depth 128 and MUST reject deeper documents as
-   `CAUSA.JSON_MALFORMED`; valid v1 documents nest at most 6 levels. Object keys are case-sensitive and MUST be unique (`CAUSA.JSON_MALFORMED`). They are
+   `CAUSA.JSON_MALFORMED`. Depth counts each object or array on the path, the top-level one being depth 1; scalars
+   add nothing. Valid v1 documents nest at most 6 levels. Fixtures `nesting-depth-128` and `nesting-depth-129` pin the
+   boundary. Object keys are case-sensitive and MUST be unique (`CAUSA.JSON_MALFORMED`). They are
    lowerCamelCase, except the file-name keys of negative-fixture `files` objects. Unpaired UTF-16 surrogates are
    invalid. U+FEFF is forbidden everywhere: as a leading BOM (`CAUSA.ENCODING`), and anywhere else, raw or escaped as
    `\ufeff`, including inside string values (`CAUSA.JSON_MALFORMED`). Writers refuse text containing it

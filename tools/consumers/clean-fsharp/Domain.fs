@@ -511,6 +511,8 @@ let private encodeBody (e: Event) : Result<string * JsonValue, string> =
 
 /// One engine Event to its wire envelope, including the derived eventId (§5.2).
 let encodeEvent (e: Event) : Result<JsonValue, string> =
+    let noBom (v: JsonValue) =
+        if (canonical v).Contains '\uFEFF' then Error "text contains U+FEFF (CAUSA.UNREPRESENTABLE, §2.3)" else Ok v
     result {
         let! eventType, payload = encodeBody e
         let! at = time e.At
@@ -530,3 +532,4 @@ let encodeEvent (e: Event) : Result<JsonValue, string> =
                   "correlationId", s corr
                   "payload", payload ]
     }
+    |> Result.bind noBom

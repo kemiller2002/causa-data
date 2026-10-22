@@ -88,6 +88,8 @@ type Ty =
     | ArrayOf of item: Ty * unique: bool * minItems: int
     | Obj of ObjSpec
     | NullOr of Ty
+    /// An object with arbitrary keys whose values all have the given type.
+    | MapOf of Ty
     /// Any object; its content is validated elsewhere (event payload, dispatched on eventType).
     | AnyObject
 
@@ -157,6 +159,8 @@ let rec validate (path: string) (ty: Ty) (v: JsonValue) : string list =
         let size = if xs.Length < minItems then [ $"{path}: needs at least {minItems} item(s)" ] else []
         items @ dup @ size
     | ArrayOf _, _ -> bad "array"
+    | MapOf t, JObject ms -> ms |> List.collect (fun (k, x) -> validate $"{path}[\"{k}\"]" t x)
+    | MapOf _, _ -> bad "object"
     | NullOr _, JNull -> []
     | NullOr t, _ -> validate path t v
     | AnyObject, JObject _ -> []
@@ -304,6 +308,7 @@ let validateEvent (path: string) (event: JsonValue) : string list =
 // ---------------------------------------------------------------- §8 entities, state, snapshot
 
 let private withProv fields = obj (fields @ [ "provenance", Provenance ])
+let private withProvRules rules fields = objWith rules (fields @ [ "provenance", Provenance ])
 
 let private hypothesisChange =
     objWith hypothesisRules
@@ -316,9 +321,10 @@ let entities: (string * Ty) list =
       withProv [ "id", Uuid; "statement", Text; "mechanism", NullableText; "state", Enum "hypothesisState"
                  "history", ArrayOf(hypothesisChange, false, 0) ]
       "evidence",
-      withProv [ "id", Uuid; "contentKind", Enum "contentKind"; "content", Text; "category", Enum "evidenceCategory"
-                 "source", Text; "capturedAt", NullableTimestamp; "verification", Enum "verificationStatus"
-                 "supersededBy", NullableUuid; "admittedAtVersion", aggregateVersion ]
+      withProvRules evidenceRules
+          [ "id", Uuid; "contentKind", Enum "contentKind"; "content", Text; "category", Enum "evidenceCategory"
+            "source", Text; "capturedAt", NullableTimestamp; "verification", Enum "verificationStatus"
+            "supersededBy", NullableUuid; "admittedAtVersion", aggregateVersion ]
       "relationships",
       withProv [ "id", Uuid; "evidenceId", Uuid; "hypothesisId", Uuid; "kind", Enum "relationshipKind"; "rationale", NullableText ]
       "unknowns",
@@ -340,8 +346,9 @@ let entities: (string * Ty) list =
                  "state", Enum "correctiveActionState"; "awaitingSinceVersion", versionOrZero ]
       "criteria", withProv [ "id", Uuid; "correctiveActionId", Uuid; "expectedOutcome", Text; "method", NullableText ]
       "verifications",
-      withProv [ "id", Uuid; "criterionId", Uuid; "outcome", Enum "verificationOutcome"; "evidenceIds", UuidList
-                 "recordedAtVersion", aggregateVersion ]
+      withProvRules verificationRules
+          [ "id", Uuid; "criterionId", Uuid; "outcome", Enum "verificationOutcome"; "evidenceIds", UuidList
+            "recordedAtVersion", aggregateVersion ]
       "conclusions",
       withProv [ "id", Uuid; "statement", Text; "strength", Enum "conclusionStrength"; "causeIds", UuidList
                  "residualUncertainty", NullableText; "recordedAtVersion", aggregateVersion ]
@@ -392,7 +399,8 @@ let schemaBundle =
           "schemas", ArrayOf(obj [ "path", Pattern(Wire.ecmaRegex "^[a-z0-9][A-Za-z0-9/._-]*\\.schema\\.json$"); "sha256", Sha256 ], false, 1) ]
 
 let private b64 = obj [ "base64", Pattern(Wire.ecmaRegex "^[A-Za-z0-9+/]*={0,2}$") ]
-let private fileSet = obj [ "manifest.json", b64; "events.ndjson", b64; "snapshot.json", b64 ]
+/// Directory entries by file name; any names (§3.3: missing and extra files are representable).
+let private fileSet = MapOf b64
 let private domainCode = NullOr(Pattern(Wire.ecmaRegex "^[A-Z]+(\\.[A-Z_]+)+$"))
 
 let private negativeCommon =

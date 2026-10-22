@@ -89,13 +89,17 @@ let private number (s: string) i : Parsed =
         | true, v when v >= -maxSafeInteger && v <= maxSafeInteger -> Ok(JInt v, stop)
         | _ -> Error $"integer outside [-(2^53-1), 2^53-1] at offset {i}"
 
-let rec private value (s: string) i : Parsed =
+/// §2.3: readers accept nesting up to depth 128 (each object or array adds one level).
+let maxDepth = 128
+
+let rec private value (s: string) (depth: int) i : Parsed =
     let i = skipWs s i
     if i >= s.Length then Error "unexpected end of input"
     else
         match s[i] with
-        | '{' -> objectMembers s (skipWs s (i + 1)) [] Set.empty true
-        | '[' -> arrayItems s (skipWs s (i + 1)) [] true
+        | '{' | '[' when depth + 1 > maxDepth -> Error $"nesting deeper than {maxDepth} at offset {i}"
+        | '{' -> objectMembers s (depth + 1) (skipWs s (i + 1)) [] Set.empty true
+        | '[' -> arrayItems s (depth + 1) (skipWs s (i + 1)) [] true
         | '"' -> stringBody s (i + 1) [] |> Result.map (fun (str, j) -> JString str, j)
         | 't' -> literal s i "true" (JBool true)
         | 'f' -> literal s i "false" (JBool false)
@@ -103,17 +107,17 @@ let rec private value (s: string) i : Parsed =
         | c when c = '-' || Char.IsAsciiDigit c -> number s i
         | c -> Error $"unexpected character '{c}' at offset {i}"
 
-and private arrayItems (s: string) i (acc: JsonValue list) (first: bool) : Parsed =
+and private arrayItems (s: string) (depth: int) i (acc: JsonValue list) (first: bool) : Parsed =
     if i < s.Length && s[i] = ']' && first then Ok(JArray [], i + 1)
     else
-        value s i
+        value s depth i
         |> Result.bind (fun (v, j) ->
             let j = skipWs s j
-            if j < s.Length && s[j] = ',' then arrayItems s (skipWs s (j + 1)) (v :: acc) false
+            if j < s.Length && s[j] = ',' then arrayItems s depth (skipWs s (j + 1)) (v :: acc) false
             elif j < s.Length && s[j] = ']' then Ok(JArray(List.rev (v :: acc)), j + 1)
             else Error $"expected ',' or ']' at offset {j}")
 
-and private objectMembers (s: string) i (acc: (string * JsonValue) list) (seen: Set<string>) (first: bool) : Parsed =
+and private objectMembers (s: string) (depth: int) i (acc: (string * JsonValue) list) (seen: Set<string>) (first: bool) : Parsed =
     if i < s.Length && s[i] = '}' && first then Ok(JObject [], i + 1)
     elif i >= s.Length || s[i] <> '"' then Error $"expected object key at offset {i}"
     else
@@ -124,18 +128,18 @@ and private objectMembers (s: string) i (acc: (string * JsonValue) list) (seen: 
                 let j = skipWs s j
                 if j >= s.Length || s[j] <> ':' then Error $"expected ':' at offset {j}"
                 else
-                    value s (j + 1)
+                    value s depth (j + 1)
                     |> Result.bind (fun (v, k) ->
                         let k = skipWs s k
                         let acc = (key, v) :: acc
-                        if k < s.Length && s[k] = ',' then objectMembers s (skipWs s (k + 1)) acc (seen.Add key) false
+                        if k < s.Length && s[k] = ',' then objectMembers s depth (skipWs s (k + 1)) acc (seen.Add key) false
                         elif k < s.Length && s[k] = '}' then Ok(JObject(List.rev acc), k + 1)
                         else Error $"expected ',' or '}}' at offset {k}"))
 
 /// Parses exactly one JSON text (insignificant whitespace is syntactically legal here;
 /// canonical form is a separate, later check: CONTRACT §11.1 stages 3 and 4).
 let parse (text: string) : Result<JsonValue, string> =
-    value text 0
+    value text 0 0
     |> Result.bind (fun (v, j) ->
         let j = skipWs text j
         if j = text.Length then Ok v else Error $"trailing content at offset {j}")
