@@ -238,8 +238,31 @@ def _value_problem(v: Any) -> str | None:
     return f"unexpected value type {type(v).__name__}"
 
 
+MAX_DEPTH = 128
+
+
+def nesting_depth(text: str) -> int:
+    """Maximum container nesting depth (a top-level object/array is depth 1), scanning outside string literals."""
+    depth = deepest = 0
+    in_str = esc = False
+    for ch in text:
+        if in_str:
+            esc, in_str = (False, True) if esc else (ch == "\\", ch != '"')
+        elif ch == '"':
+            in_str = True
+        elif ch in "[{":
+            depth += 1
+            deepest = max(deepest, depth)
+        elif ch in "]}":
+            depth -= 1
+    return deepest
+
+
 def parse_json(text: str, name: str) -> Ok | Err:
     """§2.3 / stage 3: RFC 8259 syntax, unique keys, integers only (safe range), no lone surrogates, no U+FEFF."""
+    d = nesting_depth(text)
+    if d > MAX_DEPTH:
+        return err(3, f"{name}: nesting depth {d} exceeds {MAX_DEPTH} (§2.3)")
     if "\ufeff" in text:
         return err(3, f"{name}: U+FEFF at char {text.index(chr(0xFEFF))} (only a leading BOM is ENCODING, §2.3)")
     try:
@@ -814,7 +837,8 @@ def s4_canonical(c: Ctx, _: SchemaSet) -> Ok | Err:
 def _version_problems(doc: Any, name: str, keys: Iterable[str]) -> list[str]:
     if not isinstance(doc, dict):
         return []
-    return [f"{name}.{k}={doc[k]!r}" for k in keys if k in doc and doc[k] != V1]
+    # §11.1 stage 5: only a *string* value other than "1.0.0"; missing or non-string is stage 7.
+    return [f"{name}.{k}={doc[k]!r}" for k in keys if isinstance(doc.get(k), str) and doc[k] != V1]
 
 
 def s5_versions(c: Ctx, _: SchemaSet) -> Ok | Err:
@@ -1135,6 +1159,7 @@ def verify_negative(name: str, raw: bytes, listed_code: str | None, frozen: Mapp
         files = {k: b64(v) for k, v in fx["files"].items()}
         res = run_pipeline(fx["directoryId"], files, schemas)
         got, stage15_withheld = res.primary, res.withheld
+        extra = next((d for st, status, d in res.stage_outcomes if st == 15 and status == "NOT_EVALUATED"), "")
     elif kind == "append":
         base = by_key.get(fx["baseScenarioKey"])
         if base is None:
