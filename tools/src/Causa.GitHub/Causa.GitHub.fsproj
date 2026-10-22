@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Causa.GitHub</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="GitHub.fs" />
+    <Compile Include="Sync.fs" />
+    <Compile Include="GitBackend.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Causa.Contract/Causa.Contract.fsproj" />
+  </ItemGroup>
+</Project>

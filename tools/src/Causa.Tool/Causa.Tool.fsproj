@@ -6,9 +6,11 @@
   <ItemGroup>
     <Compile Include="Scenarios.fs" />
     <Compile Include="Dataset.fs" />
+    <Compile Include="LiveTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Causa.Contract/Causa.Contract.fsproj" />
+    <ProjectReference Include="../Causa.GitHub/Causa.GitHub.fsproj" />
   </ItemGroup>
 </Project>

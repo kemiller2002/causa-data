@@ -63,12 +63,50 @@ let private reproduce (root: string) =
     printfn "reproduce: files=%d differing=%d" committed.Length diffs.Length
     if diffs.IsEmpty then 0 else 1
 
+let private githubLive (phase: string) (root: string) (runId: string) (fixtureCommit: string) (investigationId: string option) =
+    match Environment.GetEnvironmentVariable "GITHUB_TOKEN" |> Option.ofObj |> Option.filter (String.IsNullOrEmpty >> not) with
+    | None ->
+        eprintfn "GITHUB_TOKEN is not set"
+        2
+    | Some token ->
+        let branch = "claude/causa-storage-contract-v1-8aymdx"
+        let config : Causa.GitHub.Config = { Owner = "kemiller2002"; Repository = "causa-data"; Branch = branch; ApiBase = "https://api.github.com" }
+        use client = new Net.Http.HttpClient()
+        let rest = Causa.GitHub.Provider.rest config (Causa.GitHub.Http.transport config token client)
+        let scratch = Path.Combine(root, ".local", "git-backend", runId + "-" + phase + "-" + string Environment.ProcessId + ".git")
+        let git = (Causa.GitHub.GitBackend.create scratch "https://github.com/kemiller2002/causa-data" branch).GetAwaiter().GetResult()
+        let env : LiveTests.Env =
+            { Backend = git; Rest = rest; RestConfig = config; Set = schemasOrExit root; RunId = runId
+              LocalRoot = Path.Combine(root, ".local", "github-live"); RepoRoot = root; Human = IndyInitRootCauseInvestigator.Engine.Actor.human "live-test-operator" }
+        let started = DateTimeOffset.UtcNow
+        let branchState = (LiveTests.ensureBranch env fixtureCommit).GetAwaiter().GetResult()
+        let results, extra =
+            match phase, investigationId with
+            | "a", _ ->
+                let rs, local = (LiveTests.phaseA env).GetAwaiter().GetResult()
+                rs, [ "investigationId", JStr local.InvestigationId ]
+            | "b", Some id -> (LiveTests.phaseB env id fixtureCommit).GetAwaiter().GetResult(), [ "investigationId", JStr id ]
+            | _ -> failwith "usage: github-live (a|b) <root> <runId> <fixtureCommit> [investigationId]"
+        let header =
+            [ "phase", JStr phase; "runId", JStr runId; "repository", JStr "kemiller2002/causa-data"; "branch", JStr config.Branch
+              "writeBackend", JStr git.Name; "readBackend", JStr rest.Name; "branchSetup", JStr branchState; "fixtureCommit", JStr fixtureCommit; "githubApiVersion", JStr Causa.GitHub.Http.apiVersion
+              "processId", JInt(int64 Environment.ProcessId)
+              "startedAt", JStr(started.ToString("O")); "finishedAt", JStr(DateTimeOffset.UtcNow.ToString("O")) ] @ extra
+        let out = Path.Combine(root, ".local", "github-live", runId, "results-" + phase + ".json")
+        Directory.CreateDirectory(Path.GetDirectoryName out |> nonNull) |> ignore
+        File.WriteAllBytes(out, Json.fileBytes (LiveTests.resultJson header results) |> Result.defaultWith failwith)
+        results |> List.iter (fun r -> printfn "%s %s — %s %s" (if r.Passed then "PASS" else "FAIL") r.Name r.Detail (String.Join(" ", r.Commits)))
+        extra |> List.iter (fun (k, v) -> printfn "%s=%s" k (match v with JStr s -> s | _ -> ""))
+        if results |> List.forall (fun r -> r.Passed) then 0 else 1
+
 [<EntryPoint>]
 let main argv =
     match List.ofArray argv with
     | [ "generate"; root ] -> generateInto (Path.GetFullPath root); 0
     | [ "verify"; root ] -> Dataset.verify (Path.GetFullPath root) |> printChecks
     | [ "reproduce"; root ] -> reproduce (Path.GetFullPath root)
+    | [ "github-live"; phase; root; runId; fixtureCommit ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit None
+    | [ "github-live"; phase; root; runId; fixtureCommit; id ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit (Some id)
     | _ ->
         eprintfn "usage: causa (generate|verify|reproduce) <repository-root>"
         2
