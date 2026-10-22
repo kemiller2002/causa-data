@@ -20,7 +20,7 @@ module Contract =
 /// RFC 4122 §4.3 name-based UUIDs (version 5, SHA-1) and canonical UUID text.
 [<RequireQualifiedAccess>]
 module Uuid =
-    let private canonicalText = Regex("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", RegexOptions.CultureInvariant)
+    let private canonicalText = Regex(@"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z", RegexOptions.CultureInvariant)
 
     let text (g: Guid) = g.ToString("D")
 

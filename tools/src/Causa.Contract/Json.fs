@@ -55,7 +55,7 @@ module Json =
             else go (i + 1)
         go 0
 
-    let private integerText = RegularExpressions.Regex(@"^-?(0|[1-9][0-9]*)$", RegularExpressions.RegexOptions.CultureInvariant)
+    let private integerText = RegularExpressions.Regex(@"^-?(0|[1-9][0-9]*)\z", RegularExpressions.RegexOptions.CultureInvariant)
 
     let rec private ofElement (path: string) (e: JsonElement) : Result<JValue, string> =
         match e.ValueKind with

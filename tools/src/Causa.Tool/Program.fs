@@ -105,6 +105,18 @@ let main argv =
     | [ "generate"; root ] -> generateInto (Path.GetFullPath root); 0
     | [ "verify"; root ] -> Dataset.verify (Path.GetFullPath root) |> printChecks
     | [ "reproduce"; root ] -> reproduce (Path.GetFullPath root)
+    | [ "lock"; root ] ->
+        Gate.writeLock (Path.GetFullPath root)
+        printfn "wrote %s" (Gate.lockPath (Path.GetFullPath root))
+        0
+    | [ "gate"; root ] ->
+        let failures = Gate.run (Path.GetFullPath root)
+        printfn "%s" (Json.canonical (Gate.report failures) |> Result.defaultValue "")
+        if failures.IsEmpty then 0 else 1
+    | [ "gate-selftest"; root ] ->
+        let results = Gate.selfTest (Path.GetFullPath root)
+        results |> List.iter (fun (name, ok, detail) -> printfn "%s %s — %s" (if ok then "PASS" else "FAIL") name detail)
+        if results |> List.forall (fun (_, ok, _) -> ok) then 0 else 1
     | [ "github-live"; phase; root; runId; fixtureCommit ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit None
     | [ "github-live"; phase; root; runId; fixtureCommit; id ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit (Some id)
     | _ ->

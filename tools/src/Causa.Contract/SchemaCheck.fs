@@ -33,6 +33,28 @@ module SchemaCheck =
             own @ ([ "properties"; "$defs"; "oneOf"; "anyOf"; "allOf"; "items"; "additionalProperties"; "if"; "then"; "else"; "not" ] |> List.collect sub)
         | _ -> [ path + ": a schema must be an object or boolean" ]
 
+    let private regexCache = Collections.Concurrent.ConcurrentDictionary<string, Regex>()
+
+    /// JSON Schema patterns are ECMA-262: a final `$` matches only at the very end of the
+    /// string. .NET's `$` also matches before a trailing LF, so translate it to `\z`.
+    let private dotnetPattern (p: string) =
+        if p.EndsWith "$" && not (p.EndsWith "\\$") then p.Substring(0, p.Length - 1) + "\\z" else p
+
+    let private regex (p: string) = regexCache.GetOrAdd(p, fun p -> Regex(dotnetPattern p, RegexOptions.CultureInvariant))
+
+    /// Patterns may use `$` only as the final anchor (fail closed on anything else).
+    let private patternProblems (path: string) (schema: JValue) =
+        let rec walk (v: JValue) =
+            match v with
+            | JObj o ->
+                (o |> List.choose (function
+                    | "pattern", JStr p when p.TrimEnd('$').Replace("\\$", "").Contains '$' -> Some(path + ": pattern '" + p + "' uses '$' other than as the final anchor")
+                    | _ -> None))
+                @ (o |> List.collect (snd >> walk))
+            | JArr xs -> xs |> List.collect walk
+            | _ -> []
+        walk schema
+
     let load (documents: JValue list) : Result<SchemaSet, string list> =
         let ids =
             documents
@@ -44,7 +66,7 @@ module SchemaCheck =
         | (_ :: _) as errors -> Error errors
         | [] ->
             let pairs = ids |> List.choose (function Ok p -> Some p | _ -> None)
-            let problems = pairs |> List.collect (fun (id, d) -> audit id d)
+            let problems = pairs |> List.collect (fun (id, d) -> audit id d @ patternProblems id d)
             if problems.IsEmpty then Ok { Documents = Map.ofList pairs } else Error problems
 
     /// Resolve "file.schema.json#/$defs/name" (relative to `baseId`) to (documentId, schema).
@@ -88,8 +110,6 @@ module SchemaCheck =
 
     let private canonicalOf v = Json.canonical v |> Result.defaultValue "<non-canonical>"
 
-    let private regexCache = Collections.Concurrent.ConcurrentDictionary<string, Regex>()
-    let private regex (p: string) = regexCache.GetOrAdd(p, fun p -> Regex(p, RegexOptions.CultureInvariant))
 
     /// JSON Schema string length counts Unicode code points, not UTF-16 units.
     let private codePoints (s: string) = s.EnumerateRunes() |> Seq.length

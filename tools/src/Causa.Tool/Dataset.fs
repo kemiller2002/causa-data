@@ -173,6 +173,8 @@ module Negatives =
                mutateLine a i (set [ "payload"; "materiality" ] (JStr "critical")))
           inv "timestamp-without-milliseconds" Codes.schemaViolation "An occurredAt omits the required three fractional digits."
               (mutateLine a 2 (fun v -> match get [ "occurredAt" ] v with JStr s -> set [ "occurredAt" ] (JStr(s.Replace(".000Z", "Z"))) v | _ -> v))
+          inv "identifier-trailing-newline" Codes.schemaViolation "An eventId carries a trailing LF inside the string (ECMA-262 '$' anchors match only at the end)."
+              (mutateLine a 2 (fun v -> match get [ "eventId" ] v with JStr s -> set [ "eventId" ] (JStr(s + "\n")) v | _ -> v))
           inv "agent-authored-hypothesis" Codes.schemaViolation "A HypothesisRecorded event is attributed to an AI agent; agents may only record proposals (D-004)."
               (mutateLine a hA (set [ "actor" ] (JObj [ "actorId", JStr "assistant-01"; "kind", JStr "agent"; "provider", JStr "synthetic-provider"; "model", JStr "synthetic-model-1" ])))
           // ---- manifest / integrity ----
@@ -203,6 +205,16 @@ module Negatives =
                   let corr = match get [ "correlationId" ] v with JStr s -> s | _ -> ""
                   let invId = match get [ "investigationId" ] v with JStr s -> s | _ -> ""
                   v |> set [ "aggregateVersion" ] (JInt 3L) |> set [ "eventId" ] (JStr(eventIdOf invId 3L corr))))
+          inv "correlation-reused" Codes.correlationReused "A later, non-adjacent event reuses the correlationId of an earlier command (its eventId re-derived consistently)."
+              (let vs = lines a
+               let corr = get [ "correlationId" ] (List.item 2 vs)
+               mutateLine a 5 (fun v ->
+                  let invId = match get [ "investigationId" ] v with JStr s -> s | _ -> ""
+                  let ver = match get [ "aggregateVersion" ] v with JInt n -> n | _ -> 0L
+                  let c = match corr with JStr s -> s | _ -> ""
+                  v |> set [ "correlationId" ] corr |> set [ "eventId" ] (JStr(eventIdOf invId ver c))))
+          inv "manifest-interior-newline" Codes.nonCanonical "manifest.json is valid JSON split across lines (interior LFs are a canonical-form violation, not a framing error)."
+              { a with Manifest = utf8.GetBytes((utf8.GetString a.Manifest).TrimEnd('\n').Replace(",\"", ",\n\"") + "\n") }
           inv "forged-event-id" Codes.eventIdMismatch "An eventId is a random UUID rather than the derived UUIDv5."
               (mutateLine a 2 (set [ "eventId" ] (JStr "1b4e28ba-2fa1-41d2-883f-0016d3cca427")))
           // ---- semantic admissibility (engine History.validate) ----
@@ -392,7 +404,8 @@ module Dataset =
                         | Ok loaded ->
                             let drift =
                                 [ "eventsSha256", loaded.EventsSha256; "manifestSha256", loaded.ManifestSha256; "snapshotSha256", loaded.SnapshotSha256
-                                  "expectedStateSha256", loaded.StateSha256; "expectedLifecycle", Enums.lifecycle.ToWire loaded.State.Lifecycle ]
+                                  "expectedStateSha256", loaded.StateSha256; "expectedLifecycle", Enums.lifecycle.ToWire loaded.State.Lifecycle
+                                  "title", loaded.State.Title.Value ]
                                 |> List.filter (fun (k, v) -> str k entry <> v)
                                 |> List.map fst
                                 |> fun xs -> if (match Negatives.get [ "expectedVersion" ] entry with JInt n -> n | _ -> -1L) <> loaded.State.Version then xs @ [ "expectedVersion" ] else xs
@@ -426,7 +439,11 @@ module Dataset =
                 let coverage =
                     byKey |> Map.toList |> List.collect (fun (_, (_, l)) -> l.Events |> List.map (fun e -> CaseNames.eventType e.Body)) |> List.distinct
                 let missing = EventWire.eventTypes |> List.filter (fun t -> not (List.contains t coverage))
-                [ check "schema-bundle.reproducible" bundleOk "bundle.json equals the recomputed bundle manifest"
+                let scenariosSchema =
+                    readJson (Path.Combine(Layout.golden root, "scenarios.json"))
+                    |> Result.map (SchemaCheck.check set (Store.schemaIds.Bundle.Replace("schema-bundle", "golden-scenarios")))
+                [ check "golden.scenarios.schema" (scenariosSchema = Ok []) (sprintf "%A" scenariosSchema)
+                  check "schema-bundle.reproducible" bundleOk "bundle.json equals the recomputed bundle manifest"
                   check "schema-bundle.schema" (bundleSchema = Ok []) (sprintf "%A" bundleSchema)
                   check "schema-bundle.unresolved-refs" (SchemaCheck.unresolvedReferences set).IsEmpty "every $ref resolves"
                   check "root-manifest.schemaSha256" (str "schemaSha256" rootM = schemaSha) ("bundle sha256 " + schemaSha)

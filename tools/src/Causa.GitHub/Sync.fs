@@ -37,7 +37,7 @@ module Sync =
             | Ok entries ->
                 let names = entries |> List.map (fun (p, _) -> p.Substring prefix.Length) |> List.sort
                 if names <> List.sort Store.fileNames then
-                    return Error(Choice2Of2(CausaError.create Codes.manifestMismatch ("unexpected files under " + prefix + ": " + String.Join(",", names))))
+                    return Error(Choice2Of2(CausaError.create Codes.pathInvalid ("unexpected files under " + prefix + ": " + String.Join(",", names))))
                 else
                     let fetch name =
                         let sha = entries |> List.find (fun (p, _) -> p = prefix + name) |> snd

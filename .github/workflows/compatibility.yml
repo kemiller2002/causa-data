@@ -1,0 +1,52 @@
+name: causa-storage-v1.0.0 compatibility gate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Install Python validator
+        run: python3 -m pip install --quiet "jsonschema==4.26.0"
+      - name: Fetch pinned domain engine
+        run: tools/fetch-engine.sh
+      - name: Build
+        run: |
+          dotnet build tools/src/Causa.Tool -c Release
+          dotnet build tools/consumers/rehearsal-adapter -c Release
+          dotnet build tools/consumers/clean-fsharp -c Release
+      - name: Unit tests
+        run: dotnet test tools/tests/Causa.Contract.Tests -c Release
+      - name: Schema bundle (independent Python check)
+        run: |
+          python3 tools/py/schema_bundle.py check contract/v1.0.0/schemas
+          python3 tools/py/schema_bundle.py digest contract/v1.0.0/schemas | cmp - contract/v1.0.0/schemas/bundle.json
+          python3 tools/py/render_registry.py contract/v1.0.0/schemas check contract/v1.0.0/CONTRACT.md
+      - name: Dataset verification
+        run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll verify .
+      - name: Deterministic regeneration
+        run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll reproduce .
+      - name: Compatibility gate (lock)
+        run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll gate .
+      - name: Gate self-test (deliberate breaking mutations must fail)
+        run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll gate-selftest .
+      - name: Consumer - rehearsal engine via adapter
+        run: dotnet tools/consumers/rehearsal-adapter/bin/Release/net10.0/rehearsal-adapter.dll verify .
+      - name: Consumer - clean F# consumer
+        run: dotnet tools/consumers/clean-fsharp/bin/Release/net10.0/clean-consumer.dll verify .
+      - name: Consumer - independent Python consumer
+        run: python3 tools/consumers/python/causa_consumer.py verify .

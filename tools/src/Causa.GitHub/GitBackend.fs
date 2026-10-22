@@ -124,15 +124,14 @@ module GitBackend =
                         | _, Some e -> return e
                         | Ok entries, None ->
                             let index = Path.Combine(dir, "causa-index-" + Guid.NewGuid().ToString("N"))
-                            let withIndex = run dir [ "GIT_INDEX_FILE", index ] None
-                            let! _ = withIndex [ "read-tree"; baseToken.TreeSha ]
-                            let! updates =
-                                entries
-                                |> List.map (fun (p, s) -> withIndex [ "update-index"; "--add"; "--cacheinfo"; "100644," + s + "," + p ])
-                                |> Task.WhenAll
-                            let! tree = withIndex [ "write-tree" ]
+                            let withIndex = run dir [ "GIT_INDEX_FILE", index ]
+                            let! _ = withIndex None [ "read-tree"; baseToken.TreeSha ]
+                            // One update for all entries: the index is a single-writer file.
+                            let info = entries |> List.map (fun (p, s) -> "100644 " + s + "\t" + p + "\n") |> String.concat ""
+                            let! update = withIndex (Some(Encoding.UTF8.GetBytes info)) [ "update-index"; "--add"; "--index-info" ]
+                            let! tree = withIndex None [ "write-tree" ]
                             if File.Exists index then File.Delete index
-                            match updates |> Array.tryFind (fun r -> r.Code <> 0), ok tree, halt BeforeCommit with
+                            match [ update ] |> List.tryFind (fun r -> r.Code <> 0), ok tree, halt BeforeCommit with
                             | Some bad, _, _ -> return Error(classify bad)
                             | _, Error e, _ -> return Error e
                             | _, _, Some e -> return e

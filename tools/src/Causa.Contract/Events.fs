@@ -249,8 +249,8 @@ module EventWire =
             ids "basisEvidenceIds" basis
             |> Result.map (fun b -> [ "negativeKnowledgeId", id nid; "statement", text statement; "scope", text scope; "basisEvidenceIds", b ])
         | CausalAssertionRecorded(cid, outcome, members, mechanism) ->
-            let hypotheses = members |> List.map (fun m -> m.Hypothesis)
-            if (hypotheses |> List.distinct |> List.length) <> hypotheses.Length then unrepresentable "causal members name the same hypothesis twice"
+            // Matches the schema's whole-member uniqueItems: an identical (hypothesis, role) pair twice has no wire form.
+            if (members |> List.distinct |> List.length) <> members.Length then unrepresentable "causal members repeat an identical member"
             else
                 let ms = members |> List.map (fun m -> JObj [ "hypothesisId", id m.Hypothesis; "role", enum Enums.causeRole m.Role ])
                 Ok [ "causeId", id cid; "outcome", text outcome; "members", JArr ms; "mechanism", optText mechanism ]

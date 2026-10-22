@@ -6,6 +6,7 @@
   <ItemGroup>
     <Compile Include="Scenarios.fs" />
     <Compile Include="Dataset.fs" />
+    <Compile Include="Gate.fs" />
     <Compile Include="LiveTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

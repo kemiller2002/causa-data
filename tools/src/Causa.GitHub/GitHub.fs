@@ -79,7 +79,7 @@ module Http =
 
 [<RequireQualifiedAccess>]
 module Paths =
-    let private runIdPattern = Text.RegularExpressions.Regex("^[a-z0-9][a-z0-9-]{0,63}$")
+    let private runIdPattern = Text.RegularExpressions.Regex(@"^[a-z0-9][a-z0-9-]{0,63}\z")
 
     /// CONTRACT §3.2: the only writable namespace.
     let workspace (runId: string) : Result<string, CausaError> =

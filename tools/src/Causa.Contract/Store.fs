@@ -58,13 +58,13 @@ module Store =
     // ---------------- reading ----------------
 
     /// Split a canonical JSON file: exactly one JSON text followed by one LF.
+    /// CONTRACT §2.2: framing is only "non-empty, no CR, ends with LF". Anything else that is
+    /// not exactly canonical (interior or extra LFs, spaces) is reported by the canonical stage.
     let private singleDocument (name: string) (text: string) : Result<string, CausaError> =
-        if not (text.EndsWith "\n") then fail Codes.encoding (name + " must end with a single LF")
-        else
-            let body = text.Substring(0, text.Length - 1)
-            if body.Contains '\n' || body.Contains '\r' then fail Codes.encoding (name + " must be a single line of canonical JSON")
-            elif body.Length = 0 then fail Codes.encoding (name + " is empty")
-            else Ok body
+        if text.Length = 0 then fail Codes.encoding (name + " is empty")
+        elif text.Contains '\r' then fail Codes.encoding (name + " contains CR")
+        elif not (text.EndsWith "\n") then fail Codes.encoding (name + " must end with LF")
+        else Ok(text.Substring(0, text.Length - 1))
 
     /// NDJSON: one canonical JSON text per line, every line terminated by LF, no blank lines.
     let private lines (name: string) (text: string) : Result<string list, CausaError> =
@@ -152,6 +152,11 @@ module Store =
                 | None -> Ok()
             do! match decoded |> List.tryFind (fun d -> d.EventId <> Uuid.eventId investigation d.Event.Sequence d.Event.CommandId) with
                 | Some d -> fail Codes.eventIdMismatch ("event " + string d.Event.Sequence + " eventId is not the derived UUIDv5")
+                | None -> Ok()
+            // CONTRACT §5.4: a correlationId names exactly one command group.
+            do! let groups = decoded |> List.map (fun d -> d.Event.CommandId) |> List.fold (fun acc c -> match acc with h :: _ when h = c -> acc | _ -> c :: acc) []
+                match groups |> List.countBy id |> List.tryFind (fun (_, n) -> n > 1) with
+                | Some(c, _) -> fail Codes.correlationReused ("correlationId " + Uuid.text c + " names more than one command group")
                 | None -> Ok()
             let events = decoded |> List.map (fun d -> d.Event)
             do! match History.validate events with

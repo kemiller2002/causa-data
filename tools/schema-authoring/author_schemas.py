@@ -413,11 +413,24 @@ def relative_ref(reference, doc_dir):
     return rel + ("#" + fragment if fragment else "")
 
 
+def scenarios():
+    refusal = closed({"step": c("versionOrZero"), "expectedCode": {"type": "string", "pattern": "^[A-Z]+(\\.[A-Z_]+)+$"},
+                      "engineCodes": {"type": "string", "description": "Every code the engine returned, joined by '; '."}})
+    entry = closed({"scenarioKey": c("slug"), "investigationId": c("uuid"),
+                    "commands": {"type": "integer", "minimum": 1, "description": "Commands issued by the generator: persisted command groups plus refused commands."},
+                    "events": c("aggregateVersion"),
+                    "eventTypes": {"type": "array", "uniqueItems": True, "items": {"type": "string"}, "description": "Distinct event types, sorted ordinally."},
+                    "refusals": {"type": "array", "items": refusal, "description": "Commands the engine refused, as expected (never persisted). step is the 0-based generator step index."}})
+    props = {"formatVersion": c("formatVersion"), "scenarios": {"type": "array", "minItems": 1, "items": entry}}
+    return doc("golden-scenarios.schema.json", "Causa v1 golden scenario summary", closed(props),
+               "contract/v1.0.0/golden/scenarios.json: informative generator summary; not authoritative.")
+
+
 def main():
     out = Path(sys.argv[1])
     define_payloads()
     define_entities()
-    docs = [common(), actor(), envelope(), state(), snapshot(), investigation_manifest(), root_manifest(), negative_fixture(), bundle()]
+    docs = [common(), actor(), envelope(), state(), snapshot(), investigation_manifest(), root_manifest(), negative_fixture(), bundle(), scenarios()]
     docs += payload_docs() + entity_docs()
     for name, body in docs:
         body = relocate(body, posixpath.dirname(name))

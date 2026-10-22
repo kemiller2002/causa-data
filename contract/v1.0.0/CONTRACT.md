@@ -37,9 +37,16 @@ input as invalid until it is resolved through §14.
    `snapshot.json`, root manifest, golden, negative fixture, `bundle.json`) is one canonical text followed by exactly one LF.
    `events.ndjson` is one canonical text per line, each terminated by LF, with no blank lines. Non-canonical bytes are rejected
    (`CAUSA.NON_CANONICAL`) even if semantically equal, because digests are over bytes.
+   **Framing** (`CAUSA.ENCODING`) covers only: an empty file, a CR anywhere, a missing final LF, and (in
+   `events.ndjson`) a blank line. Any other deviation of a JSON file from its exact canonical text (interior or extra
+   LFs, spaces) is `CAUSA.NON_CANONICAL`, or `CAUSA.JSON_MALFORMED` if it is not a single JSON text.
+   Schema files (`*.schema.json`) are human-authored and exempt from canonical form. Like `bundle.json`, they are
+   identified by the digest of their exact bytes (§10.3).
 3. **Values.** No comments, NaN, Infinity, or floating-point numbers. Integers are JSON integers in
-   `[-(2^53-1), 2^53-1]`. Object keys are case-sensitive lowerCamelCase and MUST be unique (`CAUSA.JSON_MALFORMED`). Unpaired
-   UTF-16 surrogates are invalid.
+   `[-(2^53-1), 2^53-1]`. Non-integers, exponents and out-of-range integers are `CAUSA.JSON_MALFORMED`; `-0` parses but is
+   `CAUSA.NON_CANONICAL`. Object keys are case-sensitive and MUST be unique (`CAUSA.JSON_MALFORMED`). They are
+   lowerCamelCase, except the file-name keys of negative-fixture `files` objects. Unpaired UTF-16 surrogates are
+   invalid. U+FEFF anywhere other than as a (forbidden) leading BOM is `CAUSA.JSON_MALFORMED`.
 4. **Closed structures.** Every object defined here is closed (`additionalProperties: false`). Unknown fields are
    rejected, never ignored. v1.0.0 defines **no extension namespace** (§13.4).
 5. **Required vs nullable.** v1.0.0 has **no optional keys**: every declared key MUST be present. A value that the
@@ -47,20 +54,27 @@ input as invalid until it is resolved through §14.
 6. **Text.** Domain text (`NonEmptyText` in the engine) is stored **verbatim**: never trimmed, case-folded or
    Unicode-normalized. It MUST contain at least one character outside the engine whitespace set
    `U+0009–U+000D, U+0020, U+0085, U+00A0, U+1680, U+2000–U+200A, U+2028, U+2029, U+202F, U+205F, U+3000`. NFC
-   normalization is **not** required (it would rewrite verbatim observations).
+   normalization is **not** required (it would rewrite verbatim observations). The test is per UTF-16 code unit, so
+   zero-width characters such as U+200B count as non-blank.
 7. **Arrays.** Arrays are ordered and the order is significant. Identifier arrays (`evidenceIds`, `causeIds`,
    `targetHypothesisIds`, `targetCauseIds`, `basisEvidenceIds`) MUST NOT contain duplicates and are **not** sorted: they
    preserve the order in which the domain command cited them. Snapshot entity arrays are sorted (§8.3).
 8. **UUIDs.** Lowercase, hyphenated, 36 characters (`^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`).
    The nil UUID is invalid. Any UUID version is accepted.
 9. **Timestamps.** RFC 3339 UTC with exactly three fractional digits and `Z`: `2026-10-22T12:00:00.000Z`. The value MUST be
-   a real calendar instant (no `02-30`, no leap second `60`). Writers MUST refuse instants with sub-millisecond precision
+   a real proleptic-Gregorian instant in years `0001`–`9999` (no `02-30`, no leap second `60`). Calendar validity is a
+   stage-7 rule even though the schema pattern cannot express it. Writers MUST refuse instants with sub-millisecond precision
    rather than truncate them (`CAUSA.UNREPRESENTABLE`). Time zone offsets are not preserved. Only the instant is
    semantic.
 10. **Enumerations.** Persisted as lowerCamelCase strings from closed sets (§6). There is no fallback `other` value.
 11. **Hashes.** SHA-256, lowercase 64-character hex. JSON documents are hashed over their **canonical text without the
-    trailing LF**. `events.ndjson` and schema files are hashed over their **exact file bytes**.
+    trailing LF**. Three things are hashed over their **exact file bytes** instead: `events.ndjson`, the schema files,
+    and `bundle.json` (whose byte digest is the schema identity).
 12. **No secrets, credentials, personal data or embedded binaries.** Artifacts are referenced by absolute `http(s)` URL.
+13. **Regular expressions** in the schemas have ECMA-262 semantics, as JSON Schema requires. In particular, a final `$`
+    matches only at the very end of the string, never before a trailing LF. Consumers whose regex engine differs MUST
+    translate: Python `re.search` and .NET both let `$` match before a final `\n`, so use `\Z` or `\z`. A value such
+    as `"<uuid>\n"` is invalid (negative fixture `identifier-trailing-newline`).
 
 ## 3. Physical layout and paths
 
@@ -83,7 +97,8 @@ compatibility/v1.0.0/lock.json                compatibility gate lock (§14)
 2. `investigationId` directory names are canonical UUIDs (§2.8) and MUST equal the manifest's `investigationId`.
    `runId` matches `^[a-z0-9][a-z0-9-]{0,63}$`. A reader MUST reject any other directory name (`CAUSA.PATH_INVALID`),
    including `.`/`..` segments, separators, upper case or percent-encoding.
-3. An investigation directory contains **exactly** the three files above. Extra authoritative files are not allowed.
+3. An investigation directory contains **exactly** the three files above. A missing or extra file is
+   `CAUSA.PATH_INVALID`.
 4. `fixtures/v1.0.0/` and `contract/v1.0.0/` are **immutable** after the `causa-storage-v1.0.0` tag. Writers MUST NOT
    create, modify or delete anything under them. All demonstration writes go to an isolated
    `workspaces/demo/<runId>/` namespace (§9).
@@ -120,7 +135,8 @@ Schema: `event-envelope.schema.json`.
 1. **Ordering** is by `aggregateVersion` only. Clock values never establish order. `InvestigationStarted` MUST be
    `aggregateVersion` 1 and the history MUST begin with it.
 2. **Event identity.** `eventId = UUIDv5(N, investigationId + "/" + aggregateVersion + "/" + correlationId)`. Here
-   `aggregateVersion` is written in decimal without leading zeros and
+   `aggregateVersion` is written in decimal without leading zeros, the UUIDs are lowercase canonical text, the name
+   is encoded as UTF-8, and
    `N = UUIDv5(NAMESPACE_URL, "https://github.com/kemiller2002/causa-data/contract/v1/event-id") = 241fefd4-c810-5a3a-9cfa-4bbd968ae1cb`.
    Readers MUST verify the derivation (`CAUSA.EVENT_ID_MISMATCH`) and uniqueness (`CAUSA.EVENT_ID_DUPLICATE`). The
    derivation exists because the domain engine has no event id. It makes ids reproducible and bound to their position
@@ -129,16 +145,23 @@ Schema: `event-envelope.schema.json`.
    text. `actorId` is a stable, non-secret, non-personal identifier. An `agent` actor MAY appear only on
    `ProposalRecorded` (engine rule D-004). The schema enforces this.
 4. **Command groups.** One domain command emits one or more consecutive events that share `correlationId`, `occurredAt`
-   and `actor`. Readers MUST NOT reorder, split or merge groups. Admissibility (§11.3) is decided per group.
+   and `actor`. Readers MUST NOT reorder, split or merge groups. Admissibility (§11.3) is decided per group. A
+   `correlationId` names exactly one group: reusing it for a later, non-adjacent group is invalid
+   (`CAUSA.CORRELATION_REUSED`), so writers MUST use a fresh command id per command. The engine does not enforce
+   this; the contract does.
 5. **Immutability.** An appended event is never edited, re-ordered or deleted. Corrections are new events
    (for example `EvidenceSuperseded`).
+6. **Clock values** are recorded, not validated. `occurredAt` need not increase with `aggregateVersion`, and a reader
+   MUST NOT reject or reorder a history because of its clock values.
 
 ## 6. Enumerations
 
 Wire values are lowerCamelCase. Engine prefixes that exist only to avoid F# name collisions (`UnknownResolved`,
 `ContradictionInvestigating`, `ActionProposed`, `CorrectionCancelled`, `CauseConfirmed`, `AssumptionVerified`,
 `ProposalActive`, `DiscriminatingPrediction`, `ProposedHypothesis`, …) are dropped. The bidirectional engine↔wire mapping
-is exhaustive and is tested in both directions (`FIELD-MAPPING.md`).
+is exhaustive and tested in both directions. The complete field-by-field mapping, including the engine command
+strings carried by `LifecycleChanged.command` and `HypothesisTransitioned.command`, is published in
+`contract/v1.0.0/FIELD-MAPPING.md`.
 
 <!-- BEGIN GENERATED: enums -->
 | enumeration | wire values |
@@ -201,6 +224,10 @@ ProposalWasAccepted, ProposalWasRejected`.
    domain command, so semantically distinct transitions (falsify vs supersede, resolve vs reopen) stay distinguishable
    without a generic setter. The per-entity `*Transitioned` events carry only the target `state`, exactly as the engine
    does. The prior state is derivable by replay.
+4. **Causal members.** Whole-member duplicates are invalid (`uniqueItems`). The same hypothesis MAY appear twice with
+   different roles, because the engine permits it.
+5. **Artifact URLs.** The schema checks only for an absolute `http(s)` prefix. Full URL well-formedness is an engine rule
+   and fails at the admissibility stage (domain code `HISTORY.INADMISSIBLE_EVENT`).
 
 <!-- BEGIN GENERATED: payloads -->
 #### `ActionRecorded`
@@ -558,7 +585,8 @@ and 17 entity arrays: `observations`, `hypotheses`, `evidence`, `relationships`,
 
 ### 8.3 Projection rules (normative fold)
 
-Start with no state, then apply events in `aggregateVersion` order. Every event sets `version` to its `aggregateVersion`. A
+Start with no state, then apply events in `aggregateVersion` order. Every event sets `version` to its `aggregateVersion`,
+including an update that changes nothing else. A
 "new entity" gets `provenance = {actor: <event actor>, recordedAt: <event occurredAt>}`, and later updates never
 change an entity's provenance. Updates to an id that does not exist leave state unchanged. They cannot occur in an
 admissible history. Finally, every entity array is sorted by `id` using **ordinal comparison of the UUID text**.
@@ -856,8 +884,8 @@ Equal digests across consumers are the cross-run compatibility criterion (STORAG
 
 ### 9.1 Manifest — `manifest.json`
 
-Schema: `investigation-manifest.schema.json`. `investigationId` equals the directory name. `aggregateVersion` = `eventCount`
-= number of lines. `eventsSha256` covers the `events.ndjson` bytes. `snapshotVersion` is `1`. `snapshotSha256` is the
+Schema: `investigation-manifest.schema.json`. `investigationId` equals the directory name. `aggregateVersion` and `eventCount`
+both equal the **number of lines** (stage 8). That the last line carries that version is checked separately, at stage 12. `eventsSha256` covers the `events.ndjson` bytes. `snapshotVersion` is `1`. `snapshotSha256` is the
 canonical snapshot digest. `domainPacks` is `[]` (none exist in v1). `createdAt` and `updatedAt` are the `occurredAt` of the
 first and last events. The manifest MUST NOT contain a Git SHA, branch, repository path, token or any other provider metadata.
 
@@ -867,13 +895,15 @@ A semantic command carries the aggregate version the writer observed. If it diff
 `aggregateVersion`, the append is refused (`CAUSA.VERSION_STALE`) and nothing is written. The writer MUST keep the
 pending command so that it can reload and re-decide. Otherwise the writer appends the events that the domain engine
 emitted, recomputes snapshot and manifest, and verifies the result exactly as a reader would (§11) before reporting
-success.
+success. Evaluation order for an append: (1) the version check (`CAUSA.VERSION_STALE`, before the appended lines are
+read); (2) the appended lines through stages 2–7, numbered from current + 1; (3) the combined history through every
+reader stage, with manifest and snapshot rebuilt by the evaluator.
 
 ### 9.3 Successor files
 
 A newer file set for an investigation is acceptable only if its `events.ndjson` starts with the previously accepted
 `events.ndjson` bytes (`CAUSA.HISTORY_REWRITTEN` otherwise). This holds even when every hash and the snapshot are
-self-consistent.
+self-consistent. The candidate is first verified on its own (§11.1); the prefix check follows.
 
 ### 9.4 Remote providers (GitHub)
 
@@ -911,12 +941,12 @@ Conforming readers MUST agree on the primary code for every negative fixture.
 
 | # | code | stage |
 |---|---|---|
-| 1 | `CAUSA.PATH_INVALID` | directory name / path |
+| 1 | `CAUSA.PATH_INVALID` | directory name / path; exactly the three files |
 | 2 | `CAUSA.ENCODING` | UTF-8, BOM, LF framing (all three files) |
 | 3 | `CAUSA.JSON_MALFORMED` | JSON syntax, duplicate keys, non-integer numbers, surrogates (all files) |
 | 4 | `CAUSA.NON_CANONICAL` | RFC 8785 byte form (manifest, snapshot, each event line) |
-| 5 | `CAUSA.UNSUPPORTED_VERSION` | `formatVersion`/`schemaVersion`/`semanticVersion` ≠ `"1.0.0"` |
-| 6 | `CAUSA.UNKNOWN_EVENT_TYPE` | unregistered `eventType` |
+| 5 | `CAUSA.UNSUPPORTED_VERSION` | a **string** `formatVersion`/`schemaVersion`/`semanticVersion` ≠ `"1.0.0"` (missing or non-string: stage 7; `snapshotVersion`/`projectionVersion`: stage 7) |
+| 6 | `CAUSA.UNKNOWN_EVENT_TYPE` | a **string** `eventType` that is not registered (non-string: stage 7) |
 | 7 | `CAUSA.SCHEMA_VIOLATION` | manifest, each event, snapshot against the schemas; calendar-invalid timestamps |
 | 8 | `CAUSA.MANIFEST_MISMATCH` | manifest id/directory, counts, created/updated times |
 | 9 | `CAUSA.EVENTS_HASH_MISMATCH` | `eventsSha256` |
@@ -924,18 +954,21 @@ Conforming readers MUST agree on the primary code for every negative fixture.
 | 11 | `CAUSA.EVENT_ID_DUPLICATE` | duplicate `eventId` |
 | 12 | `CAUSA.SEQUENCE_INVALID` | versions not exactly 1..N in file order |
 | 13 | `CAUSA.EVENT_ID_MISMATCH` | derivation §5.2 |
-| 14 | `CAUSA.HISTORY_INADMISSIBLE` | domain admissibility (§11.3); carries a domain code |
-| 15 | `CAUSA.SNAPSHOT_HASH_MISMATCH` | `snapshotSha256` |
-| 16 | `CAUSA.SNAPSHOT_MISMATCH` | snapshot ≠ projection of replayed history |
+| 14 | `CAUSA.CORRELATION_REUSED` | a `correlationId` names two non-adjacent groups (§5.4) |
+| 15 | `CAUSA.HISTORY_INADMISSIBLE` | domain admissibility (§11.3); carries a domain code |
+| 16 | `CAUSA.SNAPSHOT_HASH_MISMATCH` | `snapshotSha256` |
+| 17 | `CAUSA.SNAPSHOT_MISMATCH` | snapshot ≠ projection of replayed history |
 
-Dataset-level codes: `CAUSA.FIXTURE_DRIFT` (a digest, version or lifecycle differs from the root manifest) and
+Dataset-level codes: `CAUSA.FIXTURE_DRIFT` (any root-manifest entry field — digest, version, lifecycle, title — differs
+from the investigation; the root manifest, bundle, golden and negative-fixture files are themselves checked for framing,
+canonical form and schema with the stage codes above) and
 `CAUSA.GOLDEN_MISMATCH` (the projection differs from the golden file). Write-side codes: `CAUSA.VERSION_STALE` (§9.2),
 `CAUSA.HISTORY_REWRITTEN` (§9.3) and `CAUSA.UNREPRESENTABLE` (a domain value has no v1 wire form, §2.9, §7.2).
 
 ### 11.2 Behaviour
 
 Readers fail closed: an invalid investigation is not partially loaded, and nothing is "repaired" or rewritten.
-Errors carry the code, a human-readable detail and, for stage 14, the domain code.
+Errors carry the code, a human-readable detail and, for stage 15, the domain code.
 
 ### 11.3 Semantic admissibility
 
@@ -944,8 +977,11 @@ command group against the prior state with the recorded actor and time, and requ
 enforces transition tables, open-investigation rules, id uniqueness, agent authority, cause and resolution gates,
 verification freshness, prediction timing and repetition refusal. The domain code is the code of its first error
 (`HISTORY.NO_START`, `HISTORY.SEQUENCE`, `HISTORY.INADMISSIBLE_EVENT`, `HISTORY.UNGATED_CONFIRMATION`,
-`HISTORY.UNGATED_RESOLUTION`). A consumer that cannot evaluate admissibility MUST NOT report a history as valid. It may
-report "structurally valid, admissibility not evaluated".
+`HISTORY.UNGATED_RESOLUTION`). "First" means the first element of the list that `History.validate` returns: it folds
+over command groups in history order, and within a group reports sequence problems before the verdict.
+A consumer that cannot evaluate admissibility MUST NOT report a history as valid. It may report "structurally valid,
+admissibility not evaluated". For inputs whose expected code comes after stage 15, such a consumer's primary code is
+conditional on admissibility, and it MUST say so.
 
 ## 12. Frozen dataset
 
@@ -953,8 +989,10 @@ report "structurally valid, admissibility not evaluated".
 
 Five synthetic investigations were generated by issuing real commands through `Decide.execute` of the pinned engine.
 The generator used a fixed clock (step *i* runs at scenario start + 4*i* minutes) and identifiers
-`UUIDv5(ca50f191-616f-5fa1-9812-e7defaac955c, "<scenarioKey>/<kind>/<name>")`. Commands that the engine must refuse are
-recorded in `golden/scenarios.json` and never persisted.
+`UUIDv5(ca50f191-616f-5fa1-9812-e7defaac955c, "<scenarioKey>/<kind>/<name>")`. Ids are opaque to readers; the
+`<kind>/<name>` vocabulary is a generator detail. Commands that the engine must refuse are recorded in
+`golden/scenarios.json` (schema `golden-scenarios.schema.json`, informative, not authoritative), and they are never
+persisted. Step numbers there are 0-based. `commands` counts persisted command groups plus refused commands.
 
 | scenarioKey | lifecycle | demonstrates |
 |---|---|---|
@@ -969,7 +1007,7 @@ Together the valid fixtures exercise all 31 event types.
 ### 12.2 Negative fixtures
 
 Each `negative/<name>.json` (schema `negative-fixture.schema.json`) carries base64 file bytes, so invalid encodings
-can be represented. It also carries the expected primary code and, for stage 14, the expected domain code. Kinds:
+can be represented. It also carries the expected primary code and, for stage 15, the expected domain code. Kinds:
 `investigation` (validate the file set), `append` (append NDJSON lines to a frozen scenario at `expectedAggregateVersion`)
 and `successor` (candidate successor of a frozen scenario). Each fixture is constructed so that the targeted check is
 the first to fail.
@@ -1000,7 +1038,13 @@ The same schema identity or an approved compatibility path. The same frozen fixt
 events. No historical mutation. No invalid state accepted (every negative fixture rejected with its expected code). These
 invariants are machine-checked by `compatibility/v1.0.0/lock.json` (§14).
 
-### 13.4 Extensions
+### 13.4 Version fields
+
+`formatVersion` versions the wire shapes. `semanticVersion` versions domain meaning. `snapshotVersion` (manifest) and
+`projectionVersion` (snapshot) both identify the §8.3 projection rules and are `1` in v1.0.0. Changing the projection is an
+explicitly versioned migration (§13.1).
+
+### 13.5 Extensions
 
 v1.0.0 deliberately has no extension namespace. Extensibility is achieved only through the versioned change classes
 above. Data that a v1.0.0 reader cannot interpret is refused, never dropped. Migration tooling that encounters it
@@ -1008,7 +1052,7 @@ preserves it byte-for-byte by not rewriting the source.
 
 ## 14. Compatibility gate
 
-`compatibility/v1.0.0/lock.json` pins the schema identity, the digest of every schema file, every frozen file digest, every
+`compatibility/v1.0.0/lock.json` (with `engine.lock.json` at the repository root) pins the schema identity, the digest of every schema file, every frozen file digest, every
 golden digest, every expected state digest, every negative fixture's expected code, and the engine commit. `causa gate .`
 recomputes all of them and runs full verification. Any difference is a failure.
 
