@@ -1,0 +1,89 @@
+name: causa release tag (verify, then tag)
+
+# Creates the immutable release tag only after the exact target commit passes every gate.
+# Triggered by a push that changes .github/release-tag/request.txt (tag=<name>, commit=<sha>);
+# the agent session that froze v1.0.0 may not push tags, GITHUB_TOKEN may. Idempotent: an existing
+# tag on the same commit is a success, on any other commit a failure. Never moves or deletes a tag.
+on:
+  push:
+    paths:
+      - ".github/release-tag/request.txt"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-tag
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Read and check the request
+        id: req
+        run: |
+          set -euo pipefail
+          TAG="$(sed -n 's/^tag=//p' .github/release-tag/request.txt)"
+          COMMIT="$(sed -n 's/^commit=//p' .github/release-tag/request.txt)"
+          [[ "$TAG" =~ ^causa-storage-v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "bad tag name: $TAG"; exit 1; }
+          [[ "$COMMIT" =~ ^[0-9a-f]{40}$ ]] || { echo "commit must be a full SHA: $COMMIT"; exit 1; }
+          git cat-file -e "$COMMIT^{commit}"
+          git merge-base --is-ancestor "$COMMIT" HEAD || { echo "$COMMIT is not in the history of $GITHUB_REF"; exit 1; }
+          [ "$(git show "$COMMIT:compatibility/v1.0.0/RELEASE")" = "$TAG" ] || { echo "RELEASE at $COMMIT does not name $TAG"; exit 1; }
+          EXISTING="$(git ls-remote origin "refs/tags/$TAG^{}" | cut -f1)"
+          [ -n "$EXISTING" ] || EXISTING="$(git ls-remote origin "refs/tags/$TAG" | cut -f1)"
+          if [ -n "$EXISTING" ]; then
+            [ "$EXISTING" = "$COMMIT" ] && { echo "tag $TAG already on $COMMIT"; echo "exists=true" >> "$GITHUB_OUTPUT"; exit 0; }
+            echo "tag $TAG already exists on $EXISTING, not $COMMIT: refusing"; exit 1
+          fi
+          echo "exists=false" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "commit=$COMMIT" >> "$GITHUB_OUTPUT"
+      - name: Check out the target commit and tag it locally
+        if: steps.req.outputs.exists == 'false'
+        run: |
+          set -euo pipefail
+          git worktree add frozen "${{ steps.req.outputs.commit }}"
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            tag -a "${{ steps.req.outputs.tag }}" "${{ steps.req.outputs.commit }}" -m "Causa storage contract ${{ steps.req.outputs.tag }} (verified by release-tag workflow run ${{ github.run_id }})"
+      - uses: actions/setup-dotnet@v4
+        if: steps.req.outputs.exists == 'false'
+        with:
+          global-json-file: frozen/global.json
+      - name: Verify the target commit (every gate, anchored to the local tag)
+        if: steps.req.outputs.exists == 'false'
+        working-directory: frozen
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet "jsonschema==4.26.0"
+          tools/fetch-engine.sh
+          dotnet build tools/src/Causa.Tool -c Release
+          dotnet build tools/consumers/rehearsal-adapter -c Release
+          dotnet build tools/consumers/clean-fsharp -c Release
+          dotnet test tools/tests/Causa.Contract.Tests -c Release
+          python3 tools/py/schema_bundle.py check contract/v1.0.0/schemas
+          python3 tools/py/schema_bundle.py digest contract/v1.0.0/schemas | cmp - contract/v1.0.0/schemas/bundle.json
+          python3 tools/py/render_registry.py contract/v1.0.0/schemas check contract/v1.0.0/CONTRACT.md
+          C=tools/src/Causa.Tool/bin/Release/net10.0/causa.dll
+          dotnet "$C" verify .
+          dotnet "$C" reproduce .
+          dotnet "$C" gate . --anchor "${{ steps.req.outputs.tag }}"
+          dotnet "$C" gate-selftest .
+          dotnet tools/consumers/rehearsal-adapter/bin/Release/net10.0/rehearsal-adapter.dll verify .
+          dotnet tools/consumers/clean-fsharp/bin/Release/net10.0/clean-consumer.dll verify .
+          python3 tools/consumers/python/causa_consumer.py verify .
+          sha256sum contract/v1.0.0/schemas/bundle.json fixtures/v1.0.0/manifest.json compatibility/v1.0.0/lock.json
+      - name: Push the tag
+        if: steps.req.outputs.exists == 'false'
+        run: |
+          set -euo pipefail
+          git push origin "refs/tags/${{ steps.req.outputs.tag }}"
+          git ls-remote origin "refs/tags/${{ steps.req.outputs.tag }}^{}"

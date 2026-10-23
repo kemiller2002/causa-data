@@ -1,0 +1,7 @@
+.engine/
+bin/
+obj/
+__pycache__/
+*.pyc
+.local/
+TestResults/

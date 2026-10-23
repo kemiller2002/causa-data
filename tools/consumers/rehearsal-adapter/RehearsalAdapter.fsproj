@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>rehearsal-adapter</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Adapter.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../.engine/src/engine/App.Engine.fsproj" AdditionalProperties="$(CausaEngineBuildProperties)" />
+    <ProjectReference Include="../../src/Causa.Contract/Causa.Contract.fsproj" />
+  </ItemGroup>
+</Project>
