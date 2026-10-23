@@ -158,7 +158,7 @@ The two bodies weight the causes differently, and the record keeps both weightin
 
 - The 1985 FRR statements accepting erosion (CH-C053).
 - The Boisjoly memo (CH-C055).
-- The 19 August 1985 briefing (CH-C075).
+- The 19 August 1985 briefing (CH-C129).
 
 **Commission reconstruction of 27-28 January** (post-accident chronology, not records made at the time; the Thiokol charts and telefax were seen only as images, or not at all):
 
@@ -209,7 +209,7 @@ Ground verification included full-duration hot-gas tests with intentional joint 
   - fretting on the capture feature (CH-C104).
 - This is one warm-weather flight with heaters on, assessed by the contractor. Treat it as corroboration of the ground tests, not as proof.
 
-**Later knowledge:** in 2003 the CAIB found that the institutional causes of Challenger "have not been fixed" (CH-C115). The organizational corrective actions (CH-C075, CH-C076, CH-C079) should therefore not be recorded as verified effective.
+**Later knowledge:** in 2003 the CAIB found that the institutional causes of Challenger "have not been fixed" (CH-C115). It also found that the post-Challenger changes to the Flight Readiness Review did not erase the problems built into its structure (CH-C128). CAIB is later analysis (2003) with respect to Challenger. The SRM&QA office (CH-C075) and the flight-rate measures have no effectiveness evidence in this record and remain unverified. The organizational corrective actions (CH-C075, CH-C076, CH-C079) should therefore not be recorded as verified effective.
 
 ## Unresolved questions
 

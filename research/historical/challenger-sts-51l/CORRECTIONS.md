@@ -32,3 +32,8 @@ Corrections made in response to `adversarial-review.md` (2026-10-23). Claim ids 
 | CH-C125 | CH-R03 | (new claim) | added Ch. IV Findings 11b-11c, p. 71 |
 | CH-C126 | CH-R03 | (new claim) | added Ch. IV Findings 7, p. 70 |
 | CH-C127 | CH-R03 | (new claim) | added Ch. IV Findings 6b, p. 70 |
+| CH-C111 | CH-R27 | notes | "See also CH-C075 (... Fig. 5)" (wrong claim: CH-C075 is the SRM&QA office) -> "See also CH-C129" (new Fig. 5 claim) |
+| CH-C115 | CH-R26 | notes | added: CAIB is later analysis (2003) for Challenger, primary for Columbia; used only as later knowledge; cross-ref CH-C128 |
+| CH-C128 | CH-R25 | (new claim) | added CAIB Ch. 8 FRR-specific sentence, p. 198 |
+| CH-C129 | CH-R27 | (new claim) | added 19 Aug 1985 HQ briefing conclusion (Ch. VI p. 140, Fig. 5) as target of CH-C111 cross-reference |
+| analysis.md | CH-R26, CH-R27 | Contemporary; Later knowledge | 19 Aug 1985 briefing ref CH-C075 -> CH-C129; added CH-C128 and statement that SRM&QA/flight-rate measures are unverified |

@@ -1551,7 +1551,7 @@
     "timeBasis": null,
     "topic": "communication",
     "kind": "finding",
-    "notes": "See also CH-C075 (19 Aug 1985 briefing conclusions, Fig. 5)."
+    "notes": "See also CH-C129 (19 Aug 1985 Headquarters briefing conclusions, Fig. 5)."
   },
   {
     "claimId": "CH-C112",
@@ -1607,7 +1607,7 @@
     "timeBasis": null,
     "topic": "corrective-effect",
     "kind": "finding",
-    "notes": "Post-1988 later knowledge (August 2003), not available to the 1986-1988 actors; bears on the effectiveness of the organizational corrective actions (CH-C075, CH-C076, CH-C079). The apostrophe is U+02BC in the PDF text."
+    "notes": "Later analysis (2003) with respect to Challenger; CAIB is a primary investigation report for Columbia. Used here only as later knowledge on whether the post-Challenger organizational changes were effective, not to judge what 1986-88 actors knew. Bears on CH-C075, CH-C076, CH-C079; see also the FRR-specific sentence CH-C128. The apostrophe is U+02BC in the PDF text."
   },
   {
     "claimId": "CH-C116",
@@ -1776,5 +1776,33 @@
     "topic": "temperature",
     "kind": "finding",
     "notes": "Analytical estimate; shows the large circumferential gradient (compare CH-C020)."
+  },
+  {
+    "claimId": "CH-C128",
+    "statement": "CAIB (2003, later knowledge): the Flight Readiness Review process was altered after Challenger, but the changes did not erase the basic problems built into its structure.",
+    "sourceId": "CH-S19",
+    "locator": "CAIB Report Vol. I, Ch. 8, p. 198 (printed page inferred: chapter PDF p. 4, between printed pp. 197 and 199)",
+    "excerpt": "Although the process was altered after Challenger, these changes did not erase the basic problems that were built into the structure of the Flight Readiness Review.",
+    "evidenceCategory": "document",
+    "verification": "partiallyVerified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "corrective-effect",
+    "kind": "finding",
+    "notes": "Later analysis (2003) with respect to Challenger; CAIB is a primary investigation report for Columbia. Used here only as later knowledge on whether the post-Challenger organizational changes were effective, not to judge what 1986-88 actors knew. Bears on Recommendation V / launch-decision changes (CH-C076, CH-C079). Printed page number not legible in the text layer; inferred from adjacent pages."
+  },
+  {
+    "claimId": "CH-C129",
+    "statement": "The 19 August 1985 Thiokol/Marshall briefing to NASA Headquarters concluded it was safe to continue flying the existing design provided all joints were leak checked at 200 psig, free of contamination and met squeeze requirements (Figure 5 conclusions).",
+    "sourceId": "CH-S04",
+    "locator": "Vol. I, Ch. VI, p. 140 (text quoting the briefing; Figure 5 on p. 139)",
+    "excerpt": "it is safe to continue flying existing design as long as all joints are leak checked with a 200 psig stabilization pressure, are free of contamination in the seal areas and meet O-ring squeeze requirements.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "warnings",
+    "kind": "fact",
+    "notes": "Contemporary briefing (1985) as quoted by the Commission; the briefing document itself was not retrieved."
   }
 ]

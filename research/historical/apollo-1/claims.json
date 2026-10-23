@@ -1495,7 +1495,7 @@
     "timeBasis": null,
     "topic": "hatch",
     "kind": "contradiction",
-    "notes": "Non-material: the Board determination concerns the hatch as built; Borman's premise is a different (outward, fast) hatch that would also have vented the cabin. Testimony (A1-S09 pp. 83-84) vs finding; the Board governs."
+    "notes": "Material: it bears on the hatch's role in the outcome. The Board determination concerns the hatch as built; Borman's premise is a different (outward, fast) hatch that would also have vented the cabin. Testimony (A1-S09 pp. 83-84) vs finding; the Board governs."
   },
   {
     "claimId": "A1-C108",
@@ -1734,5 +1734,89 @@
     "topic": "management",
     "kind": "finding",
     "notes": "Excerpt reproduces the OCR text (artifacts retained). (\"t he\", \"m any\")."
+  },
+  {
+    "claimId": "A1-C125",
+    "statement": "Panel 5 found little evidence that the arc at the C-15-1A-52 cover plate could have been an ignition source; the arc flash appeared too small to have ignited the adjacent nylon chafing guard.",
+    "sourceId": "A1-S03",
+    "locator": "Section 5l(7), p. D-5-14",
+    "excerpt": "Little evidence was found to indicate that the arc between the cover plate toC-15-IA-52 and the adjacent wire could have been an ignition source",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "ignition-alternatives",
+    "kind": "finding",
+    "notes": "Excerpt reproduces the OCR text (artifacts retained). Same paragraph: \"the resultant flash was too small to have ignited the nylon chafing guard along the bottom of the cover plate.\" It \"cannot be eliminated\" only via possible glycol residue (A1-C044)."
+  },
+  {
+    "claimId": "A1-C126",
+    "statement": "The Senate committee concluded that everyone associated with the spacecraft design and test failed to understand fully the danger of an ignition source, combustibles and pure oxygen together in the sealed cabin.",
+    "sourceId": "A1-S04",
+    "locator": "Findings, \"Failure to Identify Test as Hazardous\", p. 3",
+    "excerpt": "simply failed to understand fu lly the danger",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "prior-knowledge",
+    "kind": "finding",
+    "notes": "Excerpt reproduces the OCR text (artifacts retained). Retrospective congressional judgement."
+  },
+  {
+    "claimId": "A1-C127",
+    "statement": "The Senate committee found NASA and the contractor completely unprepared for this kind of accident despite the documentation of fire hazards in pure-oxygen environments.",
+    "sourceId": "A1-S04",
+    "locator": "Summary, p. 9",
+    "excerpt": "completely unprepared for i t despite the amount of documentation of fire hazards in pure oxygen environments.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "prior-knowledge",
+    "kind": "finding",
+    "notes": "Excerpt reproduces the OCR text (artifacts retained)."
+  },
+  {
+    "claimId": "A1-C128",
+    "statement": "The Senate committee observed that, contrary to NASA officials' belief, all ignition sources had not been eliminated.",
+    "sourceId": "A1-S04",
+    "locator": "Summary, p. 9",
+    "excerpt": "Of course, all ignition sourees had not been eliminated.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "design-philosophy",
+    "kind": "finding",
+    "notes": "Excerpt reproduces the OCR text (artifacts retained). Follows A1-C112."
+  },
+  {
+    "claimId": "A1-C129",
+    "statement": "TN D-5654 series 200 (60/40 at 16.2 psia): in all but two tests, ignition damage was more extensive than in the same test at 6.2 psia 100% O2.",
+    "sourceId": "A1-S13",
+    "locator": "Discussion of Results, Test Series 200, p. 12",
+    "excerpt": "in all but two tests, the damage resulting from ignition was more extensive than when the same test was conducted in a 100-percent-oxygen atmosphere at 6.2 psia.",
+    "evidenceCategory": "experimentResult",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "corrective-action-test",
+    "kind": "finding",
+    "notes": "Residual hazard in the selected launch atmosphere; qualifies A1-C092."
+  },
+  {
+    "claimId": "A1-C130",
+    "statement": "TN D-5654 series 200: four tests produced fires large enough to require additional investigation (e.g. tests 206 and 207 on Ladicote-coated circuit-breaker panels).",
+    "sourceId": "A1-S13",
+    "locator": "Discussion of Results, Test Series 200, p. 12",
+    "excerpt": "Four of the tests produced fires of sufficient magnitude to require additional investigation.",
+    "evidenceCategory": "experimentResult",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "corrective-action-test",
+    "kind": "finding",
+    "notes": "Compare A1-C096 (circuit-breaker panel propagation accepted)."
   }
 ]

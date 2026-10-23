@@ -1,8 +1,8 @@
 {
   "counts": {
-    "PASS": 340,
+    "PASS": 406,
     "FAIL": 0,
-    "REVIEW": 79
+    "REVIEW": 15
   },
   "checks": [
     {
@@ -107,8 +107,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C006",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C007",
@@ -137,8 +137,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C012",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C013",
@@ -167,13 +167,13 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C018",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C019",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C020",
@@ -187,8 +187,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C022",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C023",
@@ -222,8 +222,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C029",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C030",
@@ -242,18 +242,18 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C033",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C034",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C035",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C036",
@@ -267,8 +267,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C038",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C039",
@@ -367,8 +367,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C061",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C062",
@@ -467,8 +467,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C085",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C086",
@@ -492,8 +492,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C091",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S13 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C092",
@@ -502,8 +502,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C093",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S13 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C094",
@@ -512,8 +512,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C095",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S13 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C096",
@@ -522,13 +522,13 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C097",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S13 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C098",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S14 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C099",
@@ -537,18 +537,18 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C100",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S14 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C101",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S14 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C102",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S14 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C103",
@@ -602,8 +602,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C114",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C115",
@@ -612,8 +612,8 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C116",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A1-S13 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-1.excerpt.A1-C117",
@@ -792,8 +792,8 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C001",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C002",
@@ -807,8 +807,8 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C004",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C005",
@@ -827,8 +827,8 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C008",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C009",
@@ -837,13 +837,13 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C010",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C011",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C012",
@@ -902,13 +902,13 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C023",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C024",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C025",
@@ -922,48 +922,48 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C028",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C029",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C030",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C031",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C032",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C033",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C034",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C035",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C037",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S16 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C038",
@@ -1022,28 +1022,28 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C049",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C050",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C051",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C052",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C053",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S16 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C054",
@@ -1062,28 +1062,28 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C057",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C058",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C059",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C060",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C061",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C062",
@@ -1102,13 +1102,13 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C065",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S16 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C066",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C067",
@@ -1117,13 +1117,13 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C068",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C069",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C070",
@@ -1132,18 +1132,18 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C071",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C072",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C073",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C074",
@@ -1157,18 +1157,18 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C076",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C077",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C078",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C079",
@@ -1177,8 +1177,8 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C080",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C081",
@@ -1197,8 +1197,8 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C084",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C085",
@@ -1312,8 +1312,8 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C107",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C108",
@@ -1322,13 +1322,13 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C109",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C110",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C112",
@@ -1347,8 +1347,8 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C115",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C116",
@@ -1357,8 +1357,8 @@
     },
     {
       "name": "apollo-11.excerpt.A11-C117",
-      "status": "REVIEW",
-      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
     },
     {
       "name": "apollo-11.excerpt.A11-C118",
@@ -2097,6 +2097,16 @@
     },
     {
       "name": "challenger-sts-51l.excerpt.CH-C127",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C128",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in CH-S19 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C129",
       "status": "PASS",
       "detail": "excerpt found in the fetched source text"
     }

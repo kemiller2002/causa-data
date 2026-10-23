@@ -28,3 +28,16 @@ Review: `adversarial-review.md` (independent reviewer, 0 critical, 8 major, 16 m
 | A1-R22 | **Fixed.** Requirement, qualification and flight-use claims added (A1-C117 to C123). The hatch verification stays **Inconclusive**: no measured opening time was retrieved. |
 | A1-R23 | **Fixed** (A1-C124). |
 | A1-R24 | **Fixed.** hEmergency is narrowed to the failed rescue; the cause outcome now includes "the failed rescue". |
+
+## Round 2
+
+| finding | disposition |
+|---|---|
+| A1-R02 / A1-N1 (Supersede of LiOH) | **Fixed.** LiOH is now **Weakened**, which can be reopened, not Superseded. The reason states that it is the Board's most likely region and unprovable, ranked above the junction box. The engine's cause gate has no "plausible but unprovable" state outside a cause, so Plausible could not be kept. This is a recorded engine limitation. |
+| A1-N3 | **Fixed.** The junction box is weakened on A1-C125 (Panel 5, "little evidence"). |
+| A1-R05 / A1-N2 | **Fixed.** The ignition-strategy hypothesis and its cause membership are removed. Pre-fire knowledge is recorded as the Material contradiction `pre-fire-judgement`: a deliberate trade-off (A1-C110 to C112) against a failure to understand the danger (A1-C126 to C128). It is accepted as a residual, without choosing a side. |
+| A1-R06 | **Fixed.** Apollo 7 is no longer a verification criterion. It is admitted as corroboration only, and the conclusion says so. |
+| A1-R07 | **Fixed.** The fire-test verification and the conclusion now include the series-200 residuals (A1-C129, A1-C130). |
+| A1-R08 | **Disclosed.** The conclusion's residual names the test-safety evidence limitation and the Finding 11 gap. |
+| A1-N4 | **Fixed** (A1-C107 note). |
+| A1-N5 | **Fixed.** The module comment is updated. A1-C034, C009 and C010 are related as `insufficient`. |

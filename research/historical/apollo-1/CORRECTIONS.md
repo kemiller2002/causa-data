@@ -40,3 +40,11 @@ Corrections applied in response to `adversarial-review.md`. Existing claim ids a
 
 - No retrieved primary source reports a measured unified-hatch opening or crew egress time from qualification testing.
 - NASA SP-48 (1964) itself was not retrieved; it is cited only via the Senate report footnote (A1-C109).
+
+## Round 2
+
+| claim id | review id | field | before → after |
+|---|---|---|---|
+| A1-C107 | A1-N4 | notes | "Non-material: ..." → "Material: it bears on the hatch's role ..." (consistent with the Material contradiction) |
+
+New claims: A1-C125 (A1-R02, Panel 5 "little evidence" for C-15-1A-52 arc), A1-C126 (A1-R05, Senate p.3 "failed to understand fully the danger"), A1-C127 and A1-C128 (A1-R05, Senate p.9 "completely unprepared" and "all ignition sources had not been eliminated"), A1-C129 and A1-C130 (A1-R07, TN D-5654 series-200 residuals).

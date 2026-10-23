@@ -28,3 +28,12 @@ Review: `adversarial-review.md` (independent reviewer, 0 critical, 10 major, 14 
 | CH-R22 | **Fixed.** Acceptance basis changed to "every estimate for the 300-degree region". |
 | CH-R23 | **No change needed.** The case does not paraphrase the breakup as the cause of death. |
 | CH-R24 | **Fixed.** CH-C120, C122 and C123 added; observations now include 72.20 s and 110.25 s. |
+
+## Round 2
+
+| finding | disposition |
+|---|---|
+| CH-R06 (partly resolved) | **Fixed.** The `thiokol-responsibility` basis states that the roles follow Rogers Ch. V–VI, and that the House weighting is preserved as an accepted contradiction. |
+| CH-R25 | **Fixed.** The institutional criterion is bounded to the next independent review (CAIB 2003). The verification also cites the CAIB FRR passage, CH-C128 (partiallyVerified; page inferred). |
+| CH-R26 | **Fixed.** Notes on CH-S19 and CH-C115 describe CAIB as a primary report used as later knowledge. The residual states that the safety-office and flight-rate preventions are unverified. |
+| CH-R27 | **Fixed** (CH-C111 note). |

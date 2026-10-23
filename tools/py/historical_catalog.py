@@ -369,6 +369,9 @@ def excerpt_found(excerpt: str, text: str) -> bool:
     e, t = normalize(excerpt), normalize(text)
     if e in t:
         return True
+    # OCR text layers of scanned reports often letter-space words ("p e r c e n t"): compare without spaces
+    if len(e) >= 20 and e.replace(" ", "") in t.replace(" ", ""):
+        return True
     words = e.split()
     # tolerate OCR / line-break noise: every 6-word window of the excerpt must appear
     windows = [" ".join(words[i:i + 6]) for i in range(0, max(1, len(words) - 5), 3)]
