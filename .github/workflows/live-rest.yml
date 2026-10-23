@@ -7,6 +7,9 @@ name: causa live GitHub persistence (REST Git Data API)
 on:
   workflow_dispatch:
   push:
+    # Never on main: a merge that carries request.txt would otherwise write demo workspaces to main.
+    branches-ignore:
+      - main
     paths:
       - ".github/live-rest/request.txt"
 
