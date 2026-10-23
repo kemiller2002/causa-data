@@ -1,0 +1,69 @@
+name: Causa R002 live acceptance (real GitHub provider)
+
+# Runs the Causa Rehearsal 002 application (kemiller2002/indy-init-rehearsal-002 at the commit named in
+# .github/r002-live/request.txt) in a real browser against THIS repository with this run's GITHUB_TOKEN as the
+# user credential: short-lived, scoped to this repository only, never written anywhere. Writes go only to
+# workspaces/demo/r002-live-<run>/ on the branch the workflow runs on; fixtures/ and contract/ are never touched.
+# Never on main.
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - ".github/r002-live/request.txt"
+
+permissions:
+  contents: write
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: data
+      - name: Read the requested application commit
+        run: echo "R002_COMMIT=$(tr -d '[:space:]' < data/.github/r002-live/request.txt)" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+        with:
+          repository: kemiller2002/indy-init-rehearsal-002
+          ref: ${{ env.R002_COMMIT }}
+          path: app
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: app/global.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Build the application site for that exact commit
+        working-directory: app
+        run: |
+          npm ci --no-audit --no-fund
+          node scripts/build-site.mjs
+        env:
+          CAUSA_BUILD_COMMIT: ${{ env.R002_COMMIT }}
+      - name: Install Chromium
+        working-directory: app
+        timeout-minutes: 8
+        run: npx playwright install --with-deps chromium
+      - name: Live acceptance
+        working-directory: app
+        run: npx playwright test -c playwright.live.config.js
+        env:
+          CAUSA_LIVE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CAUSA_LIVE_OWNER: ${{ github.repository_owner }}
+          CAUSA_LIVE_REPO: ${{ github.event.repository.name }}
+          CAUSA_LIVE_BRANCH: ${{ github.ref_name }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r002-live-acceptance-${{ env.R002_COMMIT }}
+          path: |
+            app/test-results/live-acceptance.json
+            app/test-results/live-results.json
+            app/test-results/live/
