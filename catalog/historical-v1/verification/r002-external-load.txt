@@ -1,0 +1,6 @@
+# Rehearsal 2 external load (app commit c4d5bbffc6d397cc0745eeeffee8baee5937030e, reader: Causa.Engine Session.catalogOf/receive, anonymous GitHub REST)
+target=kemiller2002/causa-data@claude/historical-catalog-v1:workspaces/demo/historical-v1 commit=2c14ef956f1e90033f911649831befc366927043 investigations=3 truncated=0
+VALID 1784da3c-7141-59ee-a495-1d5d44bf2284 events=452 lifecycle=Active title=Space Shuttle Challenger (STS-51-L) loss, 28 January 1986 state=296bdf273968cf15a8526126a242852738cc5fa811bc853f6467fb3e3c67a7e8
+VALID c6b26614-fc43-5013-a15c-cf95942ee07b events=432 lifecycle=AwaitingVerification title=Apollo 1 (AS-204) Command Module fire, 27 January 1967 state=67af9c9f05db07d67279f84bb185600f12604b5af67a3954c337581dfdd6552f
+VALID e3adbee5-5096-5a10-bbfb-cecda86a154b events=431 lifecycle=AwaitingEvidence title=Apollo 11 lunar landing, July 1969: why the descent succeeded despite program alarms state=b82ac9ce37f218fbb53709945bd83283b06bc85e8cb4e4121bd1eaf1dc914f92
+exit=0

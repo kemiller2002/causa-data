@@ -1,0 +1,229 @@
+{
+  "release": "causa-historical-v1.0.0",
+  "catalogId": "causa-historical",
+  "catalogVersion": "1.0.0",
+  "dataCommit": "2c14ef956f1e90033f911649831befc366927043",
+  "branch": "claude/historical-catalog-v1",
+  "pullRequest": "https://github.com/kemiller2002/causa-data/pull/3",
+  "contract": {
+    "version": "1.0.0",
+    "schemaSha256": "0a68af8c93190d2e4d6c27beb2f8cb67c3aebdda586d01beb7122b71af179152",
+    "releaseTag": "causa-storage-v1.0.0",
+    "releaseTagCommit": "c947c7e354be80766573a782546c8186336774cc"
+  },
+  "engine": {
+    "repository": "kemiller2002/indy-init-rehearsal-001",
+    "commit": "55f49f61c939a3a780cee592f36f732a1328f981"
+  },
+  "catalogManifestSha256": "8c361929cfb429c31c059c92d6148036bf2b5861f81dace635a1f7de18dbf87c",
+  "cases": [
+    {
+      "caseKey": "apollo-1",
+      "investigationId": "c6b26614-fc43-5013-a15c-cf95942ee07b",
+      "expectedLifecycle": "awaitingVerification",
+      "expectedVersion": 432,
+      "expectedStateSha256": "67af9c9f05db07d67279f84bb185600f12604b5af67a3954c337581dfdd6552f",
+      "eventsSha256": "c97bc96c4c48ad9ca53268b4fe66637e211c3627ebb3cbe667a1a6f1066ab3a6",
+      "manifestSha256": "3e30b30ef1588dd5d32815a487981542c843beae766e81bb8faa096a95ac4ef4",
+      "snapshotSha256": "01128abceb636fcbbccd341a1beb37655c3d9cc019ede40faa09852d7347ee7a"
+    },
+    {
+      "caseKey": "apollo-11",
+      "investigationId": "e3adbee5-5096-5a10-bbfb-cecda86a154b",
+      "expectedLifecycle": "awaitingEvidence",
+      "expectedVersion": 431,
+      "expectedStateSha256": "b82ac9ce37f218fbb53709945bd83283b06bc85e8cb4e4121bd1eaf1dc914f92",
+      "eventsSha256": "e533fe7fc251a4d0d7f520838735f14373da5b9783682715dae12a7a2dff04c9",
+      "manifestSha256": "4ba3919d60e37cd32663c1d0953165ef37458e1c00cc12d069fe9a6e583285ea",
+      "snapshotSha256": "ddb29e52e430a1c568fc3be6ec7334c1b4f06aa958c6ac16702086c08dcb98f1"
+    },
+    {
+      "caseKey": "challenger-sts-51l",
+      "investigationId": "1784da3c-7141-59ee-a495-1d5d44bf2284",
+      "expectedLifecycle": "active",
+      "expectedVersion": 452,
+      "expectedStateSha256": "296bdf273968cf15a8526126a242852738cc5fa811bc853f6467fb3e3c67a7e8",
+      "eventsSha256": "e3b442f0ff3ea178c4d81d4964cef5deda4d104cc426785f7da5a78e9bed9c25",
+      "manifestSha256": "a44083f2dbb23c7a15fe5d5059582966c21b2a84b24d7eb6b4f640e090b1f830",
+      "snapshotSha256": "a7a5dbf4463cbf48f26762e2a8b9e70a8c2c3876a9a30e4c8e0a459fdadc56f0"
+    }
+  ],
+  "files": [
+    {
+      "path": "catalog/active.json",
+      "sha256": "1ddf096ec8be0679bb1e0800b0f2c43e496d5d2bfd309b398e12a124980c35ec"
+    },
+    {
+      "path": "catalog/historical-v1/manifest.json",
+      "sha256": "8c361929cfb429c31c059c92d6148036bf2b5861f81dace635a1f7de18dbf87c"
+    },
+    {
+      "path": "catalog/historical-v1/provenance/apollo-1.json",
+      "sha256": "6677f114a5fea71bf4b9976c1883be4a847647f1e0f36157ed3a1b1c92ca81da"
+    },
+    {
+      "path": "catalog/historical-v1/provenance/apollo-11.json",
+      "sha256": "5523d66c7cb0ddaf8765f049b723a9c2a90ba454fc544ff8cdf2331317bc0769"
+    },
+    {
+      "path": "catalog/historical-v1/provenance/challenger-sts-51l.json",
+      "sha256": "f384b482a40a55780688ca977ebe63f8f925f20d0a5b94e6cf61fcbb54c783f5"
+    },
+    {
+      "path": "catalog/historical-v1/verification/sources-report.json",
+      "sha256": "80cc7ccc3880412ded0ad0844a9fd824b0831d5bd6780d41fbadf966c3c657f2"
+    },
+    {
+      "path": "catalog/schemas/catalog-manifest.schema.json",
+      "sha256": "154d63319676e2790a4a644a6e06546aa5f4e9a394485fb16373617ffdc26c8c"
+    },
+    {
+      "path": "research/historical/RESEARCH-INTERFACE.md",
+      "sha256": "875c4e296b6df040ef720a5432b5c1c16b643e5ff30dbe2aec65186ae71ec1ed"
+    },
+    {
+      "path": "research/historical/apollo-1/CORRECTIONS.md",
+      "sha256": "35ebfa4573cfb536ddd7fdb94aad42abd8f754b942c56be299571e71bee402a2"
+    },
+    {
+      "path": "research/historical/apollo-1/REVIEW-RESOLUTION.md",
+      "sha256": "67d837d2ae07e93a0399da6dc62141656910d1dccb6accb1b7e734f8c387ed97"
+    },
+    {
+      "path": "research/historical/apollo-1/adversarial-review.md",
+      "sha256": "f1ba3080a97ccb41ed0d4d5477f66ebb8e713de87f9298242e79c128d3ba113e"
+    },
+    {
+      "path": "research/historical/apollo-1/analysis.md",
+      "sha256": "f3dd33eb60115e1b1361574515c66763ca225ad1d4cd104a41776fc316261af1"
+    },
+    {
+      "path": "research/historical/apollo-1/claims.json",
+      "sha256": "cb31c2990e896e9d2b5829ad6a6a35548e8e730a957014942569f4e632f14783"
+    },
+    {
+      "path": "research/historical/apollo-1/sources.json",
+      "sha256": "66490eb4b38b0f8419e41ba64c1460b021536f95b86a4433e7e8e87098041733"
+    },
+    {
+      "path": "research/historical/apollo-11/CORRECTIONS.md",
+      "sha256": "959d5c70f37720f241d37b7a8d87ffdbdd65bc19601dddb35667c71a2c79dcf6"
+    },
+    {
+      "path": "research/historical/apollo-11/REVIEW-RESOLUTION.md",
+      "sha256": "3a93d9a47d7aec0db366fe039b0f8882b104b464ddaa9c63e0c7f96bc2971cd1"
+    },
+    {
+      "path": "research/historical/apollo-11/adversarial-review.md",
+      "sha256": "ad63a289f3b052de93a4112729430f44a92339424b32d0498aac43f005654e11"
+    },
+    {
+      "path": "research/historical/apollo-11/analysis.md",
+      "sha256": "5f6a7bfe020035f99eea6d2df36a580adc7bcb06c612502df4f92994aa1e9cbe"
+    },
+    {
+      "path": "research/historical/apollo-11/claims.json",
+      "sha256": "20a4fe35257c9d2f47e29a092fc2f9df63970f6da75250da1ffec6c246fa5c39"
+    },
+    {
+      "path": "research/historical/apollo-11/sources.json",
+      "sha256": "9f8f1f7dbb783a1ab3285e34376078c49977aa12f8c54789f859b29fae9b9832"
+    },
+    {
+      "path": "research/historical/challenger-sts-51l/CORRECTIONS.md",
+      "sha256": "c027e8933af554ea81fec67562c55ddb7641fe54e8769382a815ea934b4660f3"
+    },
+    {
+      "path": "research/historical/challenger-sts-51l/REVIEW-RESOLUTION.md",
+      "sha256": "e92bf472bd151381a15db27ed8af74aab0b9708cbd5554470e5b5a7148bce6c4"
+    },
+    {
+      "path": "research/historical/challenger-sts-51l/adversarial-review.md",
+      "sha256": "fbe3f74071a6094a1867e2b446000473f359c5ba2d0cfc0a3f93522df5bc7378"
+    },
+    {
+      "path": "research/historical/challenger-sts-51l/analysis.md",
+      "sha256": "cf035f1af3047facd06aaa7570c9bade3c79fec210c098ceb2aa087e095286de"
+    },
+    {
+      "path": "research/historical/challenger-sts-51l/claims.json",
+      "sha256": "d65d3fd4c52593b89669328a277e1e1ef1c6d7e227c046e3c3cacadd3f1224ea"
+    },
+    {
+      "path": "research/historical/challenger-sts-51l/sources.json",
+      "sha256": "86fb1492765f64c4e093330e18ddb82b0cad8e11a764bbb303de609f237133cb"
+    },
+    {
+      "path": "tools/py/historical_catalog.py",
+      "sha256": "0e621fd328945d04949e952ef0d570a6c5199ab071a36dfdbd640a65b9afb346"
+    },
+    {
+      "path": "tools/src/Causa.Tool/Historical/Apollo1.fs",
+      "sha256": "ae837df775fa5655db966954bea79b69bf8a8cb6c7cb9d2d1ce3d113a53e5c8d"
+    },
+    {
+      "path": "tools/src/Causa.Tool/Historical/Apollo11.fs",
+      "sha256": "c89aeaf07ac649ceab533038d12a195b1ab97e4fd80e84608550996ed7252480"
+    },
+    {
+      "path": "tools/src/Causa.Tool/Historical/Cases.fs",
+      "sha256": "96422cae9adc35ba8969637fee8035f26b63989b3380aceedbb95c08d30a07bb"
+    },
+    {
+      "path": "tools/src/Causa.Tool/Historical/Catalog.fs",
+      "sha256": "8dfc272772ca2b632bf82435e9355aaeaf16b92b55589015724aebf10e427469"
+    },
+    {
+      "path": "tools/src/Causa.Tool/Historical/Challenger.fs",
+      "sha256": "7880e00fabc1834849c4a5a9dd4ced4b9ef6378241d3c756d915b3d58dc3c4df"
+    },
+    {
+      "path": "tools/src/Causa.Tool/Historical/Kit.fs",
+      "sha256": "582df32c2cf2d805164a013da16357a6baa433c47115c61fc274201777fe797e"
+    },
+    {
+      "path": "tools/src/Causa.Tool/Historical/Research.fs",
+      "sha256": "bd825ed536b06763a64ef2bb83d6c71ffd82ee5fbd2efae223d8de289b5c8873"
+    },
+    {
+      "path": "tools/src/Causa.Tool/Historical/Verify.fs",
+      "sha256": "d77d64022aad31afd4c1406c22804fc1e3e1720ac67ae07d433326748594d378"
+    },
+    {
+      "path": "workspaces/demo/historical-v1/investigations/1784da3c-7141-59ee-a495-1d5d44bf2284/events.ndjson",
+      "sha256": "e3b442f0ff3ea178c4d81d4964cef5deda4d104cc426785f7da5a78e9bed9c25"
+    },
+    {
+      "path": "workspaces/demo/historical-v1/investigations/1784da3c-7141-59ee-a495-1d5d44bf2284/manifest.json",
+      "sha256": "c5f41e8a8c110f99e5a4eba0bfdde44bce334609922d27e04b8b368ca4c48fb4"
+    },
+    {
+      "path": "workspaces/demo/historical-v1/investigations/1784da3c-7141-59ee-a495-1d5d44bf2284/snapshot.json",
+      "sha256": "c5b1cf65bbe4bb63d040a5b42409ffa368c5274fd15cf8d6daf483015e364398"
+    },
+    {
+      "path": "workspaces/demo/historical-v1/investigations/c6b26614-fc43-5013-a15c-cf95942ee07b/events.ndjson",
+      "sha256": "c97bc96c4c48ad9ca53268b4fe66637e211c3627ebb3cbe667a1a6f1066ab3a6"
+    },
+    {
+      "path": "workspaces/demo/historical-v1/investigations/c6b26614-fc43-5013-a15c-cf95942ee07b/manifest.json",
+      "sha256": "ff6b95264a9c99020ed5f40e8322b7e0d37d77d76714552eecec9dd07c1e4427"
+    },
+    {
+      "path": "workspaces/demo/historical-v1/investigations/c6b26614-fc43-5013-a15c-cf95942ee07b/snapshot.json",
+      "sha256": "2e6c94f0bdf208589f874b7154eee80cd9a0bd7b37503ec94113d18e41ead34d"
+    },
+    {
+      "path": "workspaces/demo/historical-v1/investigations/e3adbee5-5096-5a10-bbfb-cecda86a154b/events.ndjson",
+      "sha256": "e533fe7fc251a4d0d7f520838735f14373da5b9783682715dae12a7a2dff04c9"
+    },
+    {
+      "path": "workspaces/demo/historical-v1/investigations/e3adbee5-5096-5a10-bbfb-cecda86a154b/manifest.json",
+      "sha256": "2a4ad664d429bd2d041dff7791a33f6379cdad4e89f6dcfd72f1322378ff8ed5"
+    },
+    {
+      "path": "workspaces/demo/historical-v1/investigations/e3adbee5-5096-5a10-bbfb-cecda86a154b/snapshot.json",
+      "sha256": "1d0093e98af761e234b737f5faa69d7f120b6748bece02bce5433ddbb1d5de59"
+    }
+  ]
+}

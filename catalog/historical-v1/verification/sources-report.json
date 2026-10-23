@@ -1,6 +1,6 @@
 {
   "counts": {
-    "PASS": 406,
+    "PASS": 412,
     "FAIL": 0,
     "REVIEW": 15
   },
@@ -652,6 +652,36 @@
     },
     {
       "name": "apollo-1.excerpt.A1-C124",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C125",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C126",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C127",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C128",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C129",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C130",
       "status": "PASS",
       "detail": "excerpt found in the fetched source text"
     },
