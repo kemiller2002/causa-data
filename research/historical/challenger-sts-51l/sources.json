@@ -232,5 +232,18 @@
     "retrievalStatus": "retrieved",
     "httpStatus": 200,
     "rights": "US Government work, public domain (NASA contractor report, NTRS)"
+  },
+  {
+    "sourceId": "CH-S19",
+    "title": "Columbia Accident Investigation Board Report, Volume I, Chapter 8: History As Cause: Columbia and Challenger",
+    "issuer": "Columbia Accident Investigation Board",
+    "published": "2003-08",
+    "url": "https://s3.amazonaws.com/akamai.netstorage/anon.nasa-global/CAIB/CAIB_lowres_chapter8.pdf",
+    "archivalLocator": "CAIB Report Vol. I, pp. 195-204",
+    "retrievedAt": "2026-10-23",
+    "sourceClass": "primary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "US Government work, public domain"
   }
 ]

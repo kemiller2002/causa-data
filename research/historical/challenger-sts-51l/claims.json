@@ -421,7 +421,7 @@
   },
   {
     "claimId": "CH-C031",
-    "statement": "The first phase of the Marshall-Thiokol teleconference began at 5:45 p.m. EST on 27 January; Thiokol presented low-temperature concerns and an opinion that launch should be delayed.",
+    "statement": "The first phase of the Marshall-Thiokol teleconference began at 5:45 p.m. EST on 27 January. The Commission narrative says Thiokol presented low-temperature concerns \"along with an opinion that launch should be delayed\"; this point is contested in testimony (CH-C085).",
     "sourceId": "CH-S03",
     "locator": "Vol. I, Ch. V, p. 87",
     "excerpt": "The first phase of the teleconference began at 5:45 p. m. Eastern Standard Time; participants included Reinartz, Lovingood, Hardy, and numerous people at Kennedy, Marshall and Thiokol-Wasatch.",
@@ -459,7 +459,7 @@
     "timeBasis": null,
     "topic": "teleconference",
     "kind": "fact",
-    "notes": "The Lund conclusions chart itself is reproduced only as an image in the HTML; content here is from the Commission chronology and testimony."
+    "notes": "Commission reconstruction (post-accident chronology, 1986), not a record made at the time. The Lund conclusions chart itself is reproduced only as an image in the HTML; content here is from the Commission chronology and testimony."
   },
   {
     "claimId": "CH-C034",
@@ -501,7 +501,7 @@
     "timeBasis": null,
     "topic": "thiokol-caucus",
     "kind": "fact",
-    "notes": null
+    "notes": "Commission reconstruction (post-accident chronology, 1986), not a record made at the time."
   },
   {
     "claimId": "CH-C037",
@@ -655,7 +655,7 @@
     "timeBasis": null,
     "topic": "temperature",
     "kind": "fact",
-    "notes": "Point surface readings by hand pyrometer; reliability not assessed in this chapter."
+    "notes": "Commission reconstruction (post-accident chronology, 1986), not a record made at the time. Point surface readings by hand pyrometer; reliability not assessed in this chapter."
   },
   {
     "claimId": "CH-C048",
@@ -990,7 +990,7 @@
     "historicalTime": null,
     "timeBasis": null,
     "topic": "risk-perception",
-    "kind": "finding",
+    "kind": "testimony",
     "notes": "Personal observations of one Commissioner, appended to the report; not a Commission finding."
   },
   {
@@ -1004,7 +1004,7 @@
     "historicalTime": null,
     "timeBasis": null,
     "topic": "normalization",
-    "kind": "finding",
+    "kind": "testimony",
     "notes": "Personal observations."
   },
   {
@@ -1145,7 +1145,7 @@
     "timeBasis": null,
     "topic": "return-to-flight",
     "kind": "fact",
-    "notes": "Secondary retrospective; the claim of SRM performance is not backed in the article by a cited post-flight report. Primary post-flight SRM inspection report not retrieved."
+    "notes": "Secondary retrospective. Now corroborated by the primary contractor post-flight report TWR-17272 (CH-C101 to CH-C106): seals in excellent condition, redesigned field joints performed as expected; anomalies listed in CH-C106, CH-C116, CH-C117. Evidence is one warm-weather (September) flight with heaters active."
   },
   {
     "claimId": "CH-C083",
@@ -1163,17 +1163,17 @@
   },
   {
     "claimId": "CH-C084",
-    "statement": "House Committee: the fundamental problem was poor technical decision-making over several years by top NASA and contractor personnel who failed to act decisively on the SRB joint anomalies.",
+    "statement": "House Committee: the underlying problem was NOT poor communication or inadequate procedures (as it reads the Rogers conclusion); the fundamental problem was poor technical decision-making over several years by top NASA and contractor personnel, who failed to act decisively on the SRB joint anomalies.",
     "sourceId": "CH-S13",
-    "locator": "House Report 99-1016, Summary, pp. 4-5 (PDF pp. 12-13)",
-    "excerpt": "and contractor personnel, who failed to act decisively to solve the increasingly serious anomalies in the Solid Rocket Booster joints.",
+    "locator": "House Report 99-1016, Summary, p. 4 (PDF p. 12), sentence continuing onto p. 5",
+    "excerpt": "the underlying problem which led to the Challenger accident was not poor communication or inadequate procedures as implied by the Rogers Commission conclusion.’ Rather, the fundamental problem was poor technical decision-making over a period of several years by top NASA",
     "evidenceCategory": "document",
     "verification": "verified",
     "historicalTime": null,
     "timeBasis": null,
     "topic": "organizational-cause",
     "kind": "finding",
-    "notes": "Preceding text on p. 4 (hyphenated across lines, not copied): the underlying problem was not poor communication or inadequate procedures; the fundamental problem was poor technical decision-making over a period of several years by top NASA (dehyphenated paraphrase of the printed text)."
+    "notes": "Sentence continues on p. 5: \"and contractor personnel, who failed to act decisively to solve the increasingly serious anomalies in the Solid Rocket Booster joints.\" The trailing ’ after \"conclusion.\" is a footnote mark in the source. This finding contradicts the communication-centred weighting of Rogers Ch. V; it supports long-term risk acceptance (see CH-C051, CH-C110)."
   },
   {
     "claimId": "CH-C085",
@@ -1205,7 +1205,7 @@
   },
   {
     "claimId": "CH-C087",
-    "statement": "CONTRADICTION (Hardy \"appalled\"): Boisjoly recalled Hardy was appalled at the MTI decision; Hardy said \"somewhat appalled\" referred specifically to Thiokol's data interpretation.",
+    "statement": "CONTRADICTION (Hardy \"appalled\"): four witnesses gave the account that Hardy said he was appalled at Thiokol's recommendation - Boisjoly (p. 90), Lund (p. 94), Mason (p. 94), and McDonald (per the chronology, p. 107: \"reported by both McDonald and Boisjoly\"); Hardy said \"somewhat appalled\" referred specifically to Thiokol's data interpretation.",
     "sourceId": "CH-S03",
     "locator": "Vol. I, Ch. V, p. 99 (Hardy testimony, Hearing Transcript Feb 26, 1986, pp. 1598-1601)",
     "excerpt": "I stated I was somewhat appalled, and that was referring specifically to some of the data or the interpretation of some of the data that Thiokol had presented",
@@ -1373,7 +1373,7 @@
   },
   {
     "claimId": "CH-C099",
-    "statement": "UNCERTAINTY (verification before return to flight): the June 1987 plan (6 full-scale firings) differs from the five firings reported before STS-26, and cold-weather certification was scheduled after STS-26.",
+    "statement": "UNCERTAINTY (verification before return to flight): the June 1987 plan committed to one engineering, two developmental and three qualification firings before the next flight; the press kit reports two development, two qualification and one production verification motor (PVM) firing before STS-26 (the engineering test motor is not in that count), with the third QM firing (cold weather) deferred until after STS-26. Net difference: one QM deferred, one PVM added.",
     "sourceId": "CH-S16",
     "locator": "Press kit, \"Test Program\", p. 47 (2001 edited transcription pagination)",
     "excerpt": "Additionally, one post-STS-26 QM test is scheduled in late December to certify the redesigned motor for cold weather operation.",
@@ -1383,7 +1383,7 @@
     "timeBasis": null,
     "topic": "srm-verification",
     "kind": "uncertainty",
-    "notes": "Compare CH-S10 planned test count. Outcome of the December QM test not retrieved."
+    "notes": "Compare CH-C077 (plan). The deferred QM was QM-8, static-fired 20 Jan 1989 at 28 F ambient after two RSRM flights and certified the design for extreme cold with field-joint heaters active (CH-C108, CH-C109); the STS-26 post-flight report also recommended cold-environment testing before a cold-weather launch (CH-C107). The redesign therefore flew on STS-26 before its full qualification set was complete."
   },
   {
     "claimId": "CH-C100",
@@ -1401,7 +1401,7 @@
   },
   {
     "claimId": "CH-C101",
-    "statement": "Postflight inspection of both STS-26 redesigned motors found all seals in excellent condition: no hot gas or soot past the J-leg on any of the six field joints, and no damage, heat effects or erosion on any O-ring or gasket seal.",
+    "statement": "Postflight inspection of both STS-26 redesigned motors (contractor summary) found all seals in excellent condition, with no hot gas or soot past the J-leg on any of the six field joints or past the polysulfide adhesive on the two nozzle-to-case joints.",
     "sourceId": "CH-S17",
     "locator": "TWR-17272-1 Rev A, Vol. I, Sec. 3.1.9 \"Postflight Hardware Assessment\", Seals, p. 10",
     "excerpt": "Postflight inspection of both motors showed all seals to be in excellent condition. There was no hot gas or soot past the J-leg on the six field joints or past the polysulfide adhesive on the two nozzle-to-case joints.",
@@ -1415,7 +1415,7 @@
   },
   {
     "claimId": "CH-C102",
-    "statement": "Postflight O-ring inspection on STS-26 revealed no damage, heat effects or erosion on any O-ring or gasket seal (i.e., no recurrence of the 51-L-type erosion/blow-by).",
+    "statement": "Contractor summary: postflight inspection found no damage, heat effects or erosion on the O-rings; no erosion/blow-by of the 51-L type occurred on the field joints. The same report (Sec. 4.12.3) records assembly damage to seven vent port plug primary O-rings and a damaged secondary O-ring on the right nozzle-to-case joint vent port plug (CH-C117), so the summary wording \"all O-rings\" is too broad.",
     "sourceId": "CH-S17",
     "locator": "TWR-17272-1 Rev A, Vol. I, Sec. 3.1.9, Seals, p. 10",
     "excerpt": "Inspection of all O-rings and gasket seals revealed no damage, heat effects, or erosion.",
@@ -1425,7 +1425,7 @@
     "timeBasis": null,
     "topic": "corrective-effect",
     "kind": "finding",
-    "notes": "Source is an OCR text layer of a scanned report; excerpt matched after whitespace normalization. Sec. 4.12.3 (page not located in OCR) separately notes assembly damage to seven vent port plug primary O-rings, described as inherent in the design; not a combustion-gas effect."
+    "notes": "Source is an OCR text layer of a scanned report; excerpt matched after whitespace normalization. Summary sentence (Sec. 3.1.9) conflicts with the detailed seals section (Sec. 4.12.3, pp. 303-304; CH-C117). Contractor (Thiokol) self-assessment."
   },
   {
     "claimId": "CH-C103",
@@ -1467,11 +1467,11 @@
     "timeBasis": "Source gives 11:37.00.009 a.m. EDT (UTC-4) on 29 Sep 1988; converted to UTC.",
     "topic": "corrective-effect",
     "kind": "fact",
-    "notes": "Source is an OCR text layer of a scanned report; excerpt matched after whitespace normalization. OCR renders \"GEI\" as \"GEl\" and \"1)\" as \"I)\"."
+    "notes": "Source is an OCR text layer of a scanned report; excerpt matched after whitespace normalization. OCR renders \"GEI\" as \"GEl\" and \"1)\" as \"I)\". The same report recommends review of a \"Field Joint Heater Sensor Placement Problem\" (sensor misconnection; CH-C116)."
   },
   {
     "claimId": "CH-C106",
-    "statement": "Anomaly: inoperative field joint vent valves let water into the field joints at splashdown (in-flight anomaly STS-26-M-2); the report treats this as a post-flight condition, not a flight seal failure.",
+    "statement": "Anomaly IFA STS-26-M-2: seawater was found in all six field-joint weatherseals after splashdown via leaking joint-protection-system vent valves; the IFA attributes the leak to trapped debris, structural damage, or function failure prior to launch, and its corrective action addresses the threat of ascent with water in the weatherseals (CH-C118). Relevant to the ice/water-in-joint concern of 51-L.",
     "sourceId": "CH-S17",
     "locator": "TWR-17272-1 Rev A, Vol. I, Sec. 3.1.6 \"TPS/External Evaluation\", p. 8",
     "excerpt": "The vent valves allowed water into the field joints upon splashdown as discussed as IFA STS-26-M-2 in Section 4.1.",
@@ -1481,7 +1481,7 @@
     "timeBasis": null,
     "topic": "corrective-effect",
     "kind": "fact",
-    "notes": "Source is an OCR text layer of a scanned report; excerpt matched after whitespace normalization."
+    "notes": "Source is an OCR text layer of a scanned report; excerpt matched after whitespace normalization. See Table 4.1-2 (p. 29) for cause and consequence wording."
   },
   {
     "claimId": "CH-C107",
@@ -1513,7 +1513,7 @@
   },
   {
     "claimId": "CH-C109",
-    "statement": "QM-8 certified field joint heaters and RSRM seal performance at low temperature; the article was cold-conditioned at 20-25 F for about 31 days (target maximum PMBT 40 F; calculated 39 F at firing).",
+    "statement": "QM-8 was fired in a cold-conditioned motor (20-25 F for about 31 days; 28 F ambient; 39 F PMBT) with the field-joint heaters holding the joints at 75-130 F before ignition; it certified the heater-dependent joint system (heaters, seals as heated) in a cold-soaked motor, not cold O-ring sealing as such.",
     "sourceId": "CH-S18",
     "locator": "TWR-17591 Vol. 1, Abstract, p. ii",
     "excerpt": "Certification of field joint and igniter heaters, adhesive bondline integrity, flex bearing performance, flight instrumentation performance, RSRM seal performance, and LSC and nozzle plug performance, to name a few, was accomplished.",
@@ -1523,6 +1523,258 @@
     "timeBasis": null,
     "topic": "srm-verification",
     "kind": "fact",
-    "notes": "Source is an OCR text layer of a scanned report; excerpt matched after whitespace normalization. Field joints were heated to 75-130 F before ignition, so seal certification was at heated-joint conditions."
+    "notes": "Source is an OCR text layer of a scanned report; excerpt matched after whitespace normalization. Same abstract: \"Prior to motor ignition, the field joints were maintained between 75\" to 130\"F\" (OCR renders the degree sign as \"). Cold tolerance of the redesign depends on the active heater system (cf. CH-C078 at or above 75 F)."
+  },
+  {
+    "claimId": "CH-C110",
+    "statement": "CONTRADICTION (information reached all levels): the House Committee found the joint-design flaws and prior-mission problems were widely available, presented to all levels of Shuttle management, and briefed in detail at Headquarters, yet technical managers failed to grasp their seriousness. Contrasts with CH-C027 (\"unaware of the recent history\").",
+    "sourceId": "CH-S13",
+    "locator": "House Report 99-1016, Summary, p. 5 (PDF p. 13)",
+    "excerpt": "had been presented to all levels of Shuttle management. Despite the presence of significant amounts of information and the occurrence of at least one detailed briefing at Headquarters on the difficulties with the 0rings, the NASA and Thiokol technical managers failed to understand",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "communication",
+    "kind": "contradiction",
+    "notes": "\"0rings\" is OCR in the govinfo PDF text layer. Distinguish: knowledge of the O-ring history (briefed, incl. Aug 1985 HQ) vs knowledge of the 27 Jan objection (not passed on; CH-C044)."
+  },
+  {
+    "claimId": "CH-C111",
+    "statement": "Rogers Ch. VI Finding 5: the O-ring erosion history presented to Level I at NASA Headquarters in August 1985 was detailed enough to require corrective action before the next flight. Qualifies CH-C027 within the Rogers report itself.",
+    "sourceId": "CH-S04",
+    "locator": "Vol. I, Ch. VI, p. 148, Findings 5",
+    "excerpt": "The O-ring erosion history presented to Level I at NASA Headquarters in August 1985 was sufficiently detailed to require corrective action prior to the next flight.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "communication",
+    "kind": "finding",
+    "notes": "See also CH-C075 (19 Aug 1985 briefing conclusions, Fig. 5)."
+  },
+  {
+    "claimId": "CH-C112",
+    "statement": "House Committee: NASA's drive for 24 flights per year created agency-wide pressure that directly contributed to unsafe launch operations.",
+    "sourceId": "CH-S13",
+    "locator": "House Report 99-1016, Conclusions, p. 3 (PDF p. 11)",
+    "excerpt": "The Committee found that NASA’s drive to achieve a launch schedule of 24 flights per year created pressure throughout the agency that directly contributed to unsafe launch operations.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "schedule-pressure",
+    "kind": "finding",
+    "notes": null
+  },
+  {
+    "claimId": "CH-C113",
+    "statement": "Rogers Ch. VIII (hedged): pressures from customer commitments to launch a certain number of flights on time \"may occasionally have obscured engineering concerns\".",
+    "sourceId": "CH-S06",
+    "locator": "Vol. I, Ch. VIII, p. 165",
+    "excerpt": "Pressures developed because of the need to meet customer commitments, which translated into a requirement to launch a certain number of flights per year and to launch them on time. Such considerations may occasionally have obscured engineering concerns.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "schedule-pressure",
+    "kind": "finding",
+    "notes": "Modality \"may occasionally\" is the Commission's; weaker than the House \"directly contributed\" (CH-C112)."
+  },
+  {
+    "claimId": "CH-C114",
+    "statement": "Rogers Ch. V Finding 1 (hedged counterfactual): had the concerns been clearly stated in the flight readiness process, \"it seems likely that the launch of 51-L might not have occurred when it did\".",
+    "sourceId": "CH-S03",
+    "locator": "Vol. I, Ch. V, p. 104, Findings 1",
+    "excerpt": "Had these matters been clearly stated and emphasized in the flight readiness process in terms reflecting the views of most of the Thiokol engineers and at least some of the Marshall engineers, it seems likely that the launch of 51-L might not have occurred when it did.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "decision-process",
+    "kind": "finding",
+    "notes": "Weaker modality than CH-C028 (\"highly unlikely that they would have decided to launch\"). Ch. VI Finding 3 \"apparently\" is carried in CH-C057; Ch. V Finding 3 \"appears\" in CH-C042."
+  },
+  {
+    "claimId": "CH-C115",
+    "statement": "CAIB (2003, later knowledge): despite post-Challenger changes, the causes of the institutional failure responsible for Challenger had not been fixed.",
+    "sourceId": "CH-S19",
+    "locator": "CAIB Report Vol. I, Chapter 8 \"History As Cause: Columbia and Challenger\", introduction, p. 195",
+    "excerpt": "despite all the post-Challenger changes at NASA and the agencyʼs notable achievements since, the causes of the institutional failure responsible for Challenger have not been fixed.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "corrective-effect",
+    "kind": "finding",
+    "notes": "Post-1988 later knowledge (August 2003), not available to the 1986-1988 actors; bears on the effectiveness of the organizational corrective actions (CH-C075, CH-C076, CH-C079). The apostrophe is U+02BC in the PDF text."
+  },
+  {
+    "claimId": "CH-C116",
+    "statement": "STS-26 post-flight report recommends reviewing field-joint heater sensor strip installation and connection procedures to avoid recurrence of sensor misconnection.",
+    "sourceId": "CH-S17",
+    "locator": "TWR-17272-1 Rev A, Vol. I, Sec. 3.3, \"Field Joint Heater Sensor Placement Problem\", p. 25",
+    "excerpt": "It is recommended that sensor strip installation and jiffy connection procedures be reviewed and possibly changed to avoid the reoccurrence of sensor misconnection.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "srm-heaters",
+    "kind": "fact",
+    "notes": "Source is an OCR text layer of a scanned report; excerpt matched after whitespace normalization. A Sec. 4.9 variant adds \"This action should be taken before the STS-27 flight.\""
+  },
+  {
+    "claimId": "CH-C117",
+    "statement": "Detailed seals evaluation: seven vent port plug primary O-rings were damaged during assembly (stated to be inherent in the design and within the certification data base); a vent port plug secondary O-ring was also damaged.",
+    "sourceId": "CH-S17",
+    "locator": "TWR-17272-1 Rev A, Vol. I, Sec. 4.12.3 \"Vent Port Plugs\", pp. 303-304",
+    "excerpt": "There was damage to seven vent port plug primary O-rings. This damage occurred during assembly and is inherent in the design. These O-rings are packing seals and would have maintained a seal if pressurized.",
+    "evidenceCategory": "experimentResult",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "corrective-effect",
+    "kind": "fact",
+    "notes": "Source is an OCR text layer of a scanned report; excerpt matched after whitespace normalization. Qualifies the summary in CH-C102. Continues on p. 304: the secondary O-ring of the right nozzle-to-case joint vent port plug \"was also damaged. Preliminary investigation indicates a discrepant vent porthole. This problem is still under investigation.\""
+  },
+  {
+    "claimId": "CH-C118",
+    "statement": "IFA STS-26-M-2 resolution: vent valve examination attributed the leak to trapped debris, structural damage, or function failure prior to launch.",
+    "sourceId": "CH-S17",
+    "locator": "TWR-17272-1 Rev A, Vol. I, Table 4.1-2 (IFA STS-26-M-2), item 14, p. 29",
+    "excerpt": "Vent valve examination showed cause of leaking/malfunction to be trapped debris, structural damage, or function failure prior to launch.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "corrective-effect",
+    "kind": "fact",
+    "notes": "Source is an OCR text layer of a scanned report; excerpt matched after whitespace normalization. Item 10 (same table): \"Verification of vent valve closure prior to rollout precludes threat of ascent flight with water in JPS weatherseals.\""
+  },
+  {
+    "claimId": "CH-C119",
+    "statement": "Full-scale ground tests of the redesign included full-duration hot gas tests with intentional joint flaws and flight loads.",
+    "sourceId": "CH-S16",
+    "locator": "Press kit, \"Test Program\", p. 47 (2001 edited transcription pagination)",
+    "excerpt": "Full scale tests were used to verify analytical models; determine hardware assembly characteristics; determine joint deflection characteristics; determine joint performance under full duration, hot gas tests including joint flaws and flight loads; and determine redesigned hardware structural characteristics.",
+    "evidenceCategory": "document",
+    "verification": "partiallyVerified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "srm-verification",
+    "kind": "fact",
+    "notes": "Ground-test evidence that complements the single STS-26 flight (CH-C101-C104)."
+  },
+  {
+    "claimId": "CH-C120",
+    "statement": "In the redesign, field joint internal insulation is sealed with a pressure-actuated flap (J-seal) instead of the putty used on 51-L.",
+    "sourceId": "CH-S16",
+    "locator": "Press kit, \"Redesigned Solid Rocket Motor\", p. 45 (2001 edited transcription pagination)",
+    "excerpt": "The field joint internal case insulation was modified to be sealed with a pressure actuated flap called a J-seal, rather than with putty as in the STS 51-L configuration.",
+    "evidenceCategory": "document",
+    "verification": "partiallyVerified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "srm-redesign",
+    "kind": "fact",
+    "notes": "Pagination is that of the 2001 Orloff transcription."
+  },
+  {
+    "claimId": "CH-C121",
+    "statement": "Lund testified Thiokol's no-launch rationale was rejected by Marshall, which asked Thiokol to consider other thoughts (corroborates the \"urging of Marshall\" finding; contrasts with Mulloy, CH-C086).",
+    "sourceId": "CH-S03",
+    "locator": "Vol. I, Ch. V, p. 94 (Lund, Commission staff interview, April 1, pp. 37-53)",
+    "excerpt": "And we presented that to Marshall, and that rationale was rejected. They said that they didn't accept that rationale, and they would like us to consider some other thoughts that they had had.",
+    "evidenceCategory": "testimony",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "thiokol-reversal",
+    "kind": "testimony",
+    "notes": null
+  },
+  {
+    "claimId": "CH-C122",
+    "statement": "At about 72.20 s the lower strut linking the right SRB and External Tank was severed or pulled away from the weakened hydrogen tank, letting the right SRB rotate around the upper strut.",
+    "sourceId": "CH-S01",
+    "locator": "Vol. I, Ch. III, p. 21",
+    "excerpt": "At about 72.20 seconds the lower strut linking the Solid Rocket Booster and the External Tank was severed or pulled away from the weakened hydrogen tank permitting the right Solid Rocket Booster to rotate around the upper attachment strut.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": "1986-01-28T16:39:12.214Z",
+    "timeBasis": "No GMT for \"about 72.20 s\" itself; time is the event-table row \"Start divergent yaw rates (RH vs. LH SRB)\" at 39:12.214 GMT (MET 72.204 s), used as UTC.",
+    "topic": "breakup",
+    "kind": "fact",
+    "notes": "Narrative time is approximate (\"about\")."
+  },
+  {
+    "claimId": "CH-C123",
+    "statement": "The range safety system destructed the right SRB at 110.250 s MET (39:50.260 GMT) and the left at 110.252 s.",
+    "sourceId": "CH-S01",
+    "locator": "Vol. I, Ch. III, pp. 37-39, event table rows \"RH SRB RSS destruct\" / \"LH SRB RSS destruct\"",
+    "excerpt": "39:50.260 RH SRB RSS destruct 110.250 E202 Camera",
+    "evidenceCategory": "log",
+    "verification": "verified",
+    "historicalTime": "1986-01-28T16:39:50.260Z",
+    "timeBasis": "Source table gives GMT; used directly as UTC.",
+    "topic": "range-safety",
+    "kind": "fact",
+    "notes": null
+  },
+  {
+    "claimId": "CH-C124",
+    "statement": "Finding 8b: the External Tank-SRB strut at 310 degrees, near the failed aft field joint, enhances tang-clevis gap opening by about 10-20 percent at 300-320 degrees.",
+    "sourceId": "CH-S02",
+    "locator": "Vol. I, Ch. IV, p. 70, Findings 8b",
+    "excerpt": "This strut's effect on the joint dynamics is to enhance the opening of the gap between the tang and clevis by about 10-20 percent in the region of 300-320 degrees.",
+    "evidenceCategory": "experimentResult",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "joint-rotation",
+    "kind": "finding",
+    "notes": "Co-factor locating the failure near 300 degrees (CH-R03)."
+  },
+  {
+    "claimId": "CH-C125",
+    "statement": "Finding 11c: putty-related delay in pressure application could be a factor in initial joint failure (stated as possibility).",
+    "sourceId": "CH-S02",
+    "locator": "Vol. I, Ch. IV, p. 71, Findings 11b-11c",
+    "excerpt": "This delay in pressure could be a factor in initial joint failure.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "putty",
+    "kind": "finding",
+    "notes": "Plausible, not established co-factor (CH-R03). Finding 11b gives delays of 500 ms or more."
+  },
+  {
+    "claimId": "CH-C126",
+    "statement": "Finding 7: other joints on both SRBs had similar combinations of tang-clevis gap and temperature; whether they were distressed in flight is unknown.",
+    "sourceId": "CH-S02",
+    "locator": "Vol. I, Ch. IV, p. 70, Findings 7",
+    "excerpt": "Other joints on the left and right Solid Rocket Boosters experienced similar combinations of tang-to-clevis gap clearance and temperature. It is not known whether these joints experienced distress during the flight of 51-L.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "joint-dimensions",
+    "kind": "finding",
+    "notes": "Indicates cold plus gap does not alone explain why this joint failed (CH-R03)."
+  },
+  {
+    "claimId": "CH-C127",
+    "statement": "Finding 6b: the side of the right SRB facing the sun was estimated at about 50 degrees F, versus 28 +/- 5 F at the 300-degree point.",
+    "sourceId": "CH-S02",
+    "locator": "Vol. I, Ch. IV, p. 70, Findings 6b",
+    "excerpt": "Temperature on the opposite side of the right Solid Rocket Booster facing the sun was estimated to be about 50 degrees Fahrenheit.",
+    "evidenceCategory": "experimentResult",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "temperature",
+    "kind": "finding",
+    "notes": "Analytical estimate; shows the large circumferential gradient (compare CH-C020)."
   }
 ]

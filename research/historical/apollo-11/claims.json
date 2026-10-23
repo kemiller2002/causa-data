@@ -239,7 +239,7 @@
   },
   {
     "claimId": "A11-C018",
-    "statement": "CAPCOM Charlie Duke gave the Go on the first 1202 alarm about 31 seconds after the computer-determined alarm time.",
+    "statement": "CAPCOM Charlie Duke gave the Go on the first 1202 alarm about half a minute after the alarm.",
     "sourceId": "A11-S04",
     "locator": "Tape 66/7 Page 312, GET 04 06 38 53 (CC)",
     "excerpt": "Roger. We got - We're GO on that alarm",
@@ -295,7 +295,7 @@
   },
   {
     "claimId": "A11-C022",
-    "statement": "For the later 1202 alarm(s) during P64, Duke acknowledged 'Roger. 1202. We copy it.'",
+    "statement": "During P64 Duke acknowledged a later 1202 with 'Roger. 1202. We copy it.' This is an acknowledgment, not a Go call.",
     "sourceId": "A11-S04",
     "locator": "Tape 66/9 Page 314, GET 04 06 42 58 (CC)",
     "excerpt": "Roger. 1202. We copy it.",
@@ -305,7 +305,7 @@
     "timeBasis": "Voice-transcript GET 04:06:42:58 + range zero 1969-07-16T13:32:00Z (Mission Report MSC-00171 sec. 2.0, claim A11-C001); transcript times are ground-clock annotations accurate to about 1-2 s and ALSJ notes inconsistencies in the original NASA transcript times",
     "topic": "alarm-1202-go",
     "kind": "fact",
-    "notes": "Real-time air-to-ground transcript (1969 NASA transcription). Preceded at 04 06 42 41 by 'Eagle, looking great. You're GO.' Table 5-I lists two 1202 alarms (102:42:43, 102:42:58); the transcript does not contain a separate crew voice report for each."
+    "notes": "Real-time air-to-ground transcript (1969 NASA transcription). The preceding 'Eagle, looking great. You're GO.' (04 06 42 41, A11-C101) precedes both late 1202s (computer-determined 102:42:43 and 102:42:58) and is a general Go. By timing, this acknowledgment answers the 102:42:43 alarm; see A11-C100."
   },
   {
     "claimId": "A11-C023",
@@ -366,7 +366,7 @@
   {
     "claimId": "A11-C027",
     "statement": "An ALSJ contributor relays Gene Kranz's account that the final pre-mission landing simulation (with Dave Scott and Jim Irwin in the LM simulator) was aborted unnecessarily by Mission Control because of a 1201 program alarm.",
-    "sourceId": "A11-S06",
+    "sourceId": "A11-S24",
     "locator": "Commentary following GET 102:38:59",
     "excerpt": "That landing simulation was aborted - unnecessarily - by Mission Control because of a 1201 program alarm.",
     "evidenceCategory": "externalReference",
@@ -585,12 +585,12 @@
     "timeBasis": null,
     "topic": "simulation-training",
     "kind": "testimony",
-    "notes": "Retrospective participant recollection (1994), secondary."
+    "notes": "Retrospective participant recollection (1994), secondary. This is a procedure/training framing, not a crew-deviation claim: Martin also writes 'We looked at the 4 inch thick book of astronaut procedures and there it was'."
   },
   {
     "claimId": "A11-C043",
     "statement": "ALSJ contributor Paul Fjeld comments that there was post-flight controversy over whether Armstrong erred in setting the RR switch to Slew, but believes the Crew Procedures Division trained the crew that way.",
-    "sourceId": "A11-S06",
+    "sourceId": "A11-S24",
     "locator": "Commentary before PDI (Fjeld)",
     "excerpt": "There was post-flight controversy about the possibility that Neil had made a mistake here, but I think the Crew Procedures Division, misunderstanding or using bad information from MIT, trained the crew that way.",
     "evidenceCategory": "testimony",
@@ -599,7 +599,7 @@
     "timeBasis": null,
     "topic": "rr-switch-procedure",
     "kind": "testimony",
-    "notes": "ALSJ editorial/contributor commentary (retrospective secondary analysis, not a contemporaneous record)."
+    "notes": "ALSJ editorial/contributor commentary (retrospective secondary analysis, not a contemporaneous record). This is the only crew-mistake framing found in the retrieved sources, and Fjeld himself rejects it."
   },
   {
     "claimId": "A11-C044",
@@ -659,7 +659,7 @@
   },
   {
     "claimId": "A11-C048",
-    "statement": "Martin (MIT) recalls that the Lab had never seen a 1202 alarm in pre-flight testing and could not explain the alarms in real time.",
+    "statement": "Martin (MIT) says he personally had never seen or heard of a 1202 alarm in pre-flight testing, and that MIT could not explain the alarms in real time.",
     "sourceId": "A11-S21",
     "locator": "Paragraph beginning 'They were confused by the alarm'",
     "excerpt": "I had never seen one or heard of one in all of our pre-flight testing.",
@@ -669,7 +669,7 @@
     "timeBasis": null,
     "topic": "simulation-training",
     "kind": "testimony",
-    "notes": "Retrospective recollection; conflicts in part with the ALSJ/Kranz report of a 1201 in a final simulation (A11-C027) and Eyles's LM-3 test account (A11-C041)."
+    "notes": "Retrospective recollection; first-person statement, not a claim about the whole Lab. Eyles says George Silver had seen the radar interface cause wild counter activity in LM-3 testing (A11-C041); see also the ALSJ/Kranz simulation report (A11-C027)."
   },
   {
     "claimId": "A11-C049",
@@ -730,8 +730,8 @@
   {
     "claimId": "A11-C053",
     "statement": "Armstrong said in the technical debrief that program alarms kept attention inside the cockpit during P64, preventing study of the landing site until below about 2000 feet.",
-    "sourceId": "A11-S06",
-    "locator": "Commentary following GET 102:42:35 (quoting the 1969 Technical Debrief)",
+    "sourceId": "A11-S16",
+    "locator": "Section 9 DOI through Touchdown, p. 9-21 (PDF p. 160)",
     "excerpt": "our attention was directed toward clearing the program alarms, keeping the machine flying, and assuring ourselves that control was adequate to continue without requiring an abort.",
     "evidenceCategory": "testimony",
     "verification": "verified",
@@ -739,7 +739,7 @@
     "timeBasis": null,
     "topic": "alarm-effect",
     "kind": "testimony",
-    "notes": "Contemporaneous (July 1969) crew debrief as quoted by ALSJ; the same passage exists in A11-S16 section 9."
+    "notes": "Contemporaneous crew debrief (31 July 1969); OCR letter-spacing normalized. Also quoted in ALSJ commentary (A11-S24)."
   },
   {
     "claimId": "A11-C054",
@@ -799,9 +799,9 @@
   },
   {
     "claimId": "A11-C058",
-    "statement": "The descent propulsion section states the low level light came on at 102:44:30.4, indicating about 116 seconds of total firing time remaining based on sensor location; the timeline shows 20 s at the landing go/no-go decision point and 0 at calculated depletion, with engine cutoff at 5.",
+    "statement": "The Gaging System Performance section states the low level light came on at 102:44:30.4, indicating about 116 seconds of total firing time remaining based on sensor location; the accompanying timeline shows engine cutoff at 45 s of firing time remaining, the landing go/no-go decision point at 20 s and calculated propellant depletion at 0 s.",
     "sourceId": "A11-S01",
-    "locator": "Section 9 (descent propulsion), pp. 9-23 to 9-24 and unnumbered figure",
+    "locator": "Section 9.8.3 Gaging System Performance, p. 9-23, and the unnumbered figure p. 9-24 (PDF pp. 180-181)",
     "excerpt": "The low level light came on at 102:44:30.4, indicating approximately 116 seconds of total firing time remaining, based on the sensor location.",
     "evidenceCategory": "measurement",
     "verification": "verified",
@@ -809,7 +809,7 @@
     "timeBasis": "Mission-report GET 102:44:30.4 + range zero 1969-07-16T13:32:00Z (Mission Report MSC-00171 sec. 2.0, claim A11-C001)",
     "topic": "fuel-margin",
     "kind": "finding",
-    "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged. Figure values (116 / 5 / 20 / 0 s firing time remaining) read from a table-like figure; column alignment is approximate."
+    "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged. Figure values 116 / 45 / 20 / 0 s confirmed by rendering PDF p. 181 as an image (the text layer drops the '4' of 45). Check: 116 - 45 = 71 s after 102:44:30.4 = 102:45:41, consistent with landing/engine off at 102:45:40."
   },
   {
     "claimId": "A11-C059",
@@ -870,7 +870,7 @@
   {
     "claimId": "A11-C063",
     "statement": "ALSJ contributor Paul Fjeld states the quantity light latched at 102:44:31 indicating 5.6% of original propellant, starting a 94-second countdown to a 'Bingo' call meaning land in 20 seconds or abort.",
-    "sourceId": "A11-S06",
+    "sourceId": "A11-S24",
     "locator": "Commentary following GET 102:44:45 (Fjeld)",
     "excerpt": "The quantity light latched at 102:44:31, and indicated that 5.6% of the original propellant load remained. This event started a 94-second countdown to a 'Bingo' fuel call which meant 'land in 20 seconds or abort.'",
     "evidenceCategory": "externalReference",
@@ -884,7 +884,7 @@
   {
     "claimId": "A11-C064",
     "statement": "Retrospective analysis attributes the apparent critical low-fuel situation to propellant slosh uncovering the quantity gauge and latching the low-level light early.",
-    "sourceId": "A11-S06",
+    "sourceId": "A11-S24",
     "locator": "Commentary (O'Brien and Fjeld) following the fuel paragraph",
     "excerpt": "Slosh uncovered the Quantity Gauge, latching the light early, losing the crew half a minute of flight time.",
     "evidenceCategory": "testimony",
@@ -1043,8 +1043,8 @@
     "excerpt": "The crew and spacecraft were released from quarantine on August 10, 1969, after no evidence of abnormal medical reactions was observed.",
     "evidenceCategory": "document",
     "verification": "verified",
-    "historicalTime": null,
-    "timeBasis": null,
+    "historicalTime": "1969-08-10T00:00:00.000Z",
+    "timeBasis": "date only: source states August 10, 1969; time of day not stated (00:00:00Z is a placeholder)",
     "topic": "quarantine",
     "kind": "fact",
     "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged."
@@ -1159,7 +1159,7 @@
     "timeBasis": null,
     "topic": "corrective-action-effect",
     "kind": "fact",
-    "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged. Evidence that the real-time workaround was effective is indirect: the report's alarm discussion is confined to descent."
+    "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged. This excerpt concerns vehicle dynamics. Better evidence that no alarms occurred in ascent is the LGC-performance paragraph listing only the 520 power-up alarm and the descent overflows (A11-C107, A11-C108); the workaround was a package (radar SLEW with breakers off, A11-C106; mode-select out of PGNS, A11-C081). Absence of alarms is consistent with, not proof of, the fix."
   },
   {
     "claimId": "A11-C084",
@@ -1206,7 +1206,7 @@
   {
     "claimId": "A11-C087",
     "statement": "ALSJ describes the Abort Guidance System as the backup navigation system used mainly for an emergency return to orbit, cross-checked against the primary system before descent.",
-    "sourceId": "A11-S06",
+    "sourceId": "A11-S24",
     "locator": "Commentary before PDI (AGS note)",
     "excerpt": "The AGS is the Abort Guidance System, the backup navigation system used primarily for an emergency return to orbit.",
     "evidenceCategory": "externalReference",
@@ -1234,7 +1234,7 @@
   {
     "claimId": "A11-C089",
     "statement": "CONTRADICTION (alarm timing): ALSJ commentary says Mission Report Table 5-I gives the 1201 alarm at 102:41:32, but Table 5-I lists 102:41:32 as 'Enter program P64' and the 1201 alarm at 102:42:18; ALSJ likewise cites 102:39:02 for the first 1202 although the table's first 1202 is 102:38:22.",
-    "sourceId": "A11-S06",
+    "sourceId": "A11-S24",
     "locator": "Commentary following GET 102:42:19 and 102:38:26",
     "excerpt": "Table 5-I in the Apollo 11 Mission Report gives a time of the 1201 alarm as 102:41:32.",
     "evidenceCategory": "document",
@@ -1257,7 +1257,7 @@
     "timeBasis": null,
     "topic": "alarm-1202-go",
     "kind": "contradiction",
-    "notes": "Other side: A11-S04 GET 04 06 39 17 / 04 06 39 23 (claim A11-C020). A Go may have been given on flight-director loops not in the air-to-ground transcript; unresolved."
+    "notes": "Other side: A11-S04 GET 04 06 39 17 / 04 06 39 23 (claim A11-C020). Eyles's broader 'called a go in each case' for the P64 alarms is recorded separately (A11-C120). A Go may have been given on flight-director loops not in the air-to-ground transcript; unresolved."
   },
   {
     "claimId": "A11-C091",
@@ -1271,7 +1271,7 @@
     "timeBasis": null,
     "topic": "alarm-cause",
     "kind": "contradiction",
-    "notes": "Other sides: A11-S01 sec. 16.2.5 (A11-C029, A11-C033) and A11-S20 (A11-C044, A11-C045; Grumman 13.36% per Eyles). The figures are broadly compatible (10-15%) but not identical; Martin's 80% is a real-time impression."
+    "notes": "Other sides: A11-S01 sec. 16.2.5 (A11-C029, A11-C033) and A11-S20 (A11-C044, A11-C045; Grumman 13.36% per Eyles, A11-C119). The figures are broadly compatible (10-15%) but not identical; Martin's 80% is an impression from the post-landing ground analysis, recalled in 1994, not a real-time descent observation."
   },
   {
     "claimId": "A11-C092",
@@ -1289,7 +1289,7 @@
   },
   {
     "claimId": "A11-C093",
-    "statement": "CONTRADICTION (blame framing): Martin's recollection frames the cause as the crew setting the switch to AUTO per their procedures book; Eyles calls the 'checklist error' formulation inaccurate and blames an ICD; Armstrong said the configuration had been agreed and used in all simulations; the Mission Report attributes it to the interface configuration.",
+    "statement": "CONTRADICTION (blame framing): no source supports a crew deviation from procedure. Martin frames the cause as procedure and training (the procedures book called for AUTO; training simulators were not connected to a real computer); 'checklist error' was Eyles's own earlier wording, which he retracted in favour of an ICD that did not specify phase; Armstrong said the configuration was agreed and used in all simulations; Fjeld reports a post-flight controversy over whether Neil made a mistake; the Mission Report attributes the alarms to the interface configuration.",
     "sourceId": "A11-S20",
     "locator": "Section on the root cause",
     "excerpt": "The problem has also been attributed (including by the author previously) to a \"checklist error\".",
@@ -1299,11 +1299,11 @@
     "timeBasis": null,
     "topic": "alarm-cause",
     "kind": "contradiction",
-    "notes": "Other sides: A11-S21 (A11-C042), A11-S16 (A11-C037), A11-S01 (A11-C032, A11-C036). Also: Martin says AUTO, Aldrin/Armstrong say Slew during descent - the Mission Report covers both (AUTO or SLEW)."
+    "notes": "Other sides: A11-S21 (A11-C042), A11-S16 (A11-C037), A11-S01 (A11-C032, A11-C036), A11-S24 (A11-C043). Two distinct questions: (a) did the crew deviate from procedure - contradicted by every source; (b) did the procedure specify a configuration that loaded the computer - supported (Martin, Eyles, Armstrong, MR AUTO-or-SLEW)."
   },
   {
     "claimId": "A11-C094",
-    "statement": "CONTRADICTION (timing of the ascent fix): Martin recalls the Flight Director's switch instruction as the last message just before ascent ignition, and Eyles says George Silver reached MIT representatives in Houston less than one hour before lift-off; the transcript shows the RR-off checklist change passed at 121:41:37, about 2 h 40 min before lift-off at 124:22:00.8.",
+    "statement": "CONTRADICTION (timing of the ascent fix): Martin recalls a Flight Director switch instruction ('Manual' position) as the last message just before ascent ignition; Eyles places George Silver's diagnosis reaching the MIT representatives in Houston less than one hour before lift-off; the transcript shows the RR-off checklist change passed at 121:41:37, about 2 h 40 min before lift-off at 124:22:00.8; the Mission Report (p. 4-17) says the radar was placed in SLEW with circuit breakers off for ascent.",
     "sourceId": "A11-S21",
     "locator": "Paragraph beginning 'But there was no time now'",
     "excerpt": "Just before ignition, and the last message sent to the astronauts, Glenn Lunney, the Flight Director, calmly told the astronauts to \"please put the Rendezvous Radar Switch in the Manual position\".",
@@ -1313,12 +1313,12 @@
     "timeBasis": null,
     "topic": "corrective-action",
     "kind": "contradiction",
-    "notes": "Other sides: A11-S09 GET 121:41:37 (A11-C082); A11-S01 sec. 13.1 (A11-C081); Eyles A11-S20 ('on the morning of July 21, less than one hour before lunar liftoff'). No such instruction near 124:22 was found in the ALSJ ascent transcript; real-time record preferred. 'Glenn Lunney' as spelled in source."
+    "notes": "Other sides: A11-S09 GET 121:41:37 (A11-C082, A11-C102); A11-S01 sec. 13.1 (A11-C081) and p. 4-17 (A11-C106); Eyles A11-S20 (A11-C105). Only Martin places an instruction just before ignition, and his 'Manual' position conflicts with the MR's SLEW-with-breakers-off. Eyles's timing is consistent with the transcript if the 121:41:37 change was precautionary and preceded the diagnosis. 'Glenn Lunney' as spelled in source."
   },
   {
     "claimId": "A11-C095",
     "statement": "CONTRADICTION (pre-flight familiarity): ALSJ states 1202 was not an alarm the crew had seen in simulations and Martin says MIT had never seen one in testing, while the Mission Report says a pre-flight decision covered bailout-type alarms and ALSJ/Kranz report a final simulation aborted on a 1201.",
-    "sourceId": "A11-S06",
+    "sourceId": "A11-S24",
     "locator": "Commentary following GET 102:38:42",
     "excerpt": "It is not an alarm that they had seen during simulations",
     "evidenceCategory": "externalReference",
@@ -1346,7 +1346,7 @@
   {
     "claimId": "A11-C097",
     "statement": "CONTRADICTION (fuel-margin framing): real-time callouts and the low-level light suggested a critical fuel state; the Mission Report computed about 45 s (indicated) / 50 s (post-flight, oxidizer tank 2) to depletion at engine cutoff with 770 lb remaining, and retrospective commentary attributes the early light to slosh.",
-    "sourceId": "A11-S06",
+    "sourceId": "A11-S24",
     "locator": "Commentary (O'Brien) on fuel",
     "excerpt": "The large difference between the post-flight analysis and the critical, low-fuel situation that appeared to exist - but didn't - was due to fuel sloshing in the tanks.",
     "evidenceCategory": "testimony",
@@ -1355,12 +1355,12 @@
     "timeBasis": null,
     "topic": "fuel-margin",
     "kind": "contradiction",
-    "notes": "Other sides: A11-S04 callouts (A11-C054, A11-C055, A11-C056); A11-S01 sec. 9 (A11-C058, A11-C059, A11-C060, A11-C061); Armstrong 'We were hitting our abort limit' (A11-C065). No single precise remaining-time figure should be assigned."
+    "notes": "Other sides: A11-S04 callouts (A11-C054, A11-C055, A11-C056); A11-S01 sec. 9 (A11-C058, A11-C059, A11-C060, A11-C061); Armstrong 'We were hitting our abort limit' (A11-C065). The 'appeared to exist - but didn't' framing is retrospective commentary, not an official finding: the MR says the indicated 45 s agreed with the calculated 50 s within measurement accuracy (A11-C115). No single precise remaining-time figure should be assigned."
   },
   {
     "claimId": "A11-C098",
     "statement": "CONTRADICTION (first step time): ALSJ notes the raw NASA transcript gives 109:24:48 for 'That's one small step', NASA told the press 109:24:20, the Mission Report gives first contact 109:24:15, and ALSJ reconstructs the step at 109:24:17 with the quote starting 109:24:23.",
-    "sourceId": "A11-S07",
+    "sourceId": "A11-S26",
     "locator": "Commentary following GET 109:24:23",
     "excerpt": "The raw NASA transcript give the start of this transmission as 109:24:48, which is clearly inconsistent with what has gone before.",
     "evidenceCategory": "externalReference",
@@ -1387,16 +1387,296 @@
   },
   {
     "claimId": "A11-C100",
-    "statement": "UNCERTAINTY: the 1201/1202 voice reports and Go calls are attested, but which individual alarm the 102:42:41-102:42:58 acknowledgments answer (Table 5-I has 1202s at 102:42:43 and 102:42:58) cannot be resolved from the air-to-ground transcript alone.",
-    "sourceId": "A11-S06",
-    "locator": "GET 102:42:41",
-    "excerpt": "Eagle, looking great. You're Go. (Long Pause) Roger. 1202. We copy it.",
+    "statement": "Timing largely settles the pairing of the late P64 alarms with ground calls: the 'You're GO' at 04 06 42 41 precedes both late 1202s (102:42:43 and 102:42:58) and so is a general Go; the single 'Roger. 1202. We copy it.' at 04 06 42 58 can only answer the 102:42:43 alarm; the fifth alarm (102:42:58) has no air-to-ground acknowledgment.",
+    "sourceId": "A11-S04",
+    "locator": "Tape 66/9 Page 314, GET 04 06 42 41 to 04 06 43 01; compared with MR Table 5-I (A11-C015)",
+    "excerpt": "Roger. 1202. We copy it.",
     "evidenceCategory": "log",
     "verification": "partiallyVerified",
-    "historicalTime": "1969-07-20T20:14:41.000Z",
-    "timeBasis": "Voice-transcript GET 102:42:41 + range zero 1969-07-16T13:32:00Z (Mission Report MSC-00171 sec. 2.0, claim A11-C001); transcript times are ground-clock annotations accurate to about 1-2 s and ALSJ notes inconsistencies in the original NASA transcript times",
+    "historicalTime": "1969-07-20T20:14:58.000Z",
+    "timeBasis": "Voice-transcript GET 04:06:42:58 + range zero 1969-07-16T13:32:00Z (Mission Report MSC-00171 sec. 2.0, claim A11-C002); transcript times are ground-clock annotations accurate to about 1-2 s and ALSJ notes inconsistencies in the original NASA transcript times",
     "topic": "alarm-1202-go",
     "kind": "uncertainty",
-    "notes": "ALSJ corrected transcript line (real-time communication, transcript corrected by the ALSJ editor from audio); bracketed text is editorial. Onboard (CM/LM) voice recordings and flight-director loops were not retrieved."
+    "notes": "Researcher inference from comparing voice-transcript GETs with computer-determined alarm times; voice times lag computer times by a few seconds (A11-C089 context). Residual uncertainty: flight-director and back-room loops and onboard recordings were not retrieved, so an off-loop Go for the fifth alarm cannot be excluded."
+  },
+  {
+    "claimId": "A11-C101",
+    "statement": "Duke told the crew they were looking great and Go, shortly after the 1201 and before the two late 1202 alarms.",
+    "sourceId": "A11-S04",
+    "locator": "Tape 66/9 Page 314, GET 04 06 42 41 (CC)",
+    "excerpt": "Eagle, looking great. You're GO.",
+    "evidenceCategory": "log",
+    "verification": "verified",
+    "historicalTime": "1969-07-20T20:14:41.000Z",
+    "timeBasis": "Voice-transcript GET 04:06:42:41 + range zero 1969-07-16T13:32:00Z (Mission Report MSC-00171 sec. 2.0, claim A11-C002); transcript times are ground-clock annotations accurate to about 1-2 s and ALSJ notes inconsistencies in the original NASA transcript times",
+    "topic": "alarm-1202-go",
+    "kind": "fact",
+    "notes": "Real-time air-to-ground transcript (1969 NASA transcription). Precedes the computer-determined 1202s at 102:42:43 and 102:42:58 (A11-C015), so it is a general Go rather than a response to either."
+  },
+  {
+    "claimId": "A11-C102",
+    "statement": "Evans framed the ascent radar-off change as a hedged working hypothesis: 'we think' it would take care of 'some of' the overflow.",
+    "sourceId": "A11-S09",
+    "locator": "GET 121:41:37",
+    "excerpt": "we think that this will take care of some of the overflow of program alarms that you were getting during descent.",
+    "evidenceCategory": "log",
+    "verification": "verified",
+    "historicalTime": "1969-07-21T15:13:37.000Z",
+    "timeBasis": "Voice-transcript GET 121:41:37 + range zero 1969-07-16T13:32:00Z (Mission Report MSC-00171 sec. 2.0, claim A11-C002); transcript times are ground-clock annotations accurate to about 1-2 s and ALSJ notes inconsistencies in the original NASA transcript times",
+    "topic": "corrective-action",
+    "kind": "fact",
+    "notes": "ALSJ corrected transcript line (real-time communication, transcript corrected by the ALSJ editor from audio); bracketed text is editorial. Real-time evidence that the cause was suspected, not established, before ascent."
+  },
+  {
+    "claimId": "A11-C103",
+    "statement": "Aldrin pushed back that the rendezvous radar had been in Slew during descent.",
+    "sourceId": "A11-S09",
+    "locator": "GET 121:42:05",
+    "excerpt": "Okay. We had the rendezvous radar in Slew during descent, though.",
+    "evidenceCategory": "log",
+    "verification": "verified",
+    "historicalTime": "1969-07-21T15:14:05.000Z",
+    "timeBasis": "Voice-transcript GET 121:42:05 + range zero 1969-07-16T13:32:00Z (Mission Report MSC-00171 sec. 2.0, claim A11-C002); transcript times are ground-clock annotations accurate to about 1-2 s and ALSJ notes inconsistencies in the original NASA transcript times",
+    "topic": "rr-switch-procedure",
+    "kind": "fact",
+    "notes": "ALSJ corrected transcript line (real-time communication, transcript corrected by the ALSJ editor from audio); bracketed text is editorial."
+  },
+  {
+    "claimId": "A11-C104",
+    "statement": "Aldrin later characterized his 121:42:05 reply as arguing with the CAPCOM.",
+    "sourceId": "A11-S25",
+    "locator": "Commentary following GET 121:42:14 (Aldrin, 1991 mission review)",
+    "excerpt": "I was just arguing with him.",
+    "evidenceCategory": "testimony",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "rr-switch-procedure",
+    "kind": "testimony",
+    "notes": "Retrospective crew remark (1991) recorded in ALSJ commentary; secondary."
+  },
+  {
+    "claimId": "A11-C105",
+    "statement": "Eyles states that George Silver's diagnosis reached the MIT representatives in Houston on the morning of July 21, less than one hour before lunar lift-off.",
+    "sourceId": "A11-S20",
+    "locator": "Section on the root cause (George Silver paragraph)",
+    "excerpt": "Silver finally got through to the MIT representatives in Houston, on the morning of July 21, less than one hour before lunar liftoff.",
+    "evidenceCategory": "testimony",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "corrective-action",
+    "kind": "testimony",
+    "notes": "Retrospective participant account (2004), secondary. If accurate, the diagnosis reached Houston after the 121:41:37 checklist change (A11-C082), i.e. the change was precautionary. Lift-off at 124:22:00.8 was 17:54 UTC (early afternoon US Eastern), so 'morning' is approximate."
+  },
+  {
+    "claimId": "A11-C106",
+    "statement": "The pilots' report states that, per ground instructions, the rendezvous radar was placed in the antenna SLEW position with circuit breakers off for ascent to avoid recurrence of the descent alarms.",
+    "sourceId": "A11-S01",
+    "locator": "Section 4 (pilots' report), p. 4-17, paragraph preceding 4.14 Ascent",
+    "excerpt": "In accordance with ground instructions, the rendezvous radar was placed in the antenna SLEW position with the circuit breakers off for ascent to avoid recurrence of the alarms experienced during descent.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "corrective-action",
+    "kind": "fact",
+    "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged. Confirmed on the rendered page (PDF p. 46)."
+  },
+  {
+    "claimId": "A11-C107",
+    "statement": "The Mission Report states the descent Executive overflow alarms are now known to be normal for the existing situation and indicative of proper guidance computer performance.",
+    "sourceId": "A11-S01",
+    "locator": "Section 9.6.5 Primary Guidance, Navigation, and Control System Performance, p. 9-7",
+    "excerpt": "The Executive overflow alarms that occurred during descent (see section 5.3) are now known to be normal for the existing situation and were indicative of proper performance of the guidance computer.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "alarm-cause",
+    "kind": "finding",
+    "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged. Confirmed on the rendered page (PDF p. 164). The paragraph cross-refers to 'section 16.2.6', but the alarm anomaly is section 16.2.5 (internal cross-reference error)."
+  },
+  {
+    "claimId": "A11-C108",
+    "statement": "An unexpected 520 (RADAR RUPT) alarm occurred at LGC power-up; it was reproduced on the ground, caused by a random setting of logic gates during turn-on, and judged neither abnormal nor indicative of a malfunction.",
+    "sourceId": "A11-S01",
+    "locator": "Section 9.6.5, p. 9-7",
+    "excerpt": "a 520 alarm (RADAR RUPT), which was not expected at this time, was generated. This alarm has been reproduced on the ground and was caused by a random setting of logic gates during the turn-on sequence.",
+    "evidenceCategory": "experimentResult",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "anomalies",
+    "kind": "finding",
+    "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged. Confirmed on the rendered page (PDF p. 164). The same paragraph says the LGC 'performed as designed, except for a number of unexpected alarms' and lists no ascent alarms."
+  },
+  {
+    "claimId": "A11-C109",
+    "statement": "Two altitude-difference transients during the computer alarms were apparently associated with incomplete radar data readout operations, a small real effect qualifying 'guidance and control not affected'.",
+    "sourceId": "A11-S01",
+    "locator": "Section 5.3 Powered Descent, p. 5-4",
+    "excerpt": "Two altitude-difference transients occurred during computer alarms and were apparently associated with incomplete radar data readout operations",
+    "evidenceCategory": "measurement",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "alarm-effect",
+    "kind": "finding",
+    "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged."
+  },
+  {
+    "claimId": "A11-C110",
+    "statement": "During descent and ascent the Abort Guidance System ran in monitor mode while the primary guidance system controlled all translation maneuvers.",
+    "sourceId": "A11-S01",
+    "locator": "Section 9.6.3 Translation Maneuvers, p. 9-5",
+    "excerpt": "All translation maneuvers were performed under primary guidance system control with the abort guidance system operating in a monitor mode.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "safeguards",
+    "kind": "fact",
+    "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged. Shows the backup system was running during descent; it does not state abort margins near touchdown."
+  },
+  {
+    "claimId": "A11-C111",
+    "statement": "No lunar-module powered-descent abort description was found in either part of the retrieved press kit; its Abort Modes section covers launch, translunar injection and coast, lunar orbit insertion, lunar orbit, transearth injection and coast. The mission-rule descent abort tables are too OCR-degraded to quote.",
+    "sourceId": "A11-S17",
+    "locator": "Abort Modes, pp. 74-77 (part 1); part 2 (A11-S27) searched for 'abort'",
+    "excerpt": null,
+    "evidenceCategory": "document",
+    "verification": "partiallyVerified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "safeguards",
+    "kind": "uncertainty",
+    "notes": "Absence-of-content claim from searching the text of both parts (A11-S17, A11-S27) and A11-S18. The press kit therefore does not support a claim that abort modes were 'defined for every phase' including descent."
+  },
+  {
+    "claimId": "A11-C112",
+    "statement": "Armstrong later wrote that near touchdown he would rather accept a drop to the surface than attempt the abort sequence at that altitude.",
+    "sourceId": "A11-S24",
+    "locator": "Commentary following GET 102:45:32 (Armstrong e-mail to Matt Gleason and Larry Jordan)",
+    "excerpt": "But I would certainly prefer that drop to trying to go through the abort sequence at that altitude.",
+    "evidenceCategory": "testimony",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "safeguards",
+    "kind": "testimony",
+    "notes": "Retrospective participant e-mail quoted in ALSJ commentary; secondary. Indicates abort capability narrowed close to the surface."
+  },
+  {
+    "claimId": "A11-C113",
+    "statement": "ALSJ commentary states the powered descent burn lasted 36 s longer than planned, almost all due to flying beyond the boulder field, equivalent to roughly 530 lb of fuel.",
+    "sourceId": "A11-S24",
+    "locator": "Commentary following the fuel paragraph (after GET 102:43:52)",
+    "excerpt": "The longer burn was equivalent to using roughly 530 pounds of fuel.",
+    "evidenceCategory": "externalReference",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "fuel-margin",
+    "kind": "fact",
+    "notes": "ALSJ editorial/contributor commentary (retrospective secondary analysis, not a contemporaneous record). Consistent in direction with the MR's attribution of extra usage to crater avoidance (A11-C061); the 530 lb figure is not in the MR."
+  },
+  {
+    "claimId": "A11-C114",
+    "statement": "ALSJ commentary states that of about 770 lb remaining at landing about 100 lb would have been unusable, and the remainder would have lasted about 45 s including about 20 s for an abort.",
+    "sourceId": "A11-S24",
+    "locator": "Commentary following the fuel paragraph (after GET 102:43:52)",
+    "excerpt": "the remainder would have been enough for about 45 seconds, including about 20 seconds for an abort.",
+    "evidenceCategory": "externalReference",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "fuel-margin",
+    "kind": "fact",
+    "notes": "ALSJ editorial/contributor commentary (retrospective secondary analysis, not a contemporaneous record). Also states 'about 100 pounds would have been unusable'. Cites MR p. 9-24 figure (A11-C058)."
+  },
+  {
+    "claimId": "A11-C115",
+    "statement": "CONTRADICTION (size of slosh effect): the Mission Report says the indicated 45 s to depletion differed from the post-flight calculated 50 s by 5 s, within measurement accuracy; ALSJ commentary (Fjeld) says slosh latched the light early, 'losing the crew half a minute of flight time'.",
+    "sourceId": "A11-S01",
+    "locator": "Section 9.8.3 Gaging System Performance, p. 9-24",
+    "excerpt": "The 5-second difference is within the measurement accuracy of the system.",
+    "evidenceCategory": "measurement",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "fuel-margin",
+    "kind": "contradiction",
+    "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged. Other side: A11-S24 (A11-C064). The official figure supports agreement within about 5 s; the larger hidden margin attributed to slosh is retrospective commentary."
+  },
+  {
+    "claimId": "A11-C116",
+    "statement": "Eyles states a second, less well-known descent problem: erroneous data made the descent engine thrust fluctuate because the throttle control algorithm was only marginally stable.",
+    "sourceId": "A11-S20",
+    "locator": "Abstract",
+    "excerpt": "In a less well-known problem, caused by erroneous data, the thrust of the LM's descent engine fluctuated wildly because the throttle control algorithm was only marginally stable.",
+    "evidenceCategory": "testimony",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "anomalies",
+    "kind": "testimony",
+    "notes": "Retrospective participant account, secondary; not identified as an anomaly in the Mission Report (unverified there). Eyles says it was understood only after Apollo 12."
+  },
+  {
+    "claimId": "A11-C117",
+    "statement": "At docking, LM thrusting continued after capture until a misalignment excursion had developed because the Commander had no indication of capture.",
+    "sourceId": "A11-S01",
+    "locator": "Section 5 (rendezvous and docking), p. 5-12",
+    "excerpt": "the thrusting was continued until after the misalignment excursion had developed, since the Commander had received no indication of the capture event.",
+    "evidenceCategory": "document",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "timeline-rendezvous",
+    "kind": "finding",
+    "notes": "Excerpt transcribed from the OCR text layer of the scanned report; OCR letter-spacing artifacts normalized, wording unchanged."
+  },
+  {
+    "claimId": "A11-C118",
+    "statement": "Eyles defines the alarm codes: 1202 when no core sets were available to schedule a job, 1201 when no VAC areas were available; both are Executive BAILOUT alarms of the same type.",
+    "sourceId": "A11-S20",
+    "locator": "Section on the Executive (BAILOUT paragraph)",
+    "excerpt": "If a job could not be scheduled because no \"core sets\" were available, the Executive called BAILOUT with alarm code 1202.  If no \"VAC areas\" were available, BAILOUT was called with alarm code 1201.",
+    "evidenceCategory": "testimony",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "restart-protection",
+    "kind": "testimony",
+    "notes": "Retrospective participant account, secondary; Adler (A11-S22) gives the same definitions. Explains Duke's 'Same type' (A11-C021). The MR calls both 'Executive overflow' alarms."
+  },
+  {
+    "claimId": "A11-C119",
+    "statement": "Eyles cites a post-flight Grumman (Clint Tillman, 9 August 1969) test that gave 13.36% maximum TLOSS and reproduced alarms similar to those in flight.",
+    "sourceId": "A11-S20",
+    "locator": "Section on the root cause (TLOSS paragraph)",
+    "excerpt": "Simulations at that rate experienced alarms similar to those that occurred in flight.",
+    "evidenceCategory": "testimony",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "alarm-cause",
+    "kind": "testimony",
+    "notes": "Secondary; the Tillman report was not retrieved. Corroborates the MR's 'analyses and simulations' (A11-C031)."
+  },
+  {
+    "claimId": "A11-C120",
+    "statement": "CONTRADICTION (P64 Go calls): Eyles writes that Mission Control 'called a go in each case' for the P64 alarms, but the air-to-ground transcript has an explicit Go for the 1201 only, a general Go preceding the late 1202s, one acknowledgment, and none for the fifth alarm.",
+    "sourceId": "A11-S20",
+    "locator": "Paragraph beginning 'At MET 102:42:17 a 1201 alarm occurred'",
+    "excerpt": "Mission control in Houston called a \"go\" in each case.",
+    "evidenceCategory": "testimony",
+    "verification": "verified",
+    "historicalTime": null,
+    "timeBasis": null,
+    "topic": "alarm-1202-go",
+    "kind": "contradiction",
+    "notes": "Other side: A11-S04 (A11-C021, A11-C101, A11-C022, A11-C100). Go calls on internal loops may not appear on air-to-ground; unresolved."
   }
 ]

@@ -15,7 +15,9 @@ This file covers the loss of Space Shuttle Challenger on mission 51-L. It covers
 - the Rogers Commission report, Vol. I chapters III-VIII, the Recommendations and Vol. 2 Appendix F (CH-S01 to CH-S08);
 - NASA's July 1986 and June 1987 implementation reports (CH-S09 to CH-S12);
 - House Report 99-1016 (CH-S13);
-- the STS-26 press kit (CH-S16).
+- the STS-26 press kit (CH-S16);
+- the Thiokol STS-26R post-flight report TWR-17272-1 Rev A (CH-S17) and the QM-8 cold-motor test report TWR-17591 (CH-S18);
+- the CAIB Report Vol. I Ch. 8 (CH-S19, August 2003), used only as later knowledge on the organizational fixes.
 
 **Secondary sources.** CH-S14 and CH-S15 are NASA web pages. They are used only for the STS-26 date and time and for corroboration.
 
@@ -54,8 +56,10 @@ This file covers the loss of Space Shuttle Challenger on mission 51-L. It covers
 - CH-C010: External Tank breach at 64.660 s.
 - CH-C011: aft dome failure at 73.124 s.
 - CH-C012: intertank failure at 73.137 s.
+- CH-C122: lower SRB/ET strut fails at about 72.20 s; the right SRB rotates.
 - CH-C013: last telemetry at 73.618 s.
 - CH-C002: breakup.
+- CH-C123: range safety destruct of the right SRB at 110.250 s.
 
 **Prior history**
 
@@ -69,7 +73,9 @@ This file covers the loss of Space Shuttle Challenger on mission 51-L. It covers
 
 - CH-C073: July 1986 projection of the next launch.
 - CH-C074 to CH-C080: June 1987 status and the redesign.
-- CH-C081 and CH-C082: STS-26 launches on 29 September 1988 at 15:37Z.
+- CH-C081, CH-C082 and CH-C105: STS-26 launches on 29 September 1988 at 15:37Z.
+- CH-C101 to CH-C106, CH-C116 to CH-C118: STS-26 post-flight inspection.
+- CH-C108 and CH-C109: QM-8 cold-motor firing, 20 January 1989.
 
 ## Hypotheses and alternatives
 
@@ -102,7 +108,11 @@ The official findings distinguish two domains. Keep them separate.
 ### Physical
 
 - **Root cause (the Commission's "cause").** The faulty design of the field joint, which was "unacceptably sensitive" to six factors: temperature, physical dimensions, the character of materials, reusability, processing, and the joint's reaction to dynamic loading (CH-C015, CH-C016).
-- **Trigger.** At ignition, cold O-rings (about 28 +/- 5 F at the 300-degree position, CH-C020) were compressed against all three walls of the groove (CH-C019) and did not follow the gap opening (CH-C021, CH-C022). Blow-by and erosion followed (CH-C005).
+- **Trigger.** The trigger was not cold alone. At or shortly after ignition, two things combined: O-rings with reduced resiliency (an estimated 28 +/- 5 F at the coldest point of the joint, CH-C020), and a tight 0.004 in gap that compressed the O-ring against all three groove walls (CH-C019). The Commission calls it "probable" that the O-rings did not follow the gap opening and were not pressure-actuated in time (CH-C021, CH-C022). Blow-by and erosion followed (CH-C005). Ch. IV adds two co-factors:
+  - The strut at 310 degrees enhanced gap opening near 300 degrees (Finding 8b).
+  - Putty delay "could be a factor" (Finding 11c). This is plausible, not established.
+
+  Other joints had similar gap and temperature combinations (Finding 7). So cold alone does not explain why this joint failed.
 - **Enabling conditions:**
   - growth in segment diameter from reuse (CH-C019);
   - possible delays from the putty and possible ice in the joint (CH-C025);
@@ -111,16 +121,23 @@ The official findings distinguish two domains. Keep them separate.
 
 ### Organizational (the Commission's "contributing cause")
 
-- **The flawed launch decision** (CH-C027, CH-C028, CH-C040).
-- **Thiokol's management reversal** at Marshall's urging (CH-C039).
+- **The flawed launch decision** (CH-C027, CH-C028, CH-C040, CH-C114). The Commission's own modality is hedged:
+  - "seems likely ... might not have occurred" (CH-C114);
+  - "appears to be a propensity" (CH-C042);
+  - "apparently" (CH-C057).
+- **Thiokol's management reversal** at Marshall's urging (CH-C039), corroborated by Lund's testimony (CH-C121), and contested by Mulloy (CH-C086).
 - **Communication failures:**
   - Levels I and II were not informed (CH-C029, CH-C043, CH-C044, CH-C045, CH-C046, CH-C042);
   - waivers of the launch constraint (CH-C041).
-- **Long-term acceptance of risk and normalization of erosion** (CH-C051, CH-C053, CH-C055, CH-C057, CH-C071, CH-C072).
+- **Long-term acceptance of escalating risk** (CH-C051, CH-C053, CH-C055, CH-C057, CH-C072).
+  - The 1986 sources say "acceptable flight risk" and "accepted escalating risk apparently because...". "Normalization" is a later term (Vaughan 1996; CAIB 2003), used in the topic tags only.
+  - The information did reach Level I and Headquarters (CH-C110, CH-C111). This qualifies the "unaware" wording of CH-C027. What was not passed on was the 27 January objection (CH-C044).
 - **Missing trend analysis** (CH-C056, CH-C060).
 - **The silent safety program** (CH-C059, CH-C060).
 - **Inadequate certification** (CH-C058).
-- **Schedule pressure** (CH-C061).
+- **Schedule pressure** (CH-C061, CH-C112, CH-C113). The modality differs between the bodies:
+  - Rogers: "may occasionally have obscured engineering concerns".
+  - House: "directly contributed".
 
 ### Separate pad-ice issue
 
@@ -128,16 +145,27 @@ The Rockwell ice concern and the inadequate freeze protection were flagged as a 
 
 ### House Committee view
 
-The House Committee reweights the organizational factors. It names the fundamental problem as poor technical decision-making over several years, rather than communication (CH-C084, CH-C093, CH-C094).
+The House Committee reweights the organizational factors. It says explicitly that the underlying problem was not poor communication or inadequate procedures. It names the fundamental problem as poor technical decision-making over several years (CH-C084, CH-C110, CH-C093, CH-C094).
+
+The two bodies weight the causes differently, and the record keeps both weightings:
+
+- Rogers Ch. V centres the eve-of-launch communication failure.
+- Rogers Ch. VI ("An Accident Rooted in History") and the House centre the long-term acceptance of risk.
 
 ## Contemporary decisions vs retrospective analysis
 
-**Contemporary record** (statements made at the time):
+**Contemporary documents, quoted by the Commission:**
+
+- The 1985 FRR statements accepting erosion (CH-C053).
+- The Boisjoly memo (CH-C055).
+- The 19 August 1985 briefing (CH-C075).
+
+**Commission reconstruction of 27-28 January** (post-accident chronology, not records made at the time; the Thiokol charts and telefax were seen only as images, or not at all):
 
 - The Thiokol engineering position: no launch below 53 F (CH-C033).
-- The Thiokol management rationale after the caucus (CH-C036, CH-C037).
-- The ice crew's decision not to report the cold SRB surfaces, because no LCC applied (CH-C047).
-- The 1985 FRR statements accepting erosion (CH-C053).
+- The Thiokol management rationale (CH-C036).
+- The resumed teleconference (CH-C037).
+- The ice-crew pyrometer readings and the decision not to report them (CH-C047).
 
 **Retrospective analysis** (post-accident):
 
@@ -149,12 +177,14 @@ The House Committee reweights the organizational factors. It names the fundament
 
 ## Corrective actions and evidence of their effect
 
-**Joint redesign** (CH-C074, CH-C078 and CH-C080; CH-C080 is the press kit):
+**Joint redesign** (CH-C074, CH-C078 and CH-C120; CH-C120 is the press kit):
 
 - a tang capture feature;
 - a third O-ring;
 - heaters that keep the joint at or above 75 F;
 - a J-seal in place of the putty.
+
+Ground verification included full-duration hot-gas tests with intentional joint flaws (CH-C119).
 
 **Organization and launch decisions:**
 
@@ -164,13 +194,22 @@ The House Committee reweights the organizational factors. It names the fundament
 
 **Verification:**
 
-- Planned: six full-scale firings (CH-C077).
-- Done before STS-26: five firings, with cold-weather QM certification scheduled after the flight (CH-C080, CH-C099).
+- Committed in June 1987: one engineering, two developmental and three qualification firings before the next flight (CH-C077).
+- Flown before STS-26: two development, two qualification and one production verification motor firing (CH-C080). The third QM (QM-8, cold) was deferred until after STS-26 (CH-C099). The redesign therefore flew before its full qualification set was complete.
+- QM-8, fired 20 January 1989, certified the heater-dependent joint system in a cold-soaked motor. The field joints were held at 75-130 F. It was a prerequisite to the third flight (CH-C108, CH-C109). The STS-26 post-flight report had recommended cold-environment testing before a cold-weather launch (CH-C107).
 
-**Effect:**
+**Effect (primary, contractor assessment):**
 
-- STS-26 flew on 29 September 1988 (CH-C081).
-- A secondary NASA history article says the redesigned SRMs "worked as expected" (CH-C082, partiallyVerified). No primary post-flight SRM inspection report was retrieved.
+- STS-26 flew on 29 September 1988 (CH-C081, CH-C105).
+- No hot gas or soot passed the J-leg on any of the six field joints, and no pressure passed the J-joint insulation. The redesigned field joints performed as expected (CH-C101, CH-C103, CH-C104).
+- The summary says no O-ring damage. The detailed section records assembly damage to the vent-port-plug O-rings (CH-C102, CH-C117).
+- Anomalies:
+  - water entered the field-joint weatherseals through vent valves that may have failed before launch (CH-C106, CH-C118);
+  - heater sensor misconnection (CH-C116);
+  - fretting on the capture feature (CH-C104).
+- This is one warm-weather flight with heaters on, assessed by the contractor. Treat it as corroboration of the ground tests, not as proof.
+
+**Later knowledge:** in 2003 the CAIB found that the institutional causes of Challenger "have not been fixed" (CH-C115). The organizational corrective actions (CH-C075, CH-C076, CH-C079) should therefore not be recorded as verified effective.
 
 ## Unresolved questions
 
@@ -196,4 +235,5 @@ The House Committee reweights the organizational factors. It names the fundament
 - **CH-C100 is unverified.** It is excluded from established findings.
 - **Overnight low temperatures commonly quoted in secondary literature.** They were not confirmed in retrieved primary text and are not recorded.
 - **The secondary wording "brittle O-rings" and "the External Tank exploded."** These are recorded only as a contradiction with the primary wording (CH-C098). Do not use them as findings.
-- **The STS-26 claim that the SRMs "worked as expected."** It is backed only by a secondary source (CH-C082).
+- **The secondary STS-26 "worked as expected" wording (CH-C082).** It is now corroborated by the primary contractor report (CH-C101 to CH-C104). Cite the primary claims instead.
+- **The crew's survival of the breakup.** Later analysis (the 1986 Kerwin report) was not retrieved, so nothing is claimed. CH-C002 must not be paraphrased as a cause of death.

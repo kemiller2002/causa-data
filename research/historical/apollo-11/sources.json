@@ -297,5 +297,57 @@
     "retrievalStatus": "notRetrieved",
     "httpStatus": 200,
     "rights": "Corrected transcript and commentary copyright Eric M. Jones (ALSJ, hosted for NASA History); short attributed excerpts only; underlying NASA transcripts/audio public domain"
+  },
+  {
+    "sourceId": "A11-S24",
+    "title": "The First Lunar Landing — editorial and contributor commentary",
+    "issuer": "Eric M. Jones (ed.) and ALSJ contributors (Fjeld, O'Brien, Hanus and others), Apollo 11 Lunar Surface Journal",
+    "published": "2018-05-10",
+    "url": "https://www.apollojournals.org/alsj/a11/a11.landing.html",
+    "archivalLocator": "Bracketed commentary on the ALSJ page (written 1991 onward), distinct from the real-time transcript (A11-S06)",
+    "retrievedAt": "2026-10-23",
+    "sourceClass": "secondary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "Commentary copyright the journal editors/contributors; short attributed excerpts only"
+  },
+  {
+    "sourceId": "A11-S25",
+    "title": "The Return to Orbit — editorial and contributor commentary",
+    "issuer": "Eric M. Jones (ed.) and ALSJ contributors, Apollo 11 Lunar Surface Journal",
+    "published": "2026-10-13",
+    "url": "https://www.apollojournals.org/alsj/a11/a11.launch.html",
+    "archivalLocator": "Bracketed commentary on the ALSJ page, including 1991 crew mission-review remarks; distinct from the real-time transcript (A11-S09)",
+    "retrievedAt": "2026-10-23",
+    "sourceClass": "secondary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "Commentary copyright the journal editors/contributors; short attributed excerpts only"
+  },
+  {
+    "sourceId": "A11-S26",
+    "title": "One Small Step — editorial and contributor commentary",
+    "issuer": "Eric M. Jones (ed.) and ALSJ contributors, Apollo 11 Lunar Surface Journal",
+    "published": "2025-05-03",
+    "url": "https://www.apollojournals.org/alsj/a11/a11.step.html",
+    "archivalLocator": "Bracketed commentary on the ALSJ page; distinct from the real-time transcript (A11-S07)",
+    "retrievedAt": "2026-10-23",
+    "sourceClass": "secondary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "Commentary copyright the journal editors/contributors; short attributed excerpts only"
+  },
+  {
+    "sourceId": "A11-S27",
+    "title": "Apollo 11 Lunar Landing Mission (Press Kit), part 2",
+    "issuer": "National Aeronautics and Space Administration",
+    "published": "1969-07-06",
+    "url": "https://www.apollojournals.org/afj/ap11fj/pdf/a11-press-kit2.pdf",
+    "archivalLocator": "NASA Release No. 69-83E (continuation)",
+    "retrievedAt": "2026-10-23",
+    "sourceClass": "primary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "US Government work, public domain"
   }
 ]

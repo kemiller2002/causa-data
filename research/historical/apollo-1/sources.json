@@ -180,5 +180,18 @@
     "retrievalStatus": "retrieved",
     "httpStatus": 200,
     "rights": "US Government work, public domain"
+  },
+  {
+    "sourceId": "A1-S15",
+    "title": "Proceedings of the 4th Aerospace Mechanisms Symposium (includes L. J. Walkover, R. J. Hart, E. W. Zosky, \"The Apollo Command Module Side Access Hatch System\", pp. 157-167)",
+    "issuer": "Jet Propulsion Laboratory / NASA (paper by North American Rockwell Corporation, Space Division)",
+    "published": "1970",
+    "url": "https://ntrs.nasa.gov/api/citations/19700012121/downloads/19700012121.pdf",
+    "archivalLocator": "JPL Technical Memorandum 33-425; NASA-CR-109092; NTRS 19700012121. Cited as reference 4-33 in the Apollo Program Summary Report (A1-S07)",
+    "retrievedAt": "2026-10-23",
+    "sourceClass": "primary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "US Government work, public domain"
   }
 ]
