@@ -190,7 +190,16 @@ def research_checks(root: Path, key: str, events: Sequence[Mapping]) -> list[Che
     relationship_evidence = {e["payload"]["evidenceId"] for e in events if e["eventType"] == "EvidenceRelated"}
     evidence_claim = {eid: m.group(1) for eid, m in refs if m}
     unrelated_used = [evidence_claim[e] for e in relationship_evidence if e in evidence_claim and by_claim[evidence_claim[e]]["verification"] == "unverified"]
+    claim_class = lambda eid: by_source.get(by_claim.get(evidence_claim.get(eid, ""), {}).get("sourceId", ""), {}).get("sourceClass")
+    supported = [e["payload"] for e in events if e["eventType"] == "HypothesisTransitioned" and e["payload"]["to"] == "supported"]
+    secondary_only_support = [p["hypothesisId"][:8] for p in supported if not any(claim_class(i) == "primary" for i in p["evidenceIds"])]
+    satisfied = [e["payload"] for e in events if e["eventType"] == "VerificationRecorded" and e["payload"]["outcome"] == "satisfied"]
+    secondary_verification = [evidence_claim.get(i, i) for p in satisfied for i in p["evidenceIds"] if claim_class(i) != "primary"]
     return [
+        check(f"{key}.support.primary-basis", not secondary_only_support,
+              "every markSupported transition cites at least one primary-source claim" + (f"; secondary-only: {secondary_only_support}" if secondary_only_support else "")),
+        check(f"{key}.verification.primary-evidence", not secondary_verification,
+              "every satisfied verification cites only primary-source evidence" + (f"; secondary: {sample(secondary_verification)}" if secondary_verification else "")),
         check(f"{key}.sources.complete", all(s.get("url", "").startswith(("https://", "http://")) and s.get("title") and s.get("issuer") for s in sources),
               f"{len(sources)} sources with title, issuer and URL"),
         check(f"{key}.claims.cite-known-sources", all(c["sourceId"] in by_source for c in claims), f"{len(claims)} claims"),
