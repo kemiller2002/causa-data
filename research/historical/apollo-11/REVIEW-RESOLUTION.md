@@ -24,3 +24,11 @@ Review: `adversarial-review.md` (independent reviewer, 1 critical, 9 major, 13 m
 | A11-R20 | **Fixed.** The mechanism and the conclusion state that the roles apply to separate effects. hFuel is recast as propellant monitoring. |
 | A11-R22 | **Fixed.** The action finding records the prediction as borne out (A11-C031, with A11-C119 as secondary corroboration). |
 | A11-R23 | **Fixed** (A11-C075 dated). |
+
+## Round 2
+
+| finding | disposition |
+|---|---|
+| A11-R03 (partly resolved in round 2) | **Fixed.** The ascent verification now cites A11-C108 first: the Mission Report LGC paragraph lists no ascent alarms. A11-C083 and A11-C106 are context. The conclusion says "lists no program alarms in ascent ... consistent with ... does not prove". The lifecycle reason says "met its criterion". |
+| Leftover: A11-C053 on hAutomatic | **Fixed.** Removed from the MarkWeakened transition. |
+| Leftover: state vector in the shared assertion | **Kept**, as documented in the mechanism (engine constraint). |

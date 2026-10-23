@@ -71,3 +71,26 @@ The single verified corrective action, the ascent workaround, is justified as a 
 - **Other timing discrepancies.** A11-C098 (109:24:48, 109:24:20, 109:24:15 and 109:24:17) and A11-C099 (195:18:18, 195:18:21 and 195:18:35) are correctly recorded.
 - **Mission rules.** A11-C088 is verbatim: "WHICH CANNOT BE REMEDIED BY CREW PROCEDURES".
 - **Exclusions and framing.** Excluding "17 seconds of fuel" and the Garman handwritten list is appropriate; I found neither in any fetched source. The framing of the case as a success is consistent throughout, and no failure is asserted.
+
+## Re-review (round 2)
+
+Scope: the critical and major findings only (A11-R01 to R10), checked against commit 9765ffe. I read the updated claims.json, sources.json and Apollo11.fs, and REVIEW-RESOLUTION.md. I checked the new locators for A11-C106 (MR p. 4-17, PDF p. 46) and A11-C107/C108 (MR §9.6.5 p. 9-7, PDF p. 164) against the fetched PDF, and both are correct.
+
+| finding | status | reason |
+|---|---|---|
+| A11-R01 | resolved | C058 now gives 116 / 45 / 20 / 0 s, the §9.8.3 locator and the image-confirmed note. |
+| A11-R02 | resolved | `hFuel`, `fuel-framing` and the conclusion follow the Mission Report's 45 s / 50 s agreement. The slosh margin is labelled commentary (C064 on S24), and C115 records the size conflict. |
+| A11-R03 | partly resolved | The package wording, "consistent with" and the counterfactual residual are good. But `RecordVerification` still rests on C083 (partially verified; about dynamics) plus C106 (which describes the configuration, not the outcome). C108, the LGC paragraph that lists no ascent alarms, is not cited. Two texts also still claim more than the evidence: the conclusion states "Lunar ascent … was alarm-free" as fact, and `MarkAwaitingEvidence` still says "the ascent workaround is verified". |
+| A11-R04 | resolved | C102, C103, C104 and C105 are added. The conclusion residual says "hedged working hypothesis; mechanism established after the flight". |
+| A11-R05 | resolved | The `ascent-fix-timing` text attributes the last-minute instruction only to Martin and cites Eyles correctly. C094 adds MR p. 4-17 as a third side. |
+| A11-R06 | resolved | C022 is out of the Go support. C101 is the general Go. C100 records the pairing as an inference, and C120 records Eyles's "in each case". |
+| A11-R07 | resolved | The hypothesis is now "crew deviated from procedure" and is weakened. The blame contradiction is now procedure versus interface specification, and Martin is framed correctly. |
+| A11-R08 | resolved | The press kit is no longer cited. The statement is narrowed and relies on C110 (primary) and C088. C111 and C112 are related as insufficient. The EnablingCondition role remains an analyst judgement, but the text hedges it. |
+| A11-R09 | resolved | Commentary claims are moved to secondary sources S24–S26. The claims left on S06, S07, S09, S13 and S15 are real-time transcript lines. Every MarkSupported transition cites primary claims. |
+| A11-R10 | resolved | `hStateVector` (supported) and `hFuelCritical` (weakened) are added. C062 no longer supports the fuel hypothesis, and crater-avoidance usage is cited (C061, C113). |
+
+New critical or major defects introduced by the fixes: **none found.**
+
+Minor residuals noticed in passing, outside this round's scope:
+- `tr hAutomatic MarkWeakened` still cites A11-C053, although A11-R16 says it was dropped. It was removed only from `Contradicts`.
+- `hStateVector` sits in the alarms-and-continuation assertion as a ContributingFactor. The assertion note does explain its separate effect, the landing point.

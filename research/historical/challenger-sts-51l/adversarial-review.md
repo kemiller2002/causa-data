@@ -112,3 +112,51 @@ The order of the script's Observe list matches the chronology. It is consistent 
 - Secondary wording ("brittle", "exploded") is correctly kept out of the findings.
 - The refusal to resolve before verification is appropriate.
 - The conclusion does separate the physical mechanism from the organizational "contributing cause", and does so in the Commission's terms.
+
+## Re-review (round 2)
+
+This round re-checks commit 9765ffe: `REVIEW-RESOLUTION.md`, `CORRECTIONS.md`, `claims.json`, `sources.json` and `analysis.md`, plus the diff of `Challenger.fs`. Only the major findings were re-checked.
+
+The excerpt check was re-run on all 127 claims, including CH-S19 (CAIB Ch. 8). Every new excerpt (CH-C110 to CH-C127) and every corrected excerpt (CH-C084, CH-C099, CH-C109) matches its source. The only non-matches are CH-C073 and CH-C108, as before; both fail only because of the two-column layout.
+
+**Summary:** 9 major findings resolved, 1 partly resolved. The fixes introduced no new critical or major defect; 3 new minor ones are listed below.
+
+### Status of the major findings
+
+| id | status | reason |
+|---|---|---|
+| CH-R01 | resolved | Two claims were added: CH-C110 (House p. 5) and CH-C111 (Rogers Ch. VI F5). The `history-briefed` contradiction is recorded as Material. hDecision now separates the history, which was briefed, from the 27 January objection, which was not passed on. |
+| CH-R02 | resolved | The CH-C084 excerpt now quotes the "not poor communication" sentence. CH-C084 has been removed from hDecision; it now supports hNormalization and contradicts hContainment. |
+| CH-R03 | resolved | The trigger now combines cold, the tight gap and the strut ("probably"). Putty (CH-C125) and the other joints (CH-C126) are cited. The conclusion says "modelled at 28 +/- 5 F at the coldest point". |
+| CH-R04 | resolved | hSchedule is now Supported on CH-C112 (House "directly contributed") and CH-C113 (Rogers "may occasionally"). Its wording keeps the hedge. |
+| CH-R05 | resolved | The source hedges ("probable", "appears", "apparently", "seems likely … might not") now appear in the hypotheses, the transition reasons, the conclusion and the residual. |
+| CH-R06 | **partly resolved** | The role is fixed: hNormalization is now ContributingFactor, and the mechanism states which body's weighting is followed. But the `accept "thiokol-responsibility"` basis (Challenger.fs line 132) still says normalized risk is included "as an enabling condition rather than choosing one body's weighting". That text is now false on both counts. It should be reworded. |
+| CH-R07 | resolved | The case is now `active`. The institutional criterion is verified Failed and resolution is refused. The organizational measures are no longer presented as effective. (The fairness of using CAIB is assessed below.) |
+| CH-R08 | resolved | The criterion now names the committed test set. The deferral of QM-8 is recorded as the Material contradiction `qualification-deferred` and kept as a residual. CH-C099 is corrected. The criterion dropped the plan's "before the next flight". That is acceptable only because the contradiction records the deferral. |
+| CH-R09 | resolved | CH-C109, the crCold criterion and the conclusion now say "heated joints in a cold-conditioned motor". |
+| CH-R10 | resolved | analysis.md lists CH-S17, CH-S18 and CH-S19. The CH-C082 and CH-C099 notes now cite the retrieved post-flight and QM-8 reports. |
+
+### Is the CAIB-based Failed verification a fair use of later knowledge?
+
+**Verdict: largely yes.** It is a minor defect, not a major one.
+
+**Why it is fair:**
+
+- It is clearly labelled as 2003 knowledge in CH-C115, in analysis.md and in the residual.
+- It is not used to judge what the 1986-88 actors knew or did.
+- It bears directly on the effectiveness of the measures. The fetched CAIB Ch. 8 also says, specifically about the Flight Readiness Review: "Although the process was altered after Challenger, these changes did not erase the basic problems that were built into the structure of the Flight Readiness Review."
+
+**Weaknesses (new minor findings CH-R25 and CH-R26 below):**
+
+1. **The evidence is general.** CH-C115 is CAIB's general "institutional failure" sentence. The FRR-specific sentence above is a better match for caLaunchProcess (Recommendation V) and should be added.
+2. **The criterion was written knowing the outcome.** "The institutional causes … do not recur in later Shuttle operations" has no time bound. A 15-year attribution gap includes intervening causes, such as 1990s budget and workforce cuts. The criterion should name its window and the confounding.
+3. **CH-S19 is classed `primary`.** It is primary for Columbia but later analysis for Challenger. Its notes should state this, even though the interface schema allows only primary or secondary.
+4. **The other organizational measures are unverified.** caSafetyOffice and caFlightRate are still `implemented` / approved with no criterion. The record should say they are unverified, so that the Failed status on caLaunchProcess is not read as the only organizational verdict.
+
+### New defects introduced by the fixes
+
+| id | severity | location | problem | fix |
+|---|---|---|---|---|
+| CH-R25 | minor | crInstitutional / RecordVerification `institutional` (CH-C115) | The criterion was written after the outcome was known and has no time window. The evidence is CAIB's general sentence, not its FRR-specific one. | Bound the criterion, for example "through the Shuttle programme as later investigated (CAIB 2003)". Add a claim for the CAIB Ch. 8 FRR sentence and cite it. State the intervening confounders in the residual. |
+| CH-R26 | minor | CH-S19 `sourceClass: primary`; caSafetyOffice / caFlightRate | CAIB is later analysis with respect to Challenger. The other two organizational measures have no criterion, so their status is silent. | Note "later analysis (2003), primary for Columbia" in CH-S19 or CH-C115. In the conclusion residual, state that caSafetyOffice and caFlightRate are unverified. |
+| CH-R27 | minor | CH-C111 notes | "See also CH-C075 (19 Aug 1985 briefing conclusions, Fig. 5)" points to the wrong claim: CH-C075 is the SRM&QA office. No claim covers Fig. 5. | Remove the cross-reference, or add a claim for Fig. 5. |
