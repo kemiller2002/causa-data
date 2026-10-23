@@ -1,0 +1,2144 @@
+{
+  "counts": {
+    "PASS": 412,
+    "FAIL": 0,
+    "REVIEW": 15
+  },
+  "checks": [
+    {
+      "name": "apollo-1.source.A1-S01.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 582696 chars; https://www.nasa.gov/wp-content/uploads/static/history/Apollo204/summary.pdf"
+    },
+    {
+      "name": "apollo-1.source.A1-S02.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 160314 chars; https://www.nasa.gov/missions/apollo/apollo-1/report-of-the-apollo-204-review-board/"
+    },
+    {
+      "name": "apollo-1.source.A1-S03.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 99966 chars; https://www.nasa.gov/wp-content/uploads/static/history/Apollo204/appendices/AppendixD-5.pdf"
+    },
+    {
+      "name": "apollo-1.source.A1-S04.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 63541 chars; https://www.nasa.gov/wp-content/uploads/static/history/as204_senate_956.pdf"
+    },
+    {
+      "name": "apollo-1.source.A1-S05.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 1691388 chars; https://www.nasa.gov/wp-content/uploads/2023/03/sp-4205.pdf"
+    },
+    {
+      "name": "apollo-1.source.A1-S06.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 209472 chars; https://ntrs.nasa.gov/api/citations/20040050936/downloads/20040050936.pdf"
+    },
+    {
+      "name": "apollo-1.source.A1-S07.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 2556032 chars; https://ntrs.nasa.gov/api/citations/19750013242/downloads/19750013242.pdf"
+    },
+    {
+      "name": "apollo-1.source.A1-S08.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 364843 chars; https://ntrs.nasa.gov/api/citations/19740013403/downloads/19740013403.pdf"
+    },
+    {
+      "name": "apollo-1.source.A1-S09.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 151162 chars; https://www.nasa.gov/wp-content/uploads/static/history/Apollo204/bormanhouse1.pdf"
+    },
+    {
+      "name": "apollo-1.source.A1-S10.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 2865 chars; https://history.nasa.gov/Apollo204/"
+    },
+    {
+      "name": "apollo-1.source.A1-S11.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 99693 chars; https://www.nasa.gov/wp-content/uploads/static/history/Apollo204/appendices/AppendixGpt1.pdf"
+    },
+    {
+      "name": "apollo-1.source.A1-S12.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 9728 chars; https://www.nasa.gov/history/Apollo204/biblio.html"
+    },
+    {
+      "name": "apollo-1.source.A1-S13.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 314677 chars; https://ntrs.nasa.gov/api/citations/19700015953/downloads/19700015953.pdf"
+    },
+    {
+      "name": "apollo-1.source.A1-S14.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 1329179 chars; https://www.ibiblio.org/apollo/Documents/A07_MissionReport.pdf"
+    },
+    {
+      "name": "apollo-1.source.A1-S15.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 5672473 chars; https://ntrs.nasa.gov/api/citations/19700012121/downloads/19700012121.pdf"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C001",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C002",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C003",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C004",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C005",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C006",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C007",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C008",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C009",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C010",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C011",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C012",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C013",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C014",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C015",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C016",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C017",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C018",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C019",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C020",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C021",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C022",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C023",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C024",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C025",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C026",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C027",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C028",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C029",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C030",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C031",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C032",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C033",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C034",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C035",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C036",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C037",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C038",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C039",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C040",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C041",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C042",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C043",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C044",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C045",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C046",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C047",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C048",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C049",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C050",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C052",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C054",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C055",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C056",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C057",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C058",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C059",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C061",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C062",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C063",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C064",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C065",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C067",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C069",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C071",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C072",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C073",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C074",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C075",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C076",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C077",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C078",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C079",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C080",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C081",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C082",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C083",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C085",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C086",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C087",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C088",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C089",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C091",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C092",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C093",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C094",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C095",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C096",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C097",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C098",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C099",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C100",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C101",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C102",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C103",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C104",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C106",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C107",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C108",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C109",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C110",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C111",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C112",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C113",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C114",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C115",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C116",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C117",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C118",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C119",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C120",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in A1-S15 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C121",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in A1-S15 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C122",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in A1-S15 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C123",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in A1-S15 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C124",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C125",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C126",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C127",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C128",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C129",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-1.excerpt.A1-C130",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.source.A11-S01.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 933120 chars; https://www.apollojournals.org/alsj/a11/A11_MissionReport.pdf"
+    },
+    {
+      "name": "apollo-11.source.A11-S02.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 2049 chars; https://ntrs.nasa.gov/api/citations/19700008096"
+    },
+    {
+      "name": "apollo-11.source.A11-S03.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 1167611 chars; https://www.apollojournals.org/alsj/a11/a11mr_NoMissingPages_19700008096.pdf"
+    },
+    {
+      "name": "apollo-11.source.A11-S04.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 1414123 chars; https://www.apollojournals.org/alsj/a11/AS11_TEC.PDF"
+    },
+    {
+      "name": "apollo-11.source.A11-S05.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 962681 chars; https://www.apollojournals.org/alsj/a11/a11transcript_tec.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S06.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 129271 chars; https://www.apollojournals.org/alsj/a11/a11.landing.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S07.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 134544 chars; https://www.apollojournals.org/alsj/a11/a11.step.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S08.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 100048 chars; https://www.apollojournals.org/alsj/a11/a11.clsout.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S09.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 89152 chars; https://www.apollojournals.org/alsj/a11/a11.launch.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S10.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 174973 chars; https://www.apollojournals.org/afj/ap11fj/01launch.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S11.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 127391 chars; https://www.apollojournals.org/afj/ap11fj/02earth-orbit-tli.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S12.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 61799 chars; https://www.apollojournals.org/afj/ap11fj/12day4-loi1.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S13.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 85360 chars; https://www.apollojournals.org/afj/ap11fj/17day5-undock-doi.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S14.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 93628 chars; https://www.apollojournals.org/afj/ap11fj/19day6-rendezvs-dock.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S15.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 79421 chars; https://www.apollojournals.org/afj/ap11fj/27day9-entry.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S16.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 509074 chars; https://www.apollojournals.org/alsj/a11/A11TechCrewDebrfV1_ALSJ.pdf"
+    },
+    {
+      "name": "apollo-11.source.A11-S17.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 171938 chars; https://www.apollojournals.org/afj/ap11fj/pdf/a11-press-kit1.pdf"
+    },
+    {
+      "name": "apollo-11.source.A11-S18.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 1492921 chars; https://www.apollojournals.org/alsj/a11/A11MissRules.pdf"
+    },
+    {
+      "name": "apollo-11.source.A11-S19.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 2629 chars; https://www.apollojournals.org/alsj/alsj-MissionRules.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S20.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 65129 chars; https://www.doneyles.com/LM/Tales.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S21.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 8491 chars; https://www.apollojournals.org/alsj/a11/a11.1201-fm.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S22.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 6767 chars; https://www.apollojournals.org/alsj/a11/a11.1201-pa.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S23.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 83223 chars; https://www.hq.nasa.gov/alsj/a11/a11.landing.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S24.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 129271 chars; https://www.apollojournals.org/alsj/a11/a11.landing.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S25.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 89152 chars; https://www.apollojournals.org/alsj/a11/a11.launch.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S26.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 134544 chars; https://www.apollojournals.org/alsj/a11/a11.step.html"
+    },
+    {
+      "name": "apollo-11.source.A11-S27.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 314483 chars; https://www.apollojournals.org/afj/ap11fj/pdf/a11-press-kit2.pdf"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C001",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C002",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C003",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C004",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C005",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C006",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C007",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C008",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C009",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C010",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C011",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C012",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C013",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C014",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C015",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C016",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C017",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in A11-S04 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C018",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C019",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in A11-S04 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C020",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C021",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C022",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C023",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C024",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C025",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C027",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C028",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C029",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C030",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C031",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C032",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C033",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C034",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C035",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C037",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C038",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C039",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C040",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C041",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C042",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C043",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C044",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C045",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C046",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C047",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C048",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C049",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C050",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C051",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C052",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C053",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C054",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in A11-S04 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C055",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C056",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C057",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C058",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C059",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C060",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C061",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C062",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C063",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C064",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C065",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C066",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C067",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C068",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C069",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C070",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C071",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C072",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C073",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C074",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C075",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C076",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C077",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C078",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C079",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C080",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C081",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C082",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C083",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C084",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C085",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C086",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in A11-S17 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C087",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C088",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C089",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C090",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C091",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C092",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C093",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C094",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C095",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C096",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C097",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C098",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C099",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C100",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C101",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C102",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C103",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C104",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C105",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C106",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C107",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C108",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in A11-S01 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C109",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C110",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C112",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C113",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C114",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C115",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C116",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C117",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C118",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C119",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "apollo-11.excerpt.A11-C120",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S01.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 39039 chars; https://www.nasa.gov/history/rogersrep/v1ch3.htm"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S02.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 120991 chars; https://www.nasa.gov/history/rogersrep/v1ch4.htm"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S03.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 146163 chars; https://www.nasa.gov/history/rogersrep/v1ch5.htm"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S04.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 146109 chars; https://www.nasa.gov/history/rogersrep/v1ch6.htm"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S05.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 37879 chars; https://www.nasa.gov/history/rogersrep/v1ch7.htm"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S06.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 53530 chars; https://www.nasa.gov/history/rogersrep/v1ch8.htm"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S07.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 11418 chars; https://www.nasa.gov/history/rogersrep/v1recomm.htm"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S08.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 34656 chars; https://www.nasa.gov/history/rogersrep/v2appf.htm"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S09.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 127281 chars; https://www.nasa.gov/wp-content/uploads/static/history/rogersrep/actions.pdf"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S10.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 36673 chars; https://www.nasa.gov/history/rogersrep/v6exsumm.htm"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S11.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 28939 chars; https://www.nasa.gov/history/rogersrep/v6ch1.htm"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S12.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 23208 chars; https://www.nasa.gov/history/rogersrep/v6ch2.htm"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S13.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 1006288 chars; https://www.govinfo.gov/content/pkg/GPO-CRPT-99hrpt1016/pdf/GPO-CRPT-99hrpt1016.pdf"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S14.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 89734 chars; https://www.nasa.gov/mission/sts-26/"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S15.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 86642 chars; https://www.nasa.gov/history/30-years-ago-sts-26-returns-shuttle-to-flight/"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S16.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 132110 chars; https://www.nasa.gov/wp-content/uploads/2023/05/sts-026r-press-kit.pdf"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S17.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 1349884 chars; https://ntrs.nasa.gov/api/citations/19900018462/downloads/19900018462.pdf"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S18.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 361694 chars; https://ntrs.nasa.gov/api/citations/19890014152/downloads/19890014152.pdf"
+    },
+    {
+      "name": "challenger-sts-51l.source.CH-S19.reachable",
+      "status": "PASS",
+      "detail": "HTTP 200; 79285 chars; https://s3.amazonaws.com/akamai.netstorage/anon.nasa-global/CAIB/CAIB_lowres_chapter8.pdf"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C001",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C002",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C003",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C004",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C005",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C006",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C007",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C008",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C009",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C010",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C011",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C012",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C013",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C014",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C015",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C016",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C017",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C018",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C019",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C020",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C021",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C022",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C023",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C024",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C025",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C026",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C027",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C028",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C029",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C030",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C031",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C032",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C033",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C034",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C035",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C036",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C037",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C038",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C039",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C040",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C041",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C042",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C043",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C044",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C045",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C046",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C047",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C048",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C049",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C050",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C051",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C052",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C053",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C054",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C055",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C056",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C057",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C058",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C059",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C060",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C061",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C062",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C063",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C064",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C065",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C066",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C067",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C068",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C069",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C070",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C071",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C072",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C073",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in CH-S09 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C074",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C075",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C076",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C077",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C078",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C079",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C080",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C081",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C082",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C083",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C084",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C085",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C086",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C087",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C088",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C089",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C090",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C091",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C092",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C093",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C094",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C095",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C096",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C097",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C098",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C099",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C101",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C102",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C103",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C104",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C105",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C106",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C107",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C108",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in CH-S18 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C109",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C110",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C111",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C112",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C113",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C114",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C115",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in CH-S19 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C116",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C117",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C118",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C119",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C120",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C121",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C122",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C123",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C124",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C125",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C126",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C127",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C128",
+      "status": "REVIEW",
+      "detail": "excerpt not found automatically in CH-S19 (scanned PDF, dynamic page or mismatch): human review required"
+    },
+    {
+      "name": "challenger-sts-51l.excerpt.CH-C129",
+      "status": "PASS",
+      "detail": "excerpt found in the fetched source text"
+    }
+  ]
+}

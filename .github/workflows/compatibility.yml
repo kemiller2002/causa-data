@@ -58,3 +58,7 @@ jobs:
         run: dotnet tools/consumers/clean-fsharp/bin/Release/net10.0/clean-consumer.dll verify .
       - name: Consumer - independent Python consumer
         run: python3 tools/consumers/python/causa_consumer.py verify .
+      - name: Active historical catalog - engine replay, provenance and deterministic rebuild
+        run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll historical-verify .
+      - name: Active historical catalog - independent Python checks (immutability, secrets, refusals)
+        run: python3 -I tools/py/historical_catalog.py verify . --base origin/main

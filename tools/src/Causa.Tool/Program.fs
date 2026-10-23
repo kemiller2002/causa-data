@@ -105,12 +105,57 @@ let private githubLive (phase: string) (root: string) (runId: string) (fixtureCo
         extra |> List.iter (fun (k, v) -> printfn "%s=%s" k (match v with JStr s -> s | _ -> ""))
         if results |> List.forall (fun r -> r.Passed) then 0 else 1
 
+let private historicalBuild (root: string) =
+    let set = schemasOrExit root
+    match Historical.Catalog.buildAll set root Historical.Cases.all with
+    | Error e ->
+        eprintfn "historical catalog build failed: %s" e
+        1
+    | Ok built ->
+        Historical.Catalog.write root built
+        built |> List.iter (fun b ->
+            printfn "%-20s commands=%d events=%d evidence=%d lifecycle=%s refusals=%d" b.Case.Key b.Case.Steps.Length b.Events.Length
+                b.Loaded.State.Evidence.Count (Enums.lifecycle.ToWire b.Loaded.State.Lifecycle) b.Refusals.Length
+            b.Refusals |> List.iter (fun (i, code, all) -> printfn "  refused step %d as expected: %s (%s)" i code all))
+        0
+
+let private historicalVerify (root: string) (report: string option) =
+    let set = schemasOrExit root
+    let checks = Historical.CatalogVerify.verify root (Historical.Catalog.buildAll set root Historical.Cases.all)
+    report |> Option.iter (fun path ->
+        let json =
+            JObj [ "checks", JArr(checks |> List.map (fun c -> JObj [ "name", JStr c.Name; "passed", JBool c.Passed; "detail", JStr c.Detail ]))
+                   "passed", JInt(checks |> List.filter (fun c -> c.Passed) |> List.length |> int64)
+                   "failed", JInt(checks |> List.filter (fun c -> not c.Passed) |> List.length |> int64) ]
+        File.WriteAllBytes(path, Json.fileBytes json |> Result.defaultWith failwith))
+    printChecks checks
+
 [<EntryPoint>]
 let main argv =
     match List.ofArray argv with
     | [ "generate"; root ] -> generateInto (Path.GetFullPath root); 0
     | [ "verify"; root ] -> Dataset.verify (Path.GetFullPath root) |> printChecks
     | [ "reproduce"; root ] -> reproduce (Path.GetFullPath root)
+    | [ "validate-dir"; root; dir ] ->
+        // One investigation directory through every reader stage (incl. History.validate); prints the primary code.
+        match Store.readDirectory (Path.GetFullPath dir) |> Result.bind (Store.validate (schemasOrExit (Path.GetFullPath root))) with
+        | Ok loaded -> printfn "VALID %s events=%d state=%s" (Uuid.text loaded.InvestigationId) loaded.Events.Length loaded.StateSha256; 0
+        | Error e -> printfn "INVALID %s%s %s" e.Code (e.DomainCode |> Option.map (fun d -> "/" + d) |> Option.defaultValue "") e.Detail; 1
+    | [ "historical-try"; root; key ] ->
+        // Build one case in memory through the engine and report; nothing is written.
+        let full = Path.GetFullPath root
+        match Historical.Cases.all |> List.tryFind (fun d -> d.Key = key) with
+        | None -> eprintfn "unknown case %s" key; 2
+        | Some d ->
+            match Historical.Catalog.buildCase (schemasOrExit full) full d with
+            | Error e -> eprintfn "%s" e; 1
+            | Ok b ->
+                printfn "%s commands=%d events=%d evidence=%d lifecycle=%s" key b.Case.Steps.Length b.Events.Length b.Loaded.State.Evidence.Count (Enums.lifecycle.ToWire b.Loaded.State.Lifecycle)
+                b.Refusals |> List.iter (fun (i, code, all) -> printfn "  refused step %d as expected: %s (%s)" i code all)
+                0
+    | [ "historical-build"; root ] -> historicalBuild (Path.GetFullPath root)
+    | [ "historical-verify"; root ] -> historicalVerify (Path.GetFullPath root) None
+    | [ "historical-verify"; root; report ] -> historicalVerify (Path.GetFullPath root) (Some(Path.GetFullPath report))
     | [ "lock"; root ] ->
         Gate.writeLock (Path.GetFullPath root)
         printfn "wrote %s" (Gate.lockPath (Path.GetFullPath root))
@@ -133,5 +178,5 @@ let main argv =
     | [ "github-live"; phase; root; runId; fixtureCommit ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit None
     | [ "github-live"; phase; root; runId; fixtureCommit; id ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit (Some id)
     | _ ->
-        eprintfn "usage: causa (generate|verify|reproduce) <repository-root>"
+        eprintfn "usage: causa (generate|verify|reproduce|historical-build|historical-verify) <repository-root>"
         2

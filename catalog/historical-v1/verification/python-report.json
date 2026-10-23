@@ -1,0 +1,464 @@
+{
+  "counts": {
+    "PASS": 91,
+    "FAIL": 0,
+    "REVIEW": 0
+  },
+  "checks": [
+    {
+      "name": "catalog.manifest.schema",
+      "status": "PASS",
+      "detail": "catalog-manifest.schema.json"
+    },
+    {
+      "name": "catalog.manifest.canonical",
+      "status": "PASS",
+      "detail": "RFC 8785 + LF"
+    },
+    {
+      "name": "catalog.active.canonical",
+      "status": "PASS",
+      "detail": "RFC 8785 + LF"
+    },
+    {
+      "name": "catalog.active.points-at-manifest",
+      "status": "PASS",
+      "detail": "{\"activeCatalog\": \"historical-v1\", \"catalogId\": \"causa-historical\", \"catalogVersion\": \"1.0.0\", \"manifest\": \"catalog/historical-v1/manifest.json\", \"workspace\": \"workspaces/demo/historical-v1\"}"
+    },
+    {
+      "name": "catalog.exactly-three-cases",
+      "status": "PASS",
+      "detail": "3 cases"
+    },
+    {
+      "name": "catalog.case-identities",
+      "status": "PASS",
+      "detail": "apollo-1, apollo-11, challenger-sts-51l"
+    },
+    {
+      "name": "catalog.workspace-exact",
+      "status": "PASS",
+      "detail": "directories: 1784da3c-7141-59ee-a495-1d5d44bf2284, c6b26614-fc43-5013-a15c-cf95942ee07b, e3adbee5-5096-5a10-bbfb-cecda86a154b"
+    },
+    {
+      "name": "catalog.no-synthetic-cases",
+      "status": "PASS",
+      "detail": "no v1.0.0 synthetic investigation in the active catalog"
+    },
+    {
+      "name": "catalog.schema-identity",
+      "status": "PASS",
+      "detail": "0a68af8c93190d2e4d6c27beb2f8cb67c3aebdda586d01beb7122b71af179152"
+    },
+    {
+      "name": "apollo-1.python-reader",
+      "status": "PASS",
+      "detail": "stages 1-14 and 16-17 pass; stage(s) [15] need the F# engine (evaluated by `causa historical-verify`)"
+    },
+    {
+      "name": "apollo-1.digests-independent",
+      "status": "PASS",
+      "detail": "recomputed events/manifest/snapshot/state digests"
+    },
+    {
+      "name": "apollo-1.lifecycle",
+      "status": "PASS",
+      "detail": "awaitingVerification at version 432"
+    },
+    {
+      "name": "apollo-1.historical-time-separation",
+      "status": "PASS",
+      "detail": "every envelope occurredAt is a Causa build-clock instant; mission times appear only in observedAt/capturedAt/text"
+    },
+    {
+      "name": "apollo-1.support.primary-basis",
+      "status": "PASS",
+      "detail": "every markSupported transition cites at least one primary-source claim"
+    },
+    {
+      "name": "apollo-1.verification.primary-evidence",
+      "status": "PASS",
+      "detail": "every satisfied verification cites only primary-source evidence"
+    },
+    {
+      "name": "apollo-1.sources.complete",
+      "status": "PASS",
+      "detail": "15 sources with title, issuer and URL"
+    },
+    {
+      "name": "apollo-1.claims.cite-known-sources",
+      "status": "PASS",
+      "detail": "130 claims"
+    },
+    {
+      "name": "apollo-1.evidence.traceable",
+      "status": "PASS",
+      "detail": "evidence without a claim citation: none"
+    },
+    {
+      "name": "apollo-1.evidence.citations-resolve",
+      "status": "PASS",
+      "detail": "citations naming unknown claims: none"
+    },
+    {
+      "name": "apollo-1.evidence.no-unverified-claims",
+      "status": "PASS",
+      "detail": "unverified claims admitted or related: none"
+    },
+    {
+      "name": "apollo-1.evidence.every-usable-claim-admitted",
+      "status": "PASS",
+      "detail": "usable claims not admitted: none"
+    },
+    {
+      "name": "apollo-1.claims.verified-have-locator",
+      "status": "PASS",
+      "detail": "verified claims without a locator: none"
+    },
+    {
+      "name": "apollo-1.claims.verified-only-from-retrieved-sources",
+      "status": "PASS",
+      "detail": "verified claims from unretrieved sources: none"
+    },
+    {
+      "name": "apollo-1.claims.findings-from-primary-sources",
+      "status": "PASS",
+      "detail": "official-finding claims resting on secondary sources: none"
+    },
+    {
+      "name": "apollo-1.claims.excerpts-concise",
+      "status": "PASS",
+      "detail": "excerpts over 60 words: none"
+    },
+    {
+      "name": "apollo-1.claims.verified-have-excerpt",
+      "status": "PASS",
+      "detail": "every verified claim carries an exact excerpt"
+    },
+    {
+      "name": "apollo-1.refuses.truncated-event-line",
+      "status": "PASS",
+      "detail": "expected CAUSA.JSON_MALFORMED; python reader CAUSA.JSON_MALFORMED; F# reader CAUSA.JSON_MALFORMED"
+    },
+    {
+      "name": "apollo-1.refuses.crlf",
+      "status": "PASS",
+      "detail": "expected CAUSA.ENCODING; python reader CAUSA.ENCODING; F# reader CAUSA.ENCODING"
+    },
+    {
+      "name": "apollo-1.refuses.future-format-version",
+      "status": "PASS",
+      "detail": "expected CAUSA.UNSUPPORTED_VERSION; python reader CAUSA.UNSUPPORTED_VERSION; F# reader CAUSA.UNSUPPORTED_VERSION"
+    },
+    {
+      "name": "apollo-1.refuses.unknown-event-type",
+      "status": "PASS",
+      "detail": "expected CAUSA.UNKNOWN_EVENT_TYPE; python reader CAUSA.UNKNOWN_EVENT_TYPE; F# reader CAUSA.UNKNOWN_EVENT_TYPE"
+    },
+    {
+      "name": "apollo-1.refuses.missing-snapshot",
+      "status": "PASS",
+      "detail": "expected CAUSA.PATH_INVALID; python reader CAUSA.PATH_INVALID; F# reader CAUSA.PATH_INVALID"
+    },
+    {
+      "name": "apollo-1.refuses.extra-file",
+      "status": "PASS",
+      "detail": "expected CAUSA.PATH_INVALID; python reader CAUSA.PATH_INVALID; F# reader CAUSA.PATH_INVALID"
+    },
+    {
+      "name": "apollo-1.refuses.edited-evidence-without-rehash",
+      "status": "PASS",
+      "detail": "expected CAUSA.EVENTS_HASH_MISMATCH; python reader CAUSA.EVENTS_HASH_MISMATCH; F# reader CAUSA.EVENTS_HASH_MISMATCH"
+    },
+    {
+      "name": "apollo-1.refuses.dropped-last-event",
+      "status": "PASS",
+      "detail": "expected CAUSA.MANIFEST_MISMATCH; python reader CAUSA.MANIFEST_MISMATCH; F# reader CAUSA.MANIFEST_MISMATCH"
+    },
+    {
+      "name": "apollo-1.refuses.forged-snapshot",
+      "status": "PASS",
+      "detail": "expected CAUSA.SNAPSHOT_HASH_MISMATCH; python reader CAUSA.SNAPSHOT_HASH_MISMATCH; F# reader CAUSA.SNAPSHOT_HASH_MISMATCH"
+    },
+    {
+      "name": "apollo-11.python-reader",
+      "status": "PASS",
+      "detail": "stages 1-14 and 16-17 pass; stage(s) [15] need the F# engine (evaluated by `causa historical-verify`)"
+    },
+    {
+      "name": "apollo-11.digests-independent",
+      "status": "PASS",
+      "detail": "recomputed events/manifest/snapshot/state digests"
+    },
+    {
+      "name": "apollo-11.lifecycle",
+      "status": "PASS",
+      "detail": "awaitingEvidence at version 431"
+    },
+    {
+      "name": "apollo-11.historical-time-separation",
+      "status": "PASS",
+      "detail": "every envelope occurredAt is a Causa build-clock instant; mission times appear only in observedAt/capturedAt/text"
+    },
+    {
+      "name": "apollo-11.support.primary-basis",
+      "status": "PASS",
+      "detail": "every markSupported transition cites at least one primary-source claim"
+    },
+    {
+      "name": "apollo-11.verification.primary-evidence",
+      "status": "PASS",
+      "detail": "every satisfied verification cites only primary-source evidence"
+    },
+    {
+      "name": "apollo-11.sources.complete",
+      "status": "PASS",
+      "detail": "27 sources with title, issuer and URL"
+    },
+    {
+      "name": "apollo-11.claims.cite-known-sources",
+      "status": "PASS",
+      "detail": "120 claims"
+    },
+    {
+      "name": "apollo-11.evidence.traceable",
+      "status": "PASS",
+      "detail": "evidence without a claim citation: none"
+    },
+    {
+      "name": "apollo-11.evidence.citations-resolve",
+      "status": "PASS",
+      "detail": "citations naming unknown claims: none"
+    },
+    {
+      "name": "apollo-11.evidence.no-unverified-claims",
+      "status": "PASS",
+      "detail": "unverified claims admitted or related: none"
+    },
+    {
+      "name": "apollo-11.evidence.every-usable-claim-admitted",
+      "status": "PASS",
+      "detail": "usable claims not admitted: none"
+    },
+    {
+      "name": "apollo-11.claims.verified-have-locator",
+      "status": "PASS",
+      "detail": "verified claims without a locator: none"
+    },
+    {
+      "name": "apollo-11.claims.verified-only-from-retrieved-sources",
+      "status": "PASS",
+      "detail": "verified claims from unretrieved sources: none"
+    },
+    {
+      "name": "apollo-11.claims.findings-from-primary-sources",
+      "status": "PASS",
+      "detail": "official-finding claims resting on secondary sources: none"
+    },
+    {
+      "name": "apollo-11.claims.excerpts-concise",
+      "status": "PASS",
+      "detail": "excerpts over 60 words: none"
+    },
+    {
+      "name": "apollo-11.claims.verified-have-excerpt",
+      "status": "PASS",
+      "detail": "every verified claim carries an exact excerpt"
+    },
+    {
+      "name": "apollo-11.refuses.truncated-event-line",
+      "status": "PASS",
+      "detail": "expected CAUSA.JSON_MALFORMED; python reader CAUSA.JSON_MALFORMED; F# reader CAUSA.JSON_MALFORMED"
+    },
+    {
+      "name": "apollo-11.refuses.crlf",
+      "status": "PASS",
+      "detail": "expected CAUSA.ENCODING; python reader CAUSA.ENCODING; F# reader CAUSA.ENCODING"
+    },
+    {
+      "name": "apollo-11.refuses.future-format-version",
+      "status": "PASS",
+      "detail": "expected CAUSA.UNSUPPORTED_VERSION; python reader CAUSA.UNSUPPORTED_VERSION; F# reader CAUSA.UNSUPPORTED_VERSION"
+    },
+    {
+      "name": "apollo-11.refuses.unknown-event-type",
+      "status": "PASS",
+      "detail": "expected CAUSA.UNKNOWN_EVENT_TYPE; python reader CAUSA.UNKNOWN_EVENT_TYPE; F# reader CAUSA.UNKNOWN_EVENT_TYPE"
+    },
+    {
+      "name": "apollo-11.refuses.missing-snapshot",
+      "status": "PASS",
+      "detail": "expected CAUSA.PATH_INVALID; python reader CAUSA.PATH_INVALID; F# reader CAUSA.PATH_INVALID"
+    },
+    {
+      "name": "apollo-11.refuses.extra-file",
+      "status": "PASS",
+      "detail": "expected CAUSA.PATH_INVALID; python reader CAUSA.PATH_INVALID; F# reader CAUSA.PATH_INVALID"
+    },
+    {
+      "name": "apollo-11.refuses.edited-evidence-without-rehash",
+      "status": "PASS",
+      "detail": "expected CAUSA.EVENTS_HASH_MISMATCH; python reader CAUSA.EVENTS_HASH_MISMATCH; F# reader CAUSA.EVENTS_HASH_MISMATCH"
+    },
+    {
+      "name": "apollo-11.refuses.dropped-last-event",
+      "status": "PASS",
+      "detail": "expected CAUSA.MANIFEST_MISMATCH; python reader CAUSA.MANIFEST_MISMATCH; F# reader CAUSA.MANIFEST_MISMATCH"
+    },
+    {
+      "name": "apollo-11.refuses.forged-snapshot",
+      "status": "PASS",
+      "detail": "expected CAUSA.SNAPSHOT_HASH_MISMATCH; python reader CAUSA.SNAPSHOT_HASH_MISMATCH; F# reader CAUSA.SNAPSHOT_HASH_MISMATCH"
+    },
+    {
+      "name": "challenger-sts-51l.python-reader",
+      "status": "PASS",
+      "detail": "stages 1-14 and 16-17 pass; stage(s) [15] need the F# engine (evaluated by `causa historical-verify`)"
+    },
+    {
+      "name": "challenger-sts-51l.digests-independent",
+      "status": "PASS",
+      "detail": "recomputed events/manifest/snapshot/state digests"
+    },
+    {
+      "name": "challenger-sts-51l.lifecycle",
+      "status": "PASS",
+      "detail": "active at version 452"
+    },
+    {
+      "name": "challenger-sts-51l.historical-time-separation",
+      "status": "PASS",
+      "detail": "every envelope occurredAt is a Causa build-clock instant; mission times appear only in observedAt/capturedAt/text"
+    },
+    {
+      "name": "challenger-sts-51l.support.primary-basis",
+      "status": "PASS",
+      "detail": "every markSupported transition cites at least one primary-source claim"
+    },
+    {
+      "name": "challenger-sts-51l.verification.primary-evidence",
+      "status": "PASS",
+      "detail": "every satisfied verification cites only primary-source evidence"
+    },
+    {
+      "name": "challenger-sts-51l.sources.complete",
+      "status": "PASS",
+      "detail": "19 sources with title, issuer and URL"
+    },
+    {
+      "name": "challenger-sts-51l.claims.cite-known-sources",
+      "status": "PASS",
+      "detail": "129 claims"
+    },
+    {
+      "name": "challenger-sts-51l.evidence.traceable",
+      "status": "PASS",
+      "detail": "evidence without a claim citation: none"
+    },
+    {
+      "name": "challenger-sts-51l.evidence.citations-resolve",
+      "status": "PASS",
+      "detail": "citations naming unknown claims: none"
+    },
+    {
+      "name": "challenger-sts-51l.evidence.no-unverified-claims",
+      "status": "PASS",
+      "detail": "unverified claims admitted or related: none"
+    },
+    {
+      "name": "challenger-sts-51l.evidence.every-usable-claim-admitted",
+      "status": "PASS",
+      "detail": "usable claims not admitted: none"
+    },
+    {
+      "name": "challenger-sts-51l.claims.verified-have-locator",
+      "status": "PASS",
+      "detail": "verified claims without a locator: none"
+    },
+    {
+      "name": "challenger-sts-51l.claims.verified-only-from-retrieved-sources",
+      "status": "PASS",
+      "detail": "verified claims from unretrieved sources: none"
+    },
+    {
+      "name": "challenger-sts-51l.claims.findings-from-primary-sources",
+      "status": "PASS",
+      "detail": "official-finding claims resting on secondary sources: none"
+    },
+    {
+      "name": "challenger-sts-51l.claims.excerpts-concise",
+      "status": "PASS",
+      "detail": "excerpts over 60 words: none"
+    },
+    {
+      "name": "challenger-sts-51l.claims.verified-have-excerpt",
+      "status": "PASS",
+      "detail": "every verified claim carries an exact excerpt"
+    },
+    {
+      "name": "challenger-sts-51l.refuses.truncated-event-line",
+      "status": "PASS",
+      "detail": "expected CAUSA.JSON_MALFORMED; python reader CAUSA.JSON_MALFORMED; F# reader CAUSA.JSON_MALFORMED"
+    },
+    {
+      "name": "challenger-sts-51l.refuses.crlf",
+      "status": "PASS",
+      "detail": "expected CAUSA.ENCODING; python reader CAUSA.ENCODING; F# reader CAUSA.ENCODING"
+    },
+    {
+      "name": "challenger-sts-51l.refuses.future-format-version",
+      "status": "PASS",
+      "detail": "expected CAUSA.UNSUPPORTED_VERSION; python reader CAUSA.UNSUPPORTED_VERSION; F# reader CAUSA.UNSUPPORTED_VERSION"
+    },
+    {
+      "name": "challenger-sts-51l.refuses.unknown-event-type",
+      "status": "PASS",
+      "detail": "expected CAUSA.UNKNOWN_EVENT_TYPE; python reader CAUSA.UNKNOWN_EVENT_TYPE; F# reader CAUSA.UNKNOWN_EVENT_TYPE"
+    },
+    {
+      "name": "challenger-sts-51l.refuses.missing-snapshot",
+      "status": "PASS",
+      "detail": "expected CAUSA.PATH_INVALID; python reader CAUSA.PATH_INVALID; F# reader CAUSA.PATH_INVALID"
+    },
+    {
+      "name": "challenger-sts-51l.refuses.extra-file",
+      "status": "PASS",
+      "detail": "expected CAUSA.PATH_INVALID; python reader CAUSA.PATH_INVALID; F# reader CAUSA.PATH_INVALID"
+    },
+    {
+      "name": "challenger-sts-51l.refuses.edited-evidence-without-rehash",
+      "status": "PASS",
+      "detail": "expected CAUSA.EVENTS_HASH_MISMATCH; python reader CAUSA.EVENTS_HASH_MISMATCH; F# reader CAUSA.EVENTS_HASH_MISMATCH"
+    },
+    {
+      "name": "challenger-sts-51l.refuses.dropped-last-event",
+      "status": "PASS",
+      "detail": "expected CAUSA.MANIFEST_MISMATCH; python reader CAUSA.MANIFEST_MISMATCH; F# reader CAUSA.MANIFEST_MISMATCH"
+    },
+    {
+      "name": "challenger-sts-51l.refuses.forged-snapshot",
+      "status": "PASS",
+      "detail": "expected CAUSA.SNAPSHOT_HASH_MISMATCH; python reader CAUSA.SNAPSHOT_HASH_MISMATCH; F# reader CAUSA.SNAPSHOT_HASH_MISMATCH"
+    },
+    {
+      "name": "immutability.frozen-paths-equal-release-tag",
+      "status": "PASS",
+      "detail": "contract/v1.0.0, fixtures/v1.0.0, compatibility/v1.0.0, engine.lock.json, global.json identical to causa-storage-v1.0.0"
+    },
+    {
+      "name": "immutability.prior-workspaces-untouched",
+      "status": "PASS",
+      "detail": "only additions under workspaces/demo/historical-v1/ relative to origin/main"
+    },
+    {
+      "name": "security.no-credentials",
+      "status": "PASS",
+      "detail": "49 added/changed files scanned for 6 credential patterns"
+    },
+    {
+      "name": "app.no-bundled-catalog-data",
+      "status": "PASS",
+      "detail": "338 tracked application files scanned for 1330 catalog identifiers"
+    }
+  ]
+}

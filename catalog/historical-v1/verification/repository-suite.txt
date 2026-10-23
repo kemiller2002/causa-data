@@ -1,0 +1,12 @@
+# Repository suite at data commit 2c14ef956f1e90033f911649831befc366927043
+Passed!  - Failed:     0, Passed:    13, Skipped:     0, Total:    13, Duration: 3 s - Causa.Contract.Tests.dll (net10.0)
+schemas=60 problems=0
+bundle.json reproducible
+CONTRACT.md generated sections match the schemas
+verify: checks=106 passed=106 failed=0
+reproduce: files=113 differing=0
+gate: {"failures":[],"gate":"causa-storage-v1.0.0-compatibility","result":"PASS"}
+gate-selftest: 17 PASS, 0 FAIL
+rehearsal-adapter: checks=113 passed=113 failed=0
+clean-fsharp: checks=222 passed=222 failed=0
+python-consumer: checks=242 passed=201 failed=0 not_evaluated=41
