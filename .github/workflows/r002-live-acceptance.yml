@@ -47,10 +47,15 @@ jobs:
           node scripts/build-site.mjs
         env:
           CAUSA_BUILD_COMMIT: ${{ env.R002_COMMIT }}
+      # The runner image already has Chromium's system libraries; '--with-deps' (apt-get) timed out. Cached by version.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-1.64.1
       - name: Install Chromium
         working-directory: app
         timeout-minutes: 8
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
       - name: Live acceptance
         working-directory: app
         run: npx playwright test -c playwright.live.config.js
