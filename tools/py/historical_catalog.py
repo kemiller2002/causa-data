@@ -257,7 +257,8 @@ MUTATIONS: tuple[tuple[str, str, Callable[[dict], dict]], ...] = (
     ("unknown-event-type", "CAUSA.UNKNOWN_EVENT_TYPE", lambda r: _replace_in_line(r, 3, '"eventType":"', '"eventType":"Forged')),
     ("missing-snapshot", "CAUSA.PATH_INVALID", lambda r: {k: v for k, v in r.items() if k != "snapshot.json"}),
     ("extra-file", "CAUSA.PATH_INVALID", lambda r: {**r, "notes.txt": b"x\n"}),
-    ("edited-evidence-without-rehash", "CAUSA.EVENTS_HASH_MISMATCH", lambda r: _replace_in_line(r, len(_events_lines(r)) // 2, "Paraphrase: ", "Paraphrase: (edited) ")),
+    ("edited-evidence-without-rehash", "CAUSA.EVENTS_HASH_MISMATCH",
+     lambda r: _replace_in_line(r, next(i for i, l in enumerate(_events_lines(r)) if "Paraphrase: " in l), "Paraphrase: ", "Paraphrase: (edited) ")),
     ("dropped-last-event", "CAUSA.MANIFEST_MISMATCH", lambda r: _with_events(r, _events_lines(r)[:-1])),
     ("forged-snapshot", "CAUSA.SNAPSHOT_HASH_MISMATCH", lambda r: {**r, "snapshot.json": r["snapshot.json"].replace(b'"title":"', b'"title":"Forged ', 1)}),
 )
@@ -280,6 +281,8 @@ def mutation_checks(root: Path, consumer, schemas, entry: Mapping, causa_dll: Pa
 
     def one(name: str, expected: str, mutate: Callable[[dict], dict]) -> Check:
         files = mutate(dict(raw))
+        if files == raw:
+            return failed(f"{key}.refuses.{name}", "mutation did not change the file set (test defect)")
         py = consumer.run_pipeline(iid, files, schemas).primary
         fs = fsharp_verdict(files)
         ok = py is not None and py.code == expected and fs in (expected, "NOT_RUN")

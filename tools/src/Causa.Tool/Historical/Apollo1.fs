@@ -9,11 +9,9 @@ open Causa.Tool.Historical.Kit
 /// and the exact source is an accepted residual unknown.
 module Apollo1 =
     /// Claims admitted only after the verification rounds open (Decide N2/M2 freshness).
-    let verificationClaims = [ "A1-C076"; "A1-C077"; "A1-C078" ]
-
-    /// Hatch verification evidence: claims that record a demonstrated (not merely specified) opening or egress test.
-    /// Empty until such a primary record is in the research; the investigation then stays awaiting verification.
-    let hatchClaims : string list = []
+    let verificationClaims =
+        [ "A1-C076"; "A1-C077"; "A1-C078"; "A1-C091"; "A1-C092"; "A1-C093"; "A1-C094"; "A1-C095"; "A1-C096"; "A1-C097"
+          "A1-C098"; "A1-C099"; "A1-C100"; "A1-C101"; "A1-C102" ]
 
     let build (x: Ctx) : Case =
         let g = x.Guid
@@ -33,13 +31,12 @@ module Apollo1 =
         let contra name statement claims materiality = step a (RecordContradiction(contradiction name, statement, x.Evs claims, materiality))
         let accept name basis = step a (TransitionContradiction(contradiction name, AcceptContradictionAsResidual, basis))
         let resolveC name basis = step a (TransitionContradiction(contradiction name, ResolveContradiction, basis))
-        let hatch = hatchClaims
         let inv = Id.create<InvestigationTag> (g "investigation" "root")
         { Key = x.Key
           Title = "Apollo 1 (AS-204) Command Module fire, 27 January 1967"
           Investigation = inv
           Start = utc (2026, 10, 23, 2, 0)
-          ExpectedLifecycle = (if hatch.IsEmpty then AwaitingVerification else Resolved)
+          ExpectedLifecycle = AwaitingVerification
           Research = x.Research
           Steps =
             [ step a (StartInvestigation(inv, "Apollo 1 (AS-204) Command Module fire, 27 January 1967", Id.create (g "observation" "initial"),
@@ -61,7 +58,7 @@ module Apollo1 =
                 step a (RecordHypothesis(hHatch, "The inward-opening, multi-piece hatch could not be opened against the cabin pressure, so the crew could not escape.", None))
                 step a (RecordHypothesis(hEmergency, "The test was not classified as hazardous, so no emergency escape, rescue, fire or medical preparations were in place.", None))
                 step a (RecordHypothesis(hManagement, "Program management problems and overconfidence from earlier pure-oxygen operations let the hazardous conditions persist unaddressed.", None)) ]
-            @ x.AdmitAllExcept(verificationClaims @ hatch)
+            @ x.AdmitAllExcept verificationClaims
             @ x.Supports hEnvironment "Board findings on the oxygen atmosphere and combustible materials." [ "A1-C006"; "A1-C057"; "A1-C025"; "A1-C026"; "A1-C027"; "A1-C028"; "A1-C064" ]
             @ x.Supports hEnvironment "Fire progression: rapid build-up and cabin rupture within seconds." [ "A1-C014"; "A1-C015"; "A1-C016"; "A1-C018"; "A1-C020" ]
             @ x.Supports hArc "Board determination of the most probable initiator." [ "A1-C029"; "A1-C031"; "A1-C032"; "A1-C033"; "A1-C034"; "A1-C009"; "A1-C010" ]
@@ -167,15 +164,21 @@ module Apollo1 =
                 step a (TransitionCorrection(caHatch, StartVerificationOfEffect))
                 step a MarkAwaitingVerification
                 refuse "RESOLVE.CORRECTION_NOT_VERIFIED" a ResolveInvestigation ]
-            @ ((verificationClaims @ hatch) |> List.collect x.Admit)
-            @ [ step a (RecordVerification(Id.create (g "verification" "fire-tests"), crFireTests, Satisfied, x.Evs [ "A1-C076" ]))
-                step a (RecordVerification(Id.create (g "verification" "apollo-7"), crFlight, Satisfied, x.Evs [ "A1-C077"; "A1-C078" ])) ]
-            @ (if hatch.IsEmpty then [] else [ step a (RecordVerification(Id.create (g "verification" "hatch"), crHatch, Satisfied, x.Evs hatch)) ])
-            @ [ step a (RecordConclusion(Id.create (g "conclusion" "final"),
-                                         "The Apollo 1 crew died in a fire that spread rapidly through a sealed 100-percent oxygen cabin at 16.7 psia containing extensive combustibles; the fire was most probably ignited by an electrical arc from vulnerable wiring near the Environmental Control Unit, but the exact ignition source was not identified. The inward-opening hatch could not be opened against cabin pressure and the test had not been treated as hazardous.",
+            @ (verificationClaims |> List.collect x.Admit)
+            @ [ contra "pad-pressure" "Sources give the pre-fire launch-pad cabin pressure as 16.5 psia (TN D-5654) and 16.7 psia (Review Board)." [ "A1-C097"; "A1-C006" ] Informational
+                accept "pad-pressure" "A 0.2 psi difference in the stated pressure of the 100-percent oxygen test atmosphere; immaterial to the findings."
+                contra "apollo-7-atmosphere" "The Apollo 7 launch cabin atmosphere was measured at about 64/36 oxygen-nitrogen, against the nominal 60/40." [ "A1-C102"; "A1-C074" ] Informational
+                accept "apollo-7-atmosphere" "Within the diluted-atmosphere regime the fire tests qualified; recorded as stated."
+                step a (RecordVerification(Id.create (g "verification" "fire-tests"), crFireTests, Satisfied, x.Evs [ "A1-C091"; "A1-C092"; "A1-C093"; "A1-C094"; "A1-C076" ]))
+                step a (RecordVerification(Id.create (g "verification" "apollo-7"), crFlight, Satisfied, x.Evs [ "A1-C098"; "A1-C101"; "A1-C077"; "A1-C078" ]))
+                // Apollo 7 shows the hatch mechanisms worked and the hatch was used for egress, but no retrieved primary record
+                // demonstrates the opening time from inside, by the pad crew, or against overpressure: inconclusive.
+                step a (RecordVerification(Id.create (g "verification" "hatch-flight"), crHatch, Inconclusive, x.Evs [ "A1-C099"; "A1-C100" ]))
+                step a (RecordConclusion(Id.create (g "conclusion" "final"),
+                                         "The Apollo 1 crew died in a fire that spread rapidly through a sealed 100-percent oxygen cabin at 16.7 psia containing extensive combustibles; the fire was most probably ignited by an electrical arc from vulnerable wiring near the Environmental Control Unit, but the exact ignition source was not identified. The inward-opening hatch could not be opened against cabin pressure and the test had not been treated as hazardous. Full-scale mock-up fire tests showed the revised atmosphere and materials were firesafe, and Apollo 7 flew the changed spacecraft with its systems operating as intended.",
                                          AcceptedWithResidualUncertainty, [ cause ],
-                                         Some "The exact ignition source remains unknown and probably unknowable: several candidate arcs exist and the evidence was destroyed; whether the 23:30:55 GMT power transient was cause or effect is undetermined. The root-cause role for the oxygen-and-combustibles condition is this catalog's assignment, not the Board's ranking. Apollo 7 shows the changed spacecraft flew successfully but did not test the fire countermeasures in a fire."))
-                ]
-            @ (if hatch.IsEmpty then [] else [ step a ResolveInvestigation ]) }
+                                         Some "The exact ignition source remains unknown and probably unknowable: several candidate arcs exist and the evidence was destroyed; whether the 23:30:55 GMT power transient was cause or effect is undetermined. The root-cause role for the oxygen-and-combustibles condition is this catalog's assignment, not the Board's ranking. The unified hatch's opening time has not been verified from a retrieved primary test record (Apollo 7 shows only that its mechanisms operated and it was used for egress), so the hatch correction remains awaiting verification and the investigation is not resolved."))
+                // The hatch criterion is unsatisfied: resolution is refused, and the investigation stays open.
+                refuse "RESOLVE.CRITERION_UNSATISFIED" a ResolveInvestigation ] }
 
     let definition : CaseDefinition = { Key = "apollo-1"; Build = build }

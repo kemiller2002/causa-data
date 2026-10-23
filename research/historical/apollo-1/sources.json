@@ -154,5 +154,31 @@
     "retrievalStatus": "notRetrieved",
     "httpStatus": null,
     "rights": "US Government work, public domain"
+  },
+  {
+    "sourceId": "A1-S13",
+    "title": "Apollo Command Module Mockup Flammability Tests",
+    "issuer": "Richard W. Bricker, Gary R. Primeaux, James P. Crabb, Calvin Schomburg, NASA Manned Spacecraft Center",
+    "published": "1970-04",
+    "url": "https://ntrs.nasa.gov/api/citations/19700015953/downloads/19700015953.pdf",
+    "archivalLocator": "NASA TN D-5654; MSC S-214; NTRS 19700015953 (boilerplate 1224 mockup test series)",
+    "retrievedAt": "2026-10-23",
+    "sourceClass": "primary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "US Government work, public domain"
+  },
+  {
+    "sourceId": "A1-S14",
+    "title": "Apollo 7 Mission Report",
+    "issuer": "NASA Manned Spacecraft Center, Mission Evaluation Team",
+    "published": "1968-12",
+    "url": "https://www.ibiblio.org/apollo/Documents/A07_MissionReport.pdf",
+    "archivalLocator": "MSC-PA-R-68-15; 403-page scan hosted by the Virtual AGC project archive (ibiblio); not found as a full report on NTRS (only supplements)",
+    "retrievedAt": "2026-10-23",
+    "sourceClass": "primary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "US Government work, public domain"
   }
 ]
