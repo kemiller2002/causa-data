@@ -141,6 +141,18 @@ let main argv =
         match Store.readDirectory (Path.GetFullPath dir) |> Result.bind (Store.validate (schemasOrExit (Path.GetFullPath root))) with
         | Ok loaded -> printfn "VALID %s events=%d state=%s" (Uuid.text loaded.InvestigationId) loaded.Events.Length loaded.StateSha256; 0
         | Error e -> printfn "INVALID %s%s %s" e.Code (e.DomainCode |> Option.map (fun d -> "/" + d) |> Option.defaultValue "") e.Detail; 1
+    | [ "historical-try"; root; key ] ->
+        // Build one case in memory through the engine and report; nothing is written.
+        let full = Path.GetFullPath root
+        match Historical.Cases.all |> List.tryFind (fun d -> d.Key = key) with
+        | None -> eprintfn "unknown case %s" key; 2
+        | Some d ->
+            match Historical.Catalog.buildCase (schemasOrExit full) full d with
+            | Error e -> eprintfn "%s" e; 1
+            | Ok b ->
+                printfn "%s commands=%d events=%d evidence=%d lifecycle=%s" key b.Case.Steps.Length b.Events.Length b.Loaded.State.Evidence.Count (Enums.lifecycle.ToWire b.Loaded.State.Lifecycle)
+                b.Refusals |> List.iter (fun (i, code, all) -> printfn "  refused step %d as expected: %s (%s)" i code all)
+                0
     | [ "historical-build"; root ] -> historicalBuild (Path.GetFullPath root)
     | [ "historical-verify"; root ] -> historicalVerify (Path.GetFullPath root) None
     | [ "historical-verify"; root; report ] -> historicalVerify (Path.GetFullPath root) (Some(Path.GetFullPath report))
