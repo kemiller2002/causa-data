@@ -60,6 +60,41 @@ module CatalogVerify =
           check (key + ".provenance.content-matches-research") contentMismatch.IsEmpty ("evidence whose text differs from the research record: " + list contentMismatch)
           check (key + ".provenance.verified-only-from-read-sources") fromUnreadSource.IsEmpty ("claims marked verified whose source was not retrieved: " + list fromUnreadSource) ]
 
+    let rec private permutations (xs: 'a list) : 'a list list =
+        match xs with
+        | [] -> [ [] ]
+        | _ -> xs |> List.collect (fun x -> permutations (List.except [ x ] xs) |> List.map (fun rest -> x :: rest))
+
+    /// All cases loaded together in one process, in every order and then the first order again: each replayed state must equal the
+    /// catalog digest whatever was loaded before it, and no two cases may share an event id (a reader that indexes the
+    /// whole catalog by event id must not see a collision). This proves the data side of EXT-DATA-013 natively; it is
+    /// not a substitute for the browser runtime check.
+    let combinedChecks (set: SchemaCheck.SchemaSet) (root: string) (cases: JValue list) : Check list =
+        let dirOf c = Path.Combine(Catalog.investigations root, str "investigationId" c)
+        let load c = Store.readDirectory (dirOf c) |> Result.bind (Store.validate set) |> Result.map (fun l -> str "caseKey" c, l.StateSha256, l.Events.Length)
+        let orders = permutations cases
+        let results = orders @ List.truncate 1 orders |> List.map (List.map load)
+        let loaded = results |> List.concat
+        let failures = loaded |> List.choose (function Error e -> Some(e.Code + " " + e.Detail) | Ok _ -> None) |> List.distinct
+        let expected = cases |> List.map (fun c -> str "caseKey" c, str "expectedStateSha256" c) |> Map.ofList
+        let drifted = loaded |> List.choose (function Ok(k, sha, _) when Map.tryFind k expected <> Some sha -> Some k | _ -> None) |> List.distinct
+        let digestsPerCase = loaded |> List.choose Result.toOption |> List.groupBy (fun (k, _, _) -> k) |> List.map (fun (k, xs) -> k, xs |> List.map (fun (_, s, _) -> s) |> List.distinct)
+        let unstable = digestsPerCase |> List.filter (fun (_, ds) -> ds.Length <> 1) |> List.map fst
+        let eventIds c =
+            File.ReadAllLines(Path.Combine(dirOf c, "events.ndjson"))
+            |> Array.map (Json.parse >> Result.map (str "eventId") >> Result.defaultValue "")
+            |> List.ofArray
+        let allIds = cases |> List.collect eventIds
+        let shared = allIds |> List.countBy id |> List.filter (fun (_, n) -> n > 1) |> List.map fst
+        let total = cases |> List.sumBy (eventIds >> List.length)
+        let failureText = if failures.IsEmpty then "none" else String.Join(';', failures)
+        [ check "catalog.combined-load" (failures.IsEmpty && loaded.Length = (orders.Length + 1) * cases.Length)
+              $"{cases.Length} cases loaded together in {orders.Length} orders plus a repeat ({loaded.Length} loads, {total} events per full load); failures: {failureText}"
+          check "catalog.combined-replay-deterministic" (failures.IsEmpty && drifted.IsEmpty && unstable.IsEmpty)
+              $"replayed state digests independent of load order and repetition; drifted: {String.Join(',', drifted)}; unstable: {String.Join(',', unstable)}"
+          check "catalog.combined-event-ids-disjoint" (shared.IsEmpty && List.forall ((<>) "") allIds)
+              $"{allIds.Length} event ids across cases, {shared.Length} shared" ]
+
     /// Every check on the committed catalog. `rebuilt` is a fresh in-memory build used for the reconstruction check.
     let verify (root: string) (rebuilt: Result<BuiltCase list, string>) : Check list =
         match Store.loadSchemas (Layout.schemas root) with
@@ -148,4 +183,5 @@ module CatalogVerify =
                       "no v1.0.0 synthetic investigation id or scenario key in the active catalog"
                   check "catalog.contract-identity" (str "schemaSha256" m = bundleSha && str "formatVersion" m = "1.0.0" && str "semanticVersion" m = "1.0.0") ("schema bundle " + bundleSha) ]
                 @ caseChecks
+                @ combinedChecks set root cases
                 @ reproduction

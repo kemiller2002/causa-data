@@ -31,7 +31,7 @@ The investigations are created by issuing commands to the pinned engine (`Decide
 ```bash
 tools/fetch-engine.sh && dotnet build tools/src/Causa.Tool -c Release
 dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll historical-build .    # regenerate (byte-identical)
-dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll historical-verify .   # replay, admissibility, provenance, reconstruction
+dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll historical-verify .   # replay, admissibility, provenance, reconstruction, all three loaded together
 python3 -I tools/py/historical_catalog.py verify . --app <app checkout>         # independent reader, immutability, secrets, refusals, no app bundling
 python3 -I tools/py/historical_catalog.py sources .                             # network: source reachability and excerpt confirmation
 ```
