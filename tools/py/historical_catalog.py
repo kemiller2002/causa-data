@@ -32,6 +32,7 @@ from jsonschema import Draft202012Validator
 
 CASE_KEYS = ("apollo-1", "apollo-11", "challenger-sts-51l")
 RUN_ID = "historical-v1"
+ALLOWED_ADDITION_WORKSPACES = (RUN_ID, "everyday-v1", "demonstration-v1")
 SYNTHETIC_KEYS = ("payment-failure", "intermittent-outage", "conflicting-metrics", "api-latency", "authentication-outage")
 FROZEN_PATHS = ("contract/v1.0.0", "fixtures/v1.0.0", "compatibility/v1.0.0", "engine.lock.json", "global.json")
 RELEASE_TAG = "causa-storage-v1.0.0"
@@ -226,14 +227,16 @@ def immutability_checks(root: Path, base: str) -> list[Check]:
     frozen = git(root, "diff", "--name-only", f"refs/tags/{RELEASE_TAG}", "--", *FROZEN_PATHS) if tag.returncode == 0 else None
     untracked = git(root, "status", "--porcelain", "--", *FROZEN_PATHS)
     ws = git(root, "diff", "--name-status", base, "--", "workspaces/demo")
-    changed_prior = [l for l in ws.stdout.splitlines() if l and not l.split("\t")[-1].startswith(f"workspaces/demo/{RUN_ID}/")]
+    allowed_prefixes = tuple(f"workspaces/demo/{workspace}/" for workspace in ALLOWED_ADDITION_WORKSPACES)
+    changed_prior = [l for l in ws.stdout.splitlines() if l and not l.split("\t")[-1].startswith(allowed_prefixes)]
     modified_ws = [l for l in ws.stdout.splitlines() if l and not l.startswith("A")]
+    allowed = ", ".join(f"workspaces/demo/{workspace}/" for workspace in ALLOWED_ADDITION_WORKSPACES)
     return [
         (check("immutability.frozen-paths-equal-release-tag", frozen.returncode == 0 and not frozen.stdout.strip() and not untracked.stdout.strip(),
                f"{', '.join(FROZEN_PATHS)} identical to {RELEASE_TAG}" + (f"; differ: {frozen.stdout.split()}" if frozen.stdout.strip() else ""))
          if frozen is not None else failed("immutability.frozen-paths-equal-release-tag", f"tag {RELEASE_TAG} not available locally (git fetch --tags)")),
         check("immutability.prior-workspaces-untouched", not changed_prior and not modified_ws,
-              f"only additions under workspaces/demo/{RUN_ID}/ relative to {base}" + (f"; other changes: {changed_prior + modified_ws}" if changed_prior or modified_ws else "")),
+              f"only additions under {allowed} relative to {base}" + (f"; other changes: {changed_prior + modified_ws}" if changed_prior or modified_ws else "")),
     ]
 
 
