@@ -136,6 +136,7 @@ let private everydayBuild (root: string) =
     | Error error -> eprintfn "everyday demonstration build failed: %s" error; 1
     | Ok built ->
         Everyday.writeCanonical root built
+        Everyday.writeCombinedCanonical root
         printfn "%s investigation=%s commands=%d events=%d lifecycle=%s" Everyday.caseKey Everyday.investigationId
             built.Run.Scenario.Steps.Length built.Run.Events.Length (Enums.lifecycle.ToWire built.Loaded.State.Lifecycle)
         0

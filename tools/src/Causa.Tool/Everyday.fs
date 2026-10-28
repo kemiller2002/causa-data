@@ -149,3 +149,15 @@ module Everyday =
         File.WriteAllBytes(Path.Combine(directory, "manifest.json"), built.Files.Manifest)
         File.WriteAllBytes(Path.Combine(directory, "events.ndjson"), built.Files.Events)
         File.WriteAllBytes(Path.Combine(directory, "snapshot.json"), built.Files.Snapshot)
+
+    /// Compose the four-case canonical source without changing any investigation bytes.
+    let writeCombinedCanonical root =
+        let destination = Path.Combine(root, "workspaces", "demo", combinedTemplateId, "investigations")
+        let sources =
+            [ Path.Combine(root, "workspaces", "demo", "historical-v1", "investigations")
+              Path.Combine(root, "workspaces", "demo", templateId, "investigations") ]
+        for source in sources do
+            for file in Directory.GetFiles(source, "*", SearchOption.AllDirectories) do
+                let target = Path.Combine(destination, Path.GetRelativePath(source, file))
+                Directory.CreateDirectory(Path.GetDirectoryName target |> nonNull) |> ignore
+                File.Copy(file, target, true)
