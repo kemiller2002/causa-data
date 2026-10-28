@@ -51,6 +51,19 @@ Creation refuses invalid names, symbolic-link escapes, and any existing destinat
 
 Publication is an explicit second operation. It uses a single non-forced Git commit, rejects an existing remote workspace, detects concurrent branch movement, reads every published byte back, and reports the actual commit SHA. See [Historical workspace templates](docs/HISTORICAL-WORKSPACE-TEMPLATES.md) for the full interface and recovery rules.
 
+### Everyday and combined demonstrations
+
+The additive `everyday-v1` template contains an engine-generated investigation of a ceiling light that remains dark because its bulb failed. It records four competing hypotheses, observations, a proposed and completed correction, and fresh post-correction verification. The `demonstration-v1` template combines that investigation with the three byte-identical historical investigations; neither template changes `historical-v1` or the active historical catalog.
+
+```bash
+dotnet run --project tools/src/Causa.Tool -- everyday-build .
+dotnet run --project tools/src/Causa.Tool -- template-verify --template everyday-v1
+dotnet run --project tools/src/Causa.Tool -- workspace-create --template demonstration-v1 --workspace development-demo-001
+dotnet run --project tools/src/Causa.Tool -- workspace-application-verify --template demonstration-v1 --workspace development-demo-001
+```
+
+See [Everyday lightbulb demonstration](docs/EVERYDAY-LIGHTBULB-DEMONSTRATION.md) for the reasoning sequence and a short judge walkthrough.
+
 ## Retained v1.0.0 compatibility fixtures (not the active catalog)
 
 - **Synthetic fixtures:** the five synthetic investigations in `fixtures/v1.0.0/` (payment-failure, intermittent-outage, conflicting-metrics, api-latency, authentication-outage). They are **retained unchanged**, together with the 90 negative fixtures, the golden states and the contract in `contract/v1.0.0/`.

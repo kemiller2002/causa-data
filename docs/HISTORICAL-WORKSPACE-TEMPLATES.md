@@ -6,6 +6,8 @@ Causa Data owns the immutable `historical-v1` template and the F# operations tha
 
 The template contains Apollo 1, Apollo 11, and Space Shuttle Challenger exactly as committed in `workspaces/demo/historical-v1/investigations/` at source commit `dcb8cb994eab81d0384b9c8abc5f0b593f398442`. The catalog and canonical historical workspace remain authoritative and unchanged.
 
+The same interface also supports the additive `everyday-v1` and `demonstration-v1` templates. The latter contains the exact historical files plus the engine-generated everyday lightbulb investigation. Selecting a new template never mutates `historical-v1`.
+
 ## Layout
 
 ```text
@@ -43,6 +45,8 @@ dotnet run --project tools/src/Causa.Tool -- \
 ```
 
 Verification requires the exact three identifiers and exact storage file set, matches every raw-file digest, and loads each history and snapshot through the engine pinned by `engine.lock.json`.
+
+For `everyday-v1` and `demonstration-v1`, the manifest declares and pins their exact one- and four-investigation sets respectively. The verifier derives workspace and remote-validation counts from the selected, validated manifest rather than assuming three cases.
 
 ## Create and verify a workspace
 

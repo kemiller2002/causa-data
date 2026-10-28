@@ -82,6 +82,40 @@ module Workspace =
           "e3adbee5-5096-5a10-bbfb-cecda86a154b"
           "1784da3c-7141-59ee-a495-1d5d44bf2284" ]
 
+    let everydayInvestigationIds = [ Everyday.investigationId ]
+    let demonstrationInvestigationIds = historicalInvestigationIds @ everydayInvestigationIds
+
+    type private TemplatePolicy =
+        { Id: string
+          Version: string
+          SourceCommit: string
+          SourceDirectory: string
+          InvestigationIds: string list }
+
+    let private templatePolicies =
+        [ { Id = templateId
+            Version = templateVersion
+            SourceCommit = sourceCommit
+            SourceDirectory = sourceDirectory
+            InvestigationIds = historicalInvestigationIds }
+          { Id = Everyday.templateId
+            Version = "1.0.0"
+            SourceCommit = "089f29fc508f9dadb57fb6537baa481ff360df76"
+            SourceDirectory = "workspaces/demo/everyday-v1/investigations"
+            InvestigationIds = everydayInvestigationIds }
+          { Id = Everyday.combinedTemplateId
+            Version = "1.0.0"
+            SourceCommit = "089f29fc508f9dadb57fb6537baa481ff360df76"
+            SourceDirectory = "workspaces/demo/demonstration-v1/investigations"
+            InvestigationIds = demonstrationInvestigationIds } ]
+        |> List.map (fun policy -> policy.Id, policy)
+        |> Map.ofList
+
+    let private policy name =
+        match templatePolicies |> Map.tryFind name with
+        | Some expected -> Ok expected
+        | None -> Error(CausaError.create Codes.unsupportedVersion $"template '{name}' is not supported")
+
     let private idPattern = Regex(@"^[a-z0-9][a-z0-9-]{0,63}\z", RegexOptions.CultureInvariant)
     let private shaPattern = Regex(@"^[0-9a-f]{64}\z", RegexOptions.CultureInvariant)
     let private commitPattern = Regex(@"^[0-9a-f]{40}\z", RegexOptions.CultureInvariant)
@@ -195,13 +229,14 @@ module Workspace =
                     | _ -> fail Codes.schemaViolation "template manifest has no investigations array"
                 let! computed = Json.digest (digestProjection fields) |> Result.mapError (CausaError.create Codes.nonCanonical)
                 if digest <> computed then return! fail Codes.fixtureDrift $"template digest mismatch: expected {digest}, computed {computed}"
-                if id <> templateId || version <> templateVersion || contract <> storageContractVersion then
-                    return! fail Codes.unsupportedVersion "the historical-v1 template identity or contract version is unsupported"
-                if repository <> sourceRepository || not (commitPattern.IsMatch commit) || directory <> sourceDirectory then
-                    return! fail Codes.schemaViolation "the historical-v1 template source identity is invalid"
+                let! expected = policy id
+                if version <> expected.Version || contract <> storageContractVersion then
+                    return! fail Codes.unsupportedVersion $"the {id} template version or storage contract is unsupported"
+                if repository <> sourceRepository || commit <> expected.SourceCommit || not (commitPattern.IsMatch commit) || directory <> expected.SourceDirectory then
+                    return! fail Codes.schemaViolation $"the {id} template source identity is invalid"
                 let ids = investigations |> List.map _.InvestigationId
-                if ids.Length <> 3 || Set.ofList ids <> Set.ofList historicalInvestigationIds then
-                    return! fail Codes.fixtureDrift "historical-v1 must contain exactly Apollo 1, Apollo 11 and Challenger"
+                if ids.Length <> expected.InvestigationIds.Length || Set.ofList ids <> Set.ofList expected.InvestigationIds then
+                    return! fail Codes.fixtureDrift $"{id} does not contain exactly its declared investigation set"
                 return
                     { TemplateId = id
                       TemplateVersion = version
@@ -231,6 +266,8 @@ module Workspace =
             let investigationsDir = templateInvestigations root name
             if isLink investigationsDir then return! fail Codes.pathInvalid "template investigations directory is a symbolic link"
             let! manifest = canonicalFile (manifestPath root name) |> Result.bind parseTemplateJson
+            if manifest.TemplateId <> name then
+                return! fail Codes.fixtureDrift $"template directory {name} contains manifest for {manifest.TemplateId}"
             let directories = Directory.GetDirectories investigationsDir |> List.ofArray
             let filesAtRoot = Directory.GetFiles investigationsDir |> List.ofArray
             if not filesAtRoot.IsEmpty then return! fail Codes.pathInvalid "template investigations root contains files"
@@ -262,40 +299,45 @@ module Workspace =
                 JObj [ "path", JStr relative; "sha256", JStr(Json.sha256Hex bytes) ])
         JObj [ "investigationId", JStr id; "files", JArr files ]
 
-    let private manifestJson (templateDir: string) =
+    let private manifestJson (templateDir: string) (expected: TemplatePolicy) =
         let fields =
-            [ "templateId", JStr templateId
-              "templateVersion", JStr templateVersion
+            [ "templateId", JStr expected.Id
+              "templateVersion", JStr expected.Version
               "storageContractVersion", JStr storageContractVersion
               "sourceRepository", JStr sourceRepository
-              "sourceCommit", JStr sourceCommit
-              "sourceDirectory", JStr sourceDirectory
-              "investigations", JArr(historicalInvestigationIds |> List.map (investigationJson templateDir)) ]
+              "sourceCommit", JStr expected.SourceCommit
+              "sourceDirectory", JStr expected.SourceDirectory
+              "investigations", JArr(expected.InvestigationIds |> List.map (investigationJson templateDir)) ]
         let digest = Json.digest (JObj fields) |> Result.defaultWith failwith
         JObj(fields @ [ "overallTemplateSha256", JStr digest ])
 
     /// One-time creation refuses an existing template and publishes only after every copied investigation validates.
-    let createHistoricalTemplate (root: string) : Result<HistoricalTemplate, CausaError> =
+    let createTemplate (root: string) (name: string) : Result<HistoricalTemplate, CausaError> =
         let root = full root
-        let destination = templateRoot root templateId
-        let staging = Path.Combine(root, "templates", $".{templateId}-staging-{Guid.NewGuid():N}")
-        if Directory.Exists destination || File.Exists destination then fail Codes.pathInvalid $"template already exists: templates/{templateId}"
-        else
+        workspaceResult {
+            let! expected = policy name
+            let destination = templateRoot root name
+            let staging = Path.Combine(root, "templates", $".{name}-staging-{Guid.NewGuid():N}")
+            if Directory.Exists destination || File.Exists destination then
+                return! fail Codes.pathInvalid $"template already exists: templates/{name}"
             try
-                let source = Path.Combine(root, sourceDirectory.Replace('/', Path.DirectorySeparatorChar))
+                let source = Path.Combine(root, expected.SourceDirectory.Replace('/', Path.DirectorySeparatorChar))
                 Directory.CreateDirectory(Path.Combine(staging, "investigations")) |> ignore
-                for id in historicalInvestigationIds do
+                for id in expected.InvestigationIds do
                     let fromDir = Path.Combine(source, id)
                     let toDir = Path.Combine(staging, "investigations", id)
                     Directory.CreateDirectory toDir |> ignore
-                    for name in Store.fileNames do File.Copy(Path.Combine(fromDir, name), Path.Combine(toDir, name), false)
-                let manifest = manifestJson staging
+                    for fileName in Store.fileNames do File.Copy(Path.Combine(fromDir, fileName), Path.Combine(toDir, fileName), false)
+                let manifest = manifestJson staging expected
                 File.WriteAllBytes(Path.Combine(staging, "template-manifest.json"), Json.fileBytes manifest |> Result.defaultWith failwith)
                 Directory.Move(staging, destination)
-                verifyTemplate root templateId
+                return! verifyTemplate root name
             with ex ->
                 if Directory.Exists staging then Directory.Delete(staging, true)
-                fail Codes.pathInvalid $"template creation failed: {ex.Message}"
+                return! fail Codes.pathInvalid $"template creation failed: {ex.Message}"
+        }
+
+    let createHistoricalTemplate (root: string) = createTemplate root templateId
 
     let private templateFiles (root: string) (template: HistoricalTemplate) id =
         let dir = Path.Combine(templateInvestigations root template.TemplateId, id)
@@ -449,7 +491,7 @@ module Workspace =
         | Failure.NotFastForward _ -> "concurrent branch update detected"
         | Failure.Other _ -> "repository operation failed"
 
-    let private remoteVerify (backend: Backend) (schemas: SchemaCheck.SchemaSet) (commit: string) (root: string) (workspace: string) (local: (string * byte[]) list) =
+    let private remoteVerify (backend: Backend) (schemas: SchemaCheck.SchemaSet) (commit: string) (root: string) (workspace: string) (ids: string list) (local: (string * byte[]) list) =
         task {
             match! backend.TreeOf commit with
             | Error failure -> return Error(CausaError.create Codes.fixtureDrift $"published commit tree could not be read: {failureSummary failure}")
@@ -473,7 +515,6 @@ module Workspace =
                         match error with
                         | Some e -> return Error e
                         | None ->
-                            let ids = historicalInvestigationIds
                             let mutable validationError = None
                             for id in ids do
                                 if validationError.IsNone then
@@ -526,7 +567,7 @@ module Workspace =
                             match Store.loadSchemas (Layout.schemas (full root)) with
                             | Error e -> return Error e
                             | Ok schemas ->
-                                match! remoteVerify backend schemas commit (full root) name files with
+                                match! remoteVerify backend schemas commit (full root) name verified.InvestigationIds files with
                                 | Error e -> return Error e
                                 | Ok () ->
                                     return Ok
@@ -579,7 +620,7 @@ module Workspace =
                         match Store.loadSchemas (Layout.schemas (full root)) with
                         | Error e -> return Error e
                         | Ok schemas ->
-                            match! remoteVerify backend schemas commit (full root) name files with
+                            match! remoteVerify backend schemas commit (full root) name verified.InvestigationIds files with
                             | Error e -> return Error e
                             | Ok () ->
                                 return Ok

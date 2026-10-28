@@ -83,6 +83,34 @@ let ``historical template is deterministic exact and engine-valid`` () =
             Assert.Equal<byte>(File.ReadAllBytes source, File.ReadAllBytes template)
 
 [<Fact>]
+let ``everyday and combined templates are exact engine-valid compositions`` () =
+    let everyday = Workspace.verifyTemplate repoRoot Everyday.templateId |> Result.defaultWith (fun error -> failwith error.Detail)
+    let combined = Workspace.verifyTemplate repoRoot Everyday.combinedTemplateId |> Result.defaultWith (fun error -> failwith error.Detail)
+    Assert.Equal("7b66ac5aefa402a8a4cc70117b98988cc45bd4cfd5660a11aab498515d6dc83a", everyday.Digest)
+    Assert.Equal("eefc5651fa3b034031813f1eaab1dd3d65b54f77c8db6965d858b0fffe136149", combined.Digest)
+    Assert.True(Workspace.everydayInvestigationIds = (everyday.Investigations |> List.map _.InvestigationId))
+    Assert.True(Workspace.demonstrationInvestigationIds = (combined.Investigations |> List.map _.InvestigationId))
+    for template in [ everyday; combined ] do
+        for investigation in template.Investigations do
+            for file in Store.fileNames do
+                let source = Path.Combine(repoRoot, template.SourceDirectory, investigation.InvestigationId, file)
+                let copy = Path.Combine(repoRoot, "templates", template.TemplateId, "investigations", investigation.InvestigationId, file)
+                Assert.Equal<byte>(File.ReadAllBytes source, File.ReadAllBytes copy)
+
+[<Fact>]
+let ``combined template initializes and application-loads all four investigations`` () =
+    withRoot true (fun root ->
+        let created =
+            Workspace.createWorkspace root "demonstration-001" Everyday.combinedTemplateId
+            |> Result.defaultWith (fun error -> failwith error.Detail)
+        Assert.Equal(4, created.InvestigationIds.Length)
+        Assert.True(Set.ofList Workspace.demonstrationInvestigationIds = Set.ofList created.InvestigationIds)
+        let application =
+            Workspace.verifyApplicationCompatibility root "demonstration-001" Everyday.combinedTemplateId
+            |> Result.defaultWith (fun error -> failwith error.Detail)
+        Assert.Equal(4, application.InvestigationIds.Length))
+
+[<Fact>]
 let ``one-time template creation preserves every source byte`` () =
     withRoot false (fun root ->
         copyDirectory (Path.Combine(repoRoot, Workspace.sourceDirectory)) (Path.Combine(root, Workspace.sourceDirectory))

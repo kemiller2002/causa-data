@@ -244,10 +244,13 @@ let private runApplicationVerify args =
 [<EntryPoint>]
 let main argv =
     match List.ofArray argv with
-    | "template-create" :: args when option "--template" args = Some Workspace.templateId ->
-        Workspace.createHistoricalTemplate (workspaceRoot args)
-        |> Result.map (fun template -> JObj [ "templateIdentifier", JStr template.TemplateId; "templateDigest", JStr template.Digest; "result", JStr "CREATED" ] |> printJson)
-        |> Result.defaultWith workspaceError
+    | "template-create" :: args ->
+        match option "--template" args with
+        | Some template ->
+            Workspace.createTemplate (workspaceRoot args) template
+            |> Result.map (fun template -> JObj [ "templateIdentifier", JStr template.TemplateId; "templateDigest", JStr template.Digest; "result", JStr "CREATED" ] |> printJson)
+            |> Result.defaultWith workspaceError
+        | None -> eprintfn "template-create requires --template NAME [--root PATH]"; 2
     | "template-verify" :: args ->
         match option "--template" args with
         | Some template ->
