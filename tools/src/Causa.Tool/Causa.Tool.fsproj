@@ -16,6 +16,7 @@
     <Compile Include="Historical/Apollo11.fs" />
     <Compile Include="Historical/Challenger.fs" />
     <Compile Include="Historical/Cases.fs" />
+    <Compile Include="Everyday.fs" />
     <Compile Include="Workspace.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

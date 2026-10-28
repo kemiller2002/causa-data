@@ -130,6 +130,16 @@ let private historicalVerify (root: string) (report: string option) =
         File.WriteAllBytes(path, Json.fileBytes json |> Result.defaultWith failwith))
     printChecks checks
 
+let private everydayBuild (root: string) =
+    let set = schemasOrExit root
+    match Everyday.build set Everyday.Outcome.Illuminates with
+    | Error error -> eprintfn "everyday demonstration build failed: %s" error; 1
+    | Ok built ->
+        Everyday.writeCanonical root built
+        printfn "%s investigation=%s commands=%d events=%d lifecycle=%s" Everyday.caseKey Everyday.investigationId
+            built.Run.Scenario.Steps.Length built.Run.Events.Length (Enums.lifecycle.ToWire built.Loaded.State.Lifecycle)
+        0
+
 let private option name (args: string list) =
     args
     |> List.tryFindIndex ((=) name)
@@ -286,6 +296,7 @@ let main argv =
     | [ "historical-build"; root ] -> historicalBuild (Path.GetFullPath root)
     | [ "historical-verify"; root ] -> historicalVerify (Path.GetFullPath root) None
     | [ "historical-verify"; root; report ] -> historicalVerify (Path.GetFullPath root) (Some(Path.GetFullPath report))
+    | [ "everyday-build"; root ] -> everydayBuild (Path.GetFullPath root)
     | [ "lock"; root ] ->
         Gate.writeLock (Path.GetFullPath root)
         printfn "wrote %s" (Gate.lockPath (Path.GetFullPath root))
@@ -308,5 +319,5 @@ let main argv =
     | [ "github-live"; phase; root; runId; fixtureCommit ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit None
     | [ "github-live"; phase; root; runId; fixtureCommit; id ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit (Some id)
     | _ ->
-        eprintfn "usage: causa (generate|verify|reproduce|historical-build|historical-verify) <repository-root> | template-create|template-verify|workspace-local-check|workspace-create|workspace-verify|workspace-remote-check|workspace-publish|workspace-remote-verify|workspace-application-verify|rehearsal-init [options]"
+        eprintfn "usage: causa (generate|verify|reproduce|historical-build|historical-verify|everyday-build) <repository-root> | template-create|template-verify|workspace-local-check|workspace-create|workspace-verify|workspace-remote-check|workspace-publish|workspace-remote-verify|workspace-application-verify|rehearsal-init [options]"
         2

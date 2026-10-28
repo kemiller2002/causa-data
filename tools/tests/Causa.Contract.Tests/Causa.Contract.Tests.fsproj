@@ -3,6 +3,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="EverydayTests.fs" />
     <Compile Include="WorkspaceTests.fs" />
     <Compile Include="Tests.fs" />
   </ItemGroup>
