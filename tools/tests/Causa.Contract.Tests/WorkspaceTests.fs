@@ -204,6 +204,18 @@ let ``rehearsal naming is explicit normalized and bounded`` () =
     Assert.True(Result.isError (Workspace.rehearsalName "six"))
 
 [<Fact>]
+let ``rehearsal receipt distinguishes the normalized rehearsal and workspace identifiers`` () =
+    withRoot true (fun root ->
+        let verification =
+            Workspace.createWorkspace root "rehearsal-007" Workspace.templateId
+            |> Result.defaultWith (fun error -> failwith error.Detail)
+        match Workspace.rehearsalReceipt "7" verification with
+        | JObj fields ->
+            Assert.Equal(Some(JStr "007"), Json.field "rehearsalIdentifier" fields)
+            Assert.Equal(Some(JStr "rehearsal-007"), Json.field "workspaceIdentifier" fields)
+        | _ -> failwith "rehearsal receipt is not an object")
+
+[<Fact>]
 let ``publication is atomic remotely verified and refuses an existing destination`` () =
     withRoot true (fun root ->
         Workspace.createWorkspace root "publication-001" Workspace.templateId |> Result.defaultWith (fun error -> failwith error.Detail) |> ignore

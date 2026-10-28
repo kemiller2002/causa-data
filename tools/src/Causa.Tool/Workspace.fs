@@ -415,9 +415,10 @@ module Workspace =
 
     let rehearsalReceipt (number: string) (verification: WorkspaceVerification) =
         let destination = $"workspaces/demo/{verification.Workspace}"
+        let rehearsalIdentifier = (Int32.Parse number).ToString("D3")
         JObj
             [ "schemaVersion", JStr "causa.rehearsal-initialization/v1"
-              "rehearsalIdentifier", JStr verification.Workspace
+              "rehearsalIdentifier", JStr rehearsalIdentifier
               "workspaceIdentifier", JStr verification.Workspace
               "templateIdentifier", JStr verification.Template.TemplateId
               "templateVersion", JStr verification.Template.TemplateVersion
