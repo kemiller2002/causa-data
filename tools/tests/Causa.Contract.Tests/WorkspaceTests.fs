@@ -118,6 +118,24 @@ let ``workspace creation is exact rejects an existing destination and remains re
         Assert.True(Result.isOk (Workspace.verifyWorkspace root "development-001" Workspace.templateId WorkspaceVerificationMode.Initialized)))
 
 [<Fact>]
+let ``partial workspace creation removes only its staging directory and retries safely`` () =
+    withRoot true (fun root ->
+        let mutable copies = 0
+        let failDuringCopy source destination =
+            copies <- copies + 1
+            if copies = 5 then raise (IOException "injected copy failure")
+            File.Copy(source, destination, false)
+        let first = Workspace.createWorkspaceWithFileCopy failDuringCopy root "retry-001" Workspace.templateId
+        Assert.True(Result.isError first, "an injected partial-copy failure was accepted")
+        let approved = Path.Combine(root, "workspaces", "demo")
+        Assert.False(Directory.Exists(Path.Combine(approved, "retry-001")), "a partial destination survived")
+        if Directory.Exists approved then
+            Assert.Empty(Directory.GetFileSystemEntries(approved, "stg-*"))
+        let retry = Workspace.createWorkspace root "retry-001" Workspace.templateId
+        Assert.True(Result.isOk retry, "a clean retry after staging cleanup failed")
+        Assert.True(Result.isOk (Workspace.verifyWorkspace root "retry-001" Workspace.templateId WorkspaceVerificationMode.Initialized)))
+
+[<Fact>]
 let ``workspace identifiers reject emptiness traversal and separators`` () =
     withRoot true (fun root ->
         [ ""; "../escape"; "escape/child"; "Escape"; "%2e%2e" ]

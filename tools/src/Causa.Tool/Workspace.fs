@@ -344,7 +344,7 @@ module Workspace =
             return { Workspace = name; Template = template; InvestigationIds = expectedIds; Mode = mode }
         }
 
-    let createWorkspace (root: string) (name: string) (templateName: string) : Result<WorkspaceVerification, CausaError> =
+    let internal createWorkspaceWithFileCopy (copyFile: string -> string -> unit) (root: string) (name: string) (templateName: string) : Result<WorkspaceVerification, CausaError> =
         let root = full root
         workspaceResult {
             let! _ = ensureName "workspace" name
@@ -365,7 +365,7 @@ module Workspace =
                             let fromDir = Path.Combine(templateInvestigations root templateName, investigation.InvestigationId)
                             let toDir = Path.Combine(staging, "investigations", investigation.InvestigationId)
                             Directory.CreateDirectory toDir |> ignore
-                            for file in Store.fileNames do File.Copy(Path.Combine(fromDir, file), Path.Combine(toDir, file), false)
+                            for file in Store.fileNames do copyFile (Path.Combine(fromDir, file)) (Path.Combine(toDir, file))
                         let stagingName = Path.GetFileName staging |> nonNull
                         let! verified = verifyWorkspace root stagingName templateName WorkspaceVerificationMode.Initialized
                         if Directory.Exists destination || File.Exists destination then
@@ -377,6 +377,9 @@ module Workspace =
             if Directory.Exists staging then Directory.Delete(staging, true)
             return! result
         }
+
+    let createWorkspace (root: string) (name: string) (templateName: string) : Result<WorkspaceVerification, CausaError> =
+        createWorkspaceWithFileCopy (fun source destination -> File.Copy(source, destination, false)) root name templateName
 
     /// Read-only local uniqueness probe used by orchestrators before creation.
     let checkLocalAbsent (root: string) (name: string) : Result<unit, CausaError> =
