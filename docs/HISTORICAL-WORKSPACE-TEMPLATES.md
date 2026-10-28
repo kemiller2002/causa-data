@@ -86,6 +86,10 @@ dotnet run --project tools/src/Causa.Tool -- \
 dotnet run --project tools/src/Causa.Tool -- \
   workspace-publish --workspace rehearsal-006 --template historical-v1 \
   --repository kemiller2002/causa-data --branch main
+
+dotnet run --project tools/src/Causa.Tool -- \
+  workspace-remote-verify --workspace rehearsal-006 --template historical-v1 \
+  --repository kemiller2002/causa-data --branch main --commit <published-sha>
 ```
 
 Publication uses the configured Git credential mechanism; tokens are never accepted as command arguments, stored in investigation files or receipts, or returned in errors. The publisher confirms the repository branch, refuses an existing remote workspace, creates one commit containing only the selected workspace prefix, and performs a non-forced push. Concurrent branch movement is a failure. It then reads the committed tree and every blob back through the repository backend, compares paths and bytes to the local initialization, validates all three investigations again, and returns the published commit SHA.

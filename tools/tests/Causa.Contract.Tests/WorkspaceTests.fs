@@ -106,8 +106,10 @@ let ``invalid template is rejected before workspace staging`` () =
 [<Fact>]
 let ``workspace creation is exact rejects an existing destination and remains retry-safe`` () =
     withRoot true (fun root ->
+        Assert.True(Result.isOk (Workspace.checkLocalAbsent root "development-001"))
         let created = Workspace.createWorkspace root "development-001" Workspace.templateId |> Result.defaultWith (fun error -> failwith error.Detail)
         Assert.Equal(3, created.InvestigationIds.Length)
+        Assert.True(Result.isError (Workspace.checkLocalAbsent root "development-001"))
         let before = directoryDigest (Path.Combine(root, "workspaces", "demo", "development-001"))
         Assert.True(Result.isError (Workspace.createWorkspace root "development-001" Workspace.templateId))
         let after = directoryDigest (Path.Combine(root, "workspaces", "demo", "development-001"))
@@ -196,6 +198,10 @@ let ``publication is atomic remotely verified and refuses an existing destinatio
         Assert.Matches("^[0-9a-f]{40}$", receipt.Commit)
         let correctIds = Workspace.historicalInvestigationIds = receipt.InvestigationIds
         Assert.True(correctIds, "publication receipt investigation order changed")
+        let reread =
+            Workspace.verifyPublishedWithBackend root "publication-001" Workspace.templateId "local/disposable" "main" receipt.Commit backend
+            |> _.GetAwaiter().GetResult()
+        Assert.True(Result.isOk reread, "published workspace could not be independently read back")
         let second = Workspace.publishWithBackend root "publication-001" Workspace.templateId "local/disposable" "main" backend |> _.GetAwaiter().GetResult()
         Assert.True(Result.isError second, "an existing remote workspace was accepted"))
 

@@ -168,6 +168,14 @@ let private runWorkspaceCreate args =
         |> Result.defaultWith workspaceError
     | _ -> eprintfn "workspace-create requires --workspace NAME --template NAME [--root PATH]"; 2
 
+let private runLocalCheck args =
+    match option "--workspace" args with
+    | Some workspace ->
+        Workspace.checkLocalAbsent (workspaceRoot args) workspace
+        |> Result.map (fun () -> JObj [ "workspaceIdentifier", JStr workspace; "localDestinationResult", JStr "ABSENT" ] |> printJson)
+        |> Result.defaultWith workspaceError
+    | None -> eprintfn "workspace-local-check requires --workspace NAME [--root PATH]"; 2
+
 let private runRehearsalInit args =
     match option "--number" args, option "--template" args with
     | Some number, Some template ->
@@ -205,6 +213,15 @@ let private runRemoteCheck args =
         |> Result.defaultWith workspaceError
     | _ -> eprintfn "workspace-remote-check requires --workspace NAME --repository OWNER/NAME --branch NAME [--root PATH]"; 2
 
+let private runRemoteVerify args =
+    match option "--workspace" args, option "--template" args, option "--repository" args, option "--branch" args, option "--commit" args with
+    | Some workspace, Some template, Some repository, Some branch, Some commit ->
+        Workspace.verifyPublishedWorkspace (workspaceRoot args) workspace template repository branch commit
+        |> fun operation -> operation.GetAwaiter().GetResult()
+        |> Result.map (Workspace.remoteVerificationJson >> printJson)
+        |> Result.defaultWith workspaceError
+    | _ -> eprintfn "workspace-remote-verify requires --workspace NAME --template NAME --repository OWNER/NAME --branch NAME --commit SHA [--root PATH]"; 2
+
 let private runApplicationVerify args =
     match option "--workspace" args, option "--template" args with
     | Some workspace, Some template ->
@@ -240,7 +257,9 @@ let main argv =
         | None -> eprintfn "template-verify requires --template NAME [--root PATH]"; 2
     | "workspace-create" :: args -> runWorkspaceCreate args
     | "workspace-verify" :: args -> runWorkspaceVerify args
+    | "workspace-local-check" :: args -> runLocalCheck args
     | "workspace-remote-check" :: args -> runRemoteCheck args
+    | "workspace-remote-verify" :: args -> runRemoteVerify args
     | "workspace-application-verify" :: args -> runApplicationVerify args
     | "workspace-publish" :: args -> runWorkspacePublish args
     | "rehearsal-init" :: args -> runRehearsalInit args
@@ -289,5 +308,5 @@ let main argv =
     | [ "github-live"; phase; root; runId; fixtureCommit ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit None
     | [ "github-live"; phase; root; runId; fixtureCommit; id ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit (Some id)
     | _ ->
-        eprintfn "usage: causa (generate|verify|reproduce|historical-build|historical-verify) <repository-root> | template-create|template-verify|workspace-create|workspace-verify|workspace-remote-check|workspace-publish|workspace-application-verify|rehearsal-init [options]"
+        eprintfn "usage: causa (generate|verify|reproduce|historical-build|historical-verify) <repository-root> | template-create|template-verify|workspace-local-check|workspace-create|workspace-verify|workspace-remote-check|workspace-publish|workspace-remote-verify|workspace-application-verify|rehearsal-init [options]"
         2

@@ -378,6 +378,19 @@ module Workspace =
             return! result
         }
 
+    /// Read-only local uniqueness probe used by orchestrators before creation.
+    let checkLocalAbsent (root: string) (name: string) : Result<unit, CausaError> =
+        workspaceResult {
+            let root = full root
+            let! _ = ensureName "workspace" name
+            let workspaces = Path.Combine(root, "workspaces")
+            do! ensureNoLinkedAncestors root workspaces
+            let destination = workspaceRoot root name
+            if Directory.Exists destination || File.Exists destination then
+                return! fail Codes.pathInvalid $"local workspace already exists: workspaces/demo/{name}"
+            return ()
+        }
+
     let private modeText = function WorkspaceVerificationMode.Initialized -> "INITIALIZED" | WorkspaceVerificationMode.Modified -> "MODIFIED"
 
     let verificationJson (verification: WorkspaceVerification) =
@@ -543,6 +556,47 @@ module Workspace =
                 return! publishWithBackend root name templateName repository branch backend
         }
 
+    /// Re-read a published commit from the intended branch and compare every
+    /// path and byte to the locally verified initialization receipt.
+    let verifyPublishedWithBackend (root: string) (name: string) (templateName: string) (repository: string) (branch: string) (commit: string) (backend: Backend) : Task<Result<PublicationReceipt, CausaError>> =
+        task {
+            match validateRemoteTarget name repository branch with
+            | Error e -> return Error e
+            | Ok () when not (commitPattern.IsMatch commit) -> return Error(CausaError.create Codes.pathInvalid $"published commit '{commit}' is invalid")
+            | Ok () ->
+                match verifyWorkspace root name templateName WorkspaceVerificationMode.Initialized with
+                | Error e -> return Error e
+                | Ok verified ->
+                    match! backend.Head() with
+                    | Error failure -> return Error(CausaError.create Codes.fixtureDrift $"published branch could not be confirmed: {failureSummary failure}")
+                    | Ok head when head.HeadCommit <> commit -> return Error(CausaError.create Codes.fixtureDrift $"published commit {commit} is not the current head of the intended branch")
+                    | Ok _ ->
+                        let files = publicationFiles (full root) name
+                        match Store.loadSchemas (Layout.schemas (full root)) with
+                        | Error e -> return Error e
+                        | Ok schemas ->
+                            match! remoteVerify backend schemas commit (full root) name files with
+                            | Error e -> return Error e
+                            | Ok () ->
+                                return Ok
+                                    { Repository = repository
+                                      Branch = branch
+                                      Workspace = name
+                                      Commit = commit
+                                      TemplateDigest = verified.Template.Digest
+                                      InvestigationIds = verified.InvestigationIds }
+        }
+
+    let verifyPublishedWorkspace (root: string) (name: string) (templateName: string) (repository: string) (branch: string) (commit: string) : Task<Result<PublicationReceipt, CausaError>> =
+        task {
+            match validateRemoteTarget name repository branch with
+            | Error e -> return Error e
+            | Ok () ->
+                let scratch = Path.Combine(full root, ".local", "workspace-publication", $"remote-verify-{Guid.NewGuid():N}.git")
+                let! backend = GitBackend.create scratch $"https://github.com/{repository}.git" branch
+                return! verifyPublishedWithBackend root name templateName repository branch commit backend
+        }
+
     /// Exercise the same resolver used by the Causa provider and then load/replay all investigations.
     let verifyApplicationCompatibility (root: string) (name: string) (templateName: string) =
         workspaceResult {
@@ -562,6 +616,17 @@ module Workspace =
               "investigationCount", JInt(int64 receipt.InvestigationIds.Length)
               "investigationIdentifiers", JArr(receipt.InvestigationIds |> List.map JStr)
               "publicationResult", JStr "PUBLISHED"
+              "remoteVerificationResult", JStr "REMOTE_VERIFIED" ]
+
+    let remoteVerificationJson receipt =
+        JObj
+            [ "repository", JStr receipt.Repository
+              "branch", JStr receipt.Branch
+              "workspaceIdentifier", JStr receipt.Workspace
+              "publishedCommit", JStr receipt.Commit
+              "templateDigest", JStr receipt.TemplateDigest
+              "investigationCount", JInt(int64 receipt.InvestigationIds.Length)
+              "investigationIdentifiers", JArr(receipt.InvestigationIds |> List.map JStr)
               "remoteVerificationResult", JStr "REMOTE_VERIFIED" ]
 
     let applicationJson (verification: WorkspaceVerification) =
