@@ -130,9 +130,120 @@ let private historicalVerify (root: string) (report: string option) =
         File.WriteAllBytes(path, Json.fileBytes json |> Result.defaultWith failwith))
     printChecks checks
 
+let private option name (args: string list) =
+    args
+    |> List.tryFindIndex ((=) name)
+    |> Option.bind (fun index -> args |> List.tryItem (index + 1))
+
+let private workspaceRoot args = option "--root" args |> Option.defaultValue "." |> Path.GetFullPath
+
+let private printJson value =
+    printfn "%s" (Json.canonical value |> Result.defaultWith failwith)
+    0
+
+let private workspaceError (error: CausaError) =
+    eprintfn "%s %s" error.Code error.Detail
+    1
+
+let private runWorkspaceVerify args =
+    match option "--workspace" args, option "--template" args with
+    | Some workspace, Some template ->
+        match option "--mode" args with
+        | None | Some "initialized" ->
+            Workspace.verifyWorkspace (workspaceRoot args) workspace template WorkspaceVerificationMode.Initialized
+            |> Result.map (Workspace.verificationJson >> printJson)
+            |> Result.defaultWith workspaceError
+        | Some "modified" ->
+            Workspace.verifyWorkspace (workspaceRoot args) workspace template WorkspaceVerificationMode.Modified
+            |> Result.map (Workspace.verificationJson >> printJson)
+            |> Result.defaultWith workspaceError
+        | Some mode -> eprintfn "unsupported workspace verification mode: %s" mode; 2
+    | _ -> eprintfn "workspace-verify requires --workspace NAME --template NAME [--mode initialized|modified] [--root PATH]"; 2
+
+let private runWorkspaceCreate args =
+    match option "--workspace" args, option "--template" args with
+    | Some workspace, Some template ->
+        Workspace.createWorkspace (workspaceRoot args) workspace template
+        |> Result.map (Workspace.verificationJson >> printJson)
+        |> Result.defaultWith workspaceError
+    | _ -> eprintfn "workspace-create requires --workspace NAME --template NAME [--root PATH]"; 2
+
+let private runRehearsalInit args =
+    match option "--number" args, option "--template" args with
+    | Some number, Some template ->
+        match Workspace.rehearsalName number with
+        | Error error -> workspaceError error
+        | Ok name ->
+            match Workspace.createWorkspace (workspaceRoot args) name template with
+            | Error error -> workspaceError error
+            | Ok verification ->
+                let receipt = Workspace.rehearsalReceipt number verification
+                let path =
+                    option "--receipt" args
+                    |> Option.map Path.GetFullPath
+                    |> Option.defaultValue (Path.Combine(workspaceRoot args, ".local", "rehearsal-receipts", name + ".json"))
+                Directory.CreateDirectory(Path.GetDirectoryName path |> nonNull) |> ignore
+                File.WriteAllBytes(path, Json.fileBytes receipt |> Result.defaultWith failwith)
+                printJson receipt
+    | _ -> eprintfn "rehearsal-init requires --number N --template NAME [--receipt PATH] [--root PATH]"; 2
+
+let private runWorkspacePublish args =
+    match option "--workspace" args, option "--template" args, option "--repository" args, option "--branch" args with
+    | Some workspace, Some template, Some repository, Some branch ->
+        Workspace.publishWorkspace (workspaceRoot args) workspace template repository branch
+        |> fun operation -> operation.GetAwaiter().GetResult()
+        |> Result.map (Workspace.publicationJson >> printJson)
+        |> Result.defaultWith workspaceError
+    | _ -> eprintfn "workspace-publish requires --workspace NAME --template NAME --repository OWNER/NAME --branch NAME [--root PATH]"; 2
+
+let private runRemoteCheck args =
+    match option "--workspace" args, option "--repository" args, option "--branch" args with
+    | Some workspace, Some repository, Some branch ->
+        Workspace.checkRemoteAbsent (workspaceRoot args) workspace repository branch
+        |> fun operation -> operation.GetAwaiter().GetResult()
+        |> Result.map (fun () -> JObj [ "workspaceIdentifier", JStr workspace; "repository", JStr repository; "branch", JStr branch; "remoteDestinationResult", JStr "ABSENT" ] |> printJson)
+        |> Result.defaultWith workspaceError
+    | _ -> eprintfn "workspace-remote-check requires --workspace NAME --repository OWNER/NAME --branch NAME [--root PATH]"; 2
+
+let private runApplicationVerify args =
+    match option "--workspace" args, option "--template" args with
+    | Some workspace, Some template ->
+        Workspace.verifyApplicationCompatibility (workspaceRoot args) workspace template
+        |> Result.map (Workspace.applicationJson >> printJson)
+        |> Result.defaultWith workspaceError
+    | _ -> eprintfn "workspace-application-verify requires --workspace NAME --template NAME [--root PATH]"; 2
+
 [<EntryPoint>]
 let main argv =
     match List.ofArray argv with
+    | "template-create" :: args when option "--template" args = Some Workspace.templateId ->
+        Workspace.createHistoricalTemplate (workspaceRoot args)
+        |> Result.map (fun template -> JObj [ "templateIdentifier", JStr template.TemplateId; "templateDigest", JStr template.Digest; "result", JStr "CREATED" ] |> printJson)
+        |> Result.defaultWith workspaceError
+    | "template-verify" :: args ->
+        match option "--template" args with
+        | Some template ->
+            Workspace.verifyTemplate (workspaceRoot args) template
+            |> Result.map (fun verified ->
+                JObj
+                    [ "templateIdentifier", JStr verified.TemplateId
+                      "templateVersion", JStr verified.TemplateVersion
+                      "templateDigest", JStr verified.Digest
+                      "storageContractVersion", JStr verified.StorageContractVersion
+                      "sourceRepository", JStr verified.SourceRepository
+                      "sourceCommit", JStr verified.SourceCommit
+                      "investigationCount", JInt(int64 verified.Investigations.Length)
+                      "investigationIdentifiers", JArr(verified.Investigations |> List.map (fun investigation -> JStr investigation.InvestigationId))
+                      "result", JStr "VERIFIED" ]
+                |> printJson)
+            |> Result.defaultWith workspaceError
+        | None -> eprintfn "template-verify requires --template NAME [--root PATH]"; 2
+    | "workspace-create" :: args -> runWorkspaceCreate args
+    | "workspace-verify" :: args -> runWorkspaceVerify args
+    | "workspace-remote-check" :: args -> runRemoteCheck args
+    | "workspace-application-verify" :: args -> runApplicationVerify args
+    | "workspace-publish" :: args -> runWorkspacePublish args
+    | "rehearsal-init" :: args -> runRehearsalInit args
     | [ "generate"; root ] -> generateInto (Path.GetFullPath root); 0
     | [ "verify"; root ] -> Dataset.verify (Path.GetFullPath root) |> printChecks
     | [ "reproduce"; root ] -> reproduce (Path.GetFullPath root)
@@ -178,5 +289,5 @@ let main argv =
     | [ "github-live"; phase; root; runId; fixtureCommit ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit None
     | [ "github-live"; phase; root; runId; fixtureCommit; id ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit (Some id)
     | _ ->
-        eprintfn "usage: causa (generate|verify|reproduce|historical-build|historical-verify) <repository-root>"
+        eprintfn "usage: causa (generate|verify|reproduce|historical-build|historical-verify) <repository-root> | template-create|template-verify|workspace-create|workspace-verify|workspace-remote-check|workspace-publish|workspace-application-verify|rehearsal-init [options]"
         2
