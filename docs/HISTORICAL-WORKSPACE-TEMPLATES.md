@@ -76,6 +76,8 @@ dotnet run --project tools/src/Causa.Tool -- \
 
 This derives `rehearsal-006`, creates and verifies it, and writes a local initialization receipt. The receipt says `LOCAL_CREATED` and `LOCAL_VERIFIED`; it explicitly says `NOT_PUBLISHED` and has no published commit until publication really occurs. Initialization does not start a timed rehearsal.
 
+The receipt keeps identities distinct: `--number 006` produces `rehearsalIdentifier: "006"` and `workspaceIdentifier: "rehearsal-006"`.
+
 ## GitHub publication and remote verification
 
 ```bash
@@ -105,6 +107,8 @@ repository: kemiller2002/causa-data
 branch:     main
 workspace:  rehearsal-006
 ```
+
+This path contract was checked against the frozen Rehearsal 5 implementation at commit `b972cb446de543018a65d8726cae6f8283821791`: `src/persistence/Provider.fs` derives `Target.workspaceRoot` as `workspaces/demo/` plus the selected workspace and reads its `investigations` child. The reference repository remains unmodified.
 
 Run the resolver and load/replay compatibility check with:
 
