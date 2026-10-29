@@ -130,9 +130,153 @@ let private historicalVerify (root: string) (report: string option) =
         File.WriteAllBytes(path, Json.fileBytes json |> Result.defaultWith failwith))
     printChecks checks
 
+let private everydayBuild (root: string) =
+    let set = schemasOrExit root
+    match Everyday.build set Everyday.Outcome.Illuminates with
+    | Error error -> eprintfn "everyday demonstration build failed: %s" error; 1
+    | Ok built ->
+        Everyday.writeCanonical root built
+        Everyday.writeCombinedCanonical root
+        printfn "%s investigation=%s commands=%d events=%d lifecycle=%s" Everyday.caseKey Everyday.investigationId
+            built.Run.Scenario.Steps.Length built.Run.Events.Length (Enums.lifecycle.ToWire built.Loaded.State.Lifecycle)
+        0
+
+let private option name (args: string list) =
+    args
+    |> List.tryFindIndex ((=) name)
+    |> Option.bind (fun index -> args |> List.tryItem (index + 1))
+
+let private workspaceRoot args = option "--root" args |> Option.defaultValue "." |> Path.GetFullPath
+
+let private printJson value =
+    printfn "%s" (Json.canonical value |> Result.defaultWith failwith)
+    0
+
+let private workspaceError (error: CausaError) =
+    eprintfn "%s %s" error.Code error.Detail
+    1
+
+let private runWorkspaceVerify args =
+    match option "--workspace" args, option "--template" args with
+    | Some workspace, Some template ->
+        match option "--mode" args with
+        | None | Some "initialized" ->
+            Workspace.verifyWorkspace (workspaceRoot args) workspace template WorkspaceVerificationMode.Initialized
+            |> Result.map (Workspace.verificationJson >> printJson)
+            |> Result.defaultWith workspaceError
+        | Some "modified" ->
+            Workspace.verifyWorkspace (workspaceRoot args) workspace template WorkspaceVerificationMode.Modified
+            |> Result.map (Workspace.verificationJson >> printJson)
+            |> Result.defaultWith workspaceError
+        | Some mode -> eprintfn "unsupported workspace verification mode: %s" mode; 2
+    | _ -> eprintfn "workspace-verify requires --workspace NAME --template NAME [--mode initialized|modified] [--root PATH]"; 2
+
+let private runWorkspaceCreate args =
+    match option "--workspace" args, option "--template" args with
+    | Some workspace, Some template ->
+        Workspace.createWorkspace (workspaceRoot args) workspace template
+        |> Result.map (Workspace.verificationJson >> printJson)
+        |> Result.defaultWith workspaceError
+    | _ -> eprintfn "workspace-create requires --workspace NAME --template NAME [--root PATH]"; 2
+
+let private runLocalCheck args =
+    match option "--workspace" args with
+    | Some workspace ->
+        Workspace.checkLocalAbsent (workspaceRoot args) workspace
+        |> Result.map (fun () -> JObj [ "workspaceIdentifier", JStr workspace; "localDestinationResult", JStr "ABSENT" ] |> printJson)
+        |> Result.defaultWith workspaceError
+    | None -> eprintfn "workspace-local-check requires --workspace NAME [--root PATH]"; 2
+
+let private runRehearsalInit args =
+    match option "--number" args, option "--template" args with
+    | Some number, Some template ->
+        match Workspace.rehearsalName number with
+        | Error error -> workspaceError error
+        | Ok name ->
+            match Workspace.createWorkspace (workspaceRoot args) name template with
+            | Error error -> workspaceError error
+            | Ok verification ->
+                let receipt = Workspace.rehearsalReceipt number verification
+                let path =
+                    option "--receipt" args
+                    |> Option.map Path.GetFullPath
+                    |> Option.defaultValue (Path.Combine(workspaceRoot args, ".local", "rehearsal-receipts", name + ".json"))
+                Directory.CreateDirectory(Path.GetDirectoryName path |> nonNull) |> ignore
+                File.WriteAllBytes(path, Json.fileBytes receipt |> Result.defaultWith failwith)
+                printJson receipt
+    | _ -> eprintfn "rehearsal-init requires --number N --template NAME [--receipt PATH] [--root PATH]"; 2
+
+let private runWorkspacePublish args =
+    match option "--workspace" args, option "--template" args, option "--repository" args, option "--branch" args with
+    | Some workspace, Some template, Some repository, Some branch ->
+        Workspace.publishWorkspace (workspaceRoot args) workspace template repository branch
+        |> fun operation -> operation.GetAwaiter().GetResult()
+        |> Result.map (Workspace.publicationJson >> printJson)
+        |> Result.defaultWith workspaceError
+    | _ -> eprintfn "workspace-publish requires --workspace NAME --template NAME --repository OWNER/NAME --branch NAME [--root PATH]"; 2
+
+let private runRemoteCheck args =
+    match option "--workspace" args, option "--repository" args, option "--branch" args with
+    | Some workspace, Some repository, Some branch ->
+        Workspace.checkRemoteAbsent (workspaceRoot args) workspace repository branch
+        |> fun operation -> operation.GetAwaiter().GetResult()
+        |> Result.map (fun () -> JObj [ "workspaceIdentifier", JStr workspace; "repository", JStr repository; "branch", JStr branch; "remoteDestinationResult", JStr "ABSENT" ] |> printJson)
+        |> Result.defaultWith workspaceError
+    | _ -> eprintfn "workspace-remote-check requires --workspace NAME --repository OWNER/NAME --branch NAME [--root PATH]"; 2
+
+let private runRemoteVerify args =
+    match option "--workspace" args, option "--template" args, option "--repository" args, option "--branch" args, option "--commit" args with
+    | Some workspace, Some template, Some repository, Some branch, Some commit ->
+        Workspace.verifyPublishedWorkspace (workspaceRoot args) workspace template repository branch commit
+        |> fun operation -> operation.GetAwaiter().GetResult()
+        |> Result.map (Workspace.remoteVerificationJson >> printJson)
+        |> Result.defaultWith workspaceError
+    | _ -> eprintfn "workspace-remote-verify requires --workspace NAME --template NAME --repository OWNER/NAME --branch NAME --commit SHA [--root PATH]"; 2
+
+let private runApplicationVerify args =
+    match option "--workspace" args, option "--template" args with
+    | Some workspace, Some template ->
+        Workspace.verifyApplicationCompatibility (workspaceRoot args) workspace template
+        |> Result.map (Workspace.applicationJson >> printJson)
+        |> Result.defaultWith workspaceError
+    | _ -> eprintfn "workspace-application-verify requires --workspace NAME --template NAME [--root PATH]"; 2
+
 [<EntryPoint>]
 let main argv =
     match List.ofArray argv with
+    | "template-create" :: args ->
+        match option "--template" args with
+        | Some template ->
+            Workspace.createTemplate (workspaceRoot args) template
+            |> Result.map (fun template -> JObj [ "templateIdentifier", JStr template.TemplateId; "templateDigest", JStr template.Digest; "result", JStr "CREATED" ] |> printJson)
+            |> Result.defaultWith workspaceError
+        | None -> eprintfn "template-create requires --template NAME [--root PATH]"; 2
+    | "template-verify" :: args ->
+        match option "--template" args with
+        | Some template ->
+            Workspace.verifyTemplate (workspaceRoot args) template
+            |> Result.map (fun verified ->
+                JObj
+                    [ "templateIdentifier", JStr verified.TemplateId
+                      "templateVersion", JStr verified.TemplateVersion
+                      "templateDigest", JStr verified.Digest
+                      "storageContractVersion", JStr verified.StorageContractVersion
+                      "sourceRepository", JStr verified.SourceRepository
+                      "sourceCommit", JStr verified.SourceCommit
+                      "investigationCount", JInt(int64 verified.Investigations.Length)
+                      "investigationIdentifiers", JArr(verified.Investigations |> List.map (fun investigation -> JStr investigation.InvestigationId))
+                      "result", JStr "VERIFIED" ]
+                |> printJson)
+            |> Result.defaultWith workspaceError
+        | None -> eprintfn "template-verify requires --template NAME [--root PATH]"; 2
+    | "workspace-create" :: args -> runWorkspaceCreate args
+    | "workspace-verify" :: args -> runWorkspaceVerify args
+    | "workspace-local-check" :: args -> runLocalCheck args
+    | "workspace-remote-check" :: args -> runRemoteCheck args
+    | "workspace-remote-verify" :: args -> runRemoteVerify args
+    | "workspace-application-verify" :: args -> runApplicationVerify args
+    | "workspace-publish" :: args -> runWorkspacePublish args
+    | "rehearsal-init" :: args -> runRehearsalInit args
     | [ "generate"; root ] -> generateInto (Path.GetFullPath root); 0
     | [ "verify"; root ] -> Dataset.verify (Path.GetFullPath root) |> printChecks
     | [ "reproduce"; root ] -> reproduce (Path.GetFullPath root)
@@ -156,6 +300,7 @@ let main argv =
     | [ "historical-build"; root ] -> historicalBuild (Path.GetFullPath root)
     | [ "historical-verify"; root ] -> historicalVerify (Path.GetFullPath root) None
     | [ "historical-verify"; root; report ] -> historicalVerify (Path.GetFullPath root) (Some(Path.GetFullPath report))
+    | [ "everyday-build"; root ] -> everydayBuild (Path.GetFullPath root)
     | [ "lock"; root ] ->
         Gate.writeLock (Path.GetFullPath root)
         printfn "wrote %s" (Gate.lockPath (Path.GetFullPath root))
@@ -178,5 +323,5 @@ let main argv =
     | [ "github-live"; phase; root; runId; fixtureCommit ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit None
     | [ "github-live"; phase; root; runId; fixtureCommit; id ] -> githubLive phase (Path.GetFullPath root) runId fixtureCommit (Some id)
     | _ ->
-        eprintfn "usage: causa (generate|verify|reproduce|historical-build|historical-verify) <repository-root>"
+        eprintfn "usage: causa (generate|verify|reproduce|historical-build|historical-verify|everyday-build) <repository-root> | template-create|template-verify|workspace-local-check|workspace-create|workspace-verify|workspace-remote-check|workspace-publish|workspace-remote-verify|workspace-application-verify|rehearsal-init [options]"
         2

@@ -36,6 +36,34 @@ python3 -I tools/py/historical_catalog.py verify . --app <app checkout>         
 python3 -I tools/py/historical_catalog.py sources .                             # network: source reachability and excerpt confirmation
 ```
 
+### Immutable template and rehearsal workspaces
+
+`templates/historical-v1/` is an immutable, byte-for-byte snapshot of the three active historical investigations. It is a reusable starting point, not a replacement for `catalog/historical-v1/` or `workspaces/demo/historical-v1/`. The F# tool verifies its manifest, raw-file SHA-256 digests, canonical storage serialization, event replay, and snapshots before it creates anything.
+
+```bash
+dotnet run --project tools/src/Causa.Tool -- template-verify --template historical-v1
+dotnet run --project tools/src/Causa.Tool -- workspace-create --template historical-v1 --workspace development-001
+dotnet run --project tools/src/Causa.Tool -- workspace-verify --template historical-v1 --workspace development-001
+dotnet run --project tools/src/Causa.Tool -- rehearsal-init --number 006 --template historical-v1
+```
+
+Creation refuses invalid names, symbolic-link escapes, and any existing destination. Work is copied into a private staging directory, verified, and moved into `workspaces/demo/<workspace>/` only when complete. `workspace-verify --mode modified` accepts valid appended events while proving that the template's historical event prefix was not replaced or rewritten.
+
+Publication is an explicit second operation. It uses a single non-forced Git commit, rejects an existing remote workspace, detects concurrent branch movement, reads every published byte back, and reports the actual commit SHA. See [Historical workspace templates](docs/HISTORICAL-WORKSPACE-TEMPLATES.md) for the full interface and recovery rules.
+
+### Everyday and combined demonstrations
+
+The additive `everyday-v1` template contains an engine-generated investigation of a ceiling light that remains dark because its bulb failed. It records four competing hypotheses, observations, a proposed and completed correction, and fresh post-correction verification. The `demonstration-v1` template combines that investigation with the three byte-identical historical investigations; neither template changes `historical-v1` or the active historical catalog.
+
+```bash
+dotnet run --project tools/src/Causa.Tool -- everyday-build .
+dotnet run --project tools/src/Causa.Tool -- template-verify --template everyday-v1
+dotnet run --project tools/src/Causa.Tool -- workspace-create --template demonstration-v1 --workspace development-demo-001
+dotnet run --project tools/src/Causa.Tool -- workspace-application-verify --template demonstration-v1 --workspace development-demo-001
+```
+
+See [Everyday lightbulb demonstration](docs/EVERYDAY-LIGHTBULB-DEMONSTRATION.md) for the reasoning sequence and a short judge walkthrough.
+
 ## Retained v1.0.0 compatibility fixtures (not the active catalog)
 
 - **Synthetic fixtures:** the five synthetic investigations in `fixtures/v1.0.0/` (payment-failure, intermittent-outage, conflicting-metrics, api-latency, authentication-outage). They are **retained unchanged**, together with the 90 negative fixtures, the golden states and the contract in `contract/v1.0.0/`.
