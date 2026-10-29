@@ -1,4 +1,4 @@
-.engine/
+.engine/.git/
 bin/
 obj/
 __pycache__/

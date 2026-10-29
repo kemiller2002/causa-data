@@ -61,15 +61,16 @@ module Gate =
 
     /// Variables a sterile build keeps from the caller: tool location and network egress only.
     let private passThrough =
-        [ "PATH"; "DOTNET_ROOT"; "HTTPS_PROXY"; "https_proxy"; "HTTP_PROXY"; "http_proxy"; "NO_PROXY"; "no_proxy"; "SSL_CERT_FILE"; "SSL_CERT_DIR" ]
+        [ "PATH"; "DOTNET_ROOT"; "TMPDIR"; "TMP"; "TEMP"
+          "HTTPS_PROXY"; "https_proxy"; "HTTP_PROXY"; "http_proxy"; "NO_PROXY"; "no_proxy"; "SSL_CERT_FILE"; "SSL_CERT_DIR" ]
 
     let private buildSteeringFiles =
         [ "Directory.Build.props"; "Directory.Build.targets"; "Directory.Build.rsp"; "Directory.Packages.props"; "NuGet.Config"; "nuget.config"; "global.json" ]
 
-    /// Build the pinned engine commit in isolation (review round 3): sources come from the git object
-    /// store, so nothing untracked, ignored or generated can enter; the directory has no build-steering
-    /// file above it; the environment is replaced; response files are off; HOME, the NuGet package folder
-    /// and the NuGet configuration are fresh, with nuget.org as the only source.
+    /// Build the product-owned engine in isolation. Only the committed project and F# source files are
+    /// copied, so ignored/generated files and repository-level build steering cannot enter; the directory
+    /// has no build-steering file above it; the environment is replaced; response files are off; HOME,
+    /// the NuGet package folder and the NuGet configuration are fresh, with nuget.org as the only source.
     let private sterileBuild (root: string) (commit: string) : Result<(string * string) list, string> =
         let dir = Path.Combine(Path.GetTempPath(), "causa-engine-sterile-" + Guid.NewGuid().ToString("N"))
         let ancestors =
@@ -82,11 +83,23 @@ module Gate =
             if not ancestors.IsEmpty then Error("build-steering files above the sterile directory: " + String.Join(", ", ancestors))
             else
                 Directory.CreateDirectory(Path.Combine(dir, "home")) |> ignore
-                let tar = Path.Combine(dir, "engine.tar")
                 let engineRoot = Path.Combine(dir, "engine") + "/"
                 Directory.CreateDirectory engineRoot |> ignore
-                step (exec "git" [ "-C"; Path.Combine(root, ".engine"); "archive"; "--format=tar"; "-o"; tar; commit; "Directory.Build.props"; "src/engine" ]) "git archive of the pinned engine commit"
-                |> Result.bind (fun () -> step (exec "tar" [ "-xf"; tar; "-C"; engineRoot ]) "tar")
+                let ownedRoot = Path.Combine(root, ".engine")
+                let sourceDirectory = Path.Combine(ownedRoot, "src", "engine")
+                let sourceFiles =
+                    [ Path.Combine(ownedRoot, "Directory.Build.props")
+                      Path.Combine(sourceDirectory, "App.Engine.fsproj") ]
+                    @ (if Directory.Exists sourceDirectory then Directory.GetFiles(sourceDirectory, "*.fs", SearchOption.TopDirectoryOnly) |> Array.toList else [])
+                let missing = sourceFiles |> List.filter (File.Exists >> not)
+                (if missing.IsEmpty then
+                    sourceFiles
+                    |> List.iter (fun source ->
+                        let target = Path.Combine(engineRoot, Path.GetRelativePath(ownedRoot, source))
+                        Directory.CreateDirectory(Path.GetDirectoryName target |> nonNull) |> ignore
+                        File.Copy(source, target, true))
+                    Ok()
+                 else Error("product-owned engine source is incomplete: " + String.Join(", ", missing)))
                 |> Result.bind (fun () ->
                     File.Copy(Path.Combine(root, "global.json"), Path.Combine(engineRoot, "global.json"))
                     File.WriteAllText(
@@ -105,7 +118,7 @@ module Gate =
 
     let private sterileCache = Collections.Concurrent.ConcurrentDictionary<string, Result<(string * string) list, string>>()
 
-    /// Sterile build result per (engine repository, commit); git content is immutable per commit.
+    /// Sterile build result per product-owned engine tree and frozen provenance commit.
     let pinnedEngine (root: string) (commit: string) =
         sterileCache.GetOrAdd(Path.GetFullPath(Path.Combine(root, ".engine")) + "@" + commit, fun _ -> sterileBuild root commit)
 
@@ -281,15 +294,13 @@ module Gate =
                 File.Copy(f, target, true)))
         File.Copy(Path.Combine(src, "engine.lock.json"), Path.Combine(dst, "engine.lock.json"), true)
         if File.Exists(Path.Combine(src, "global.json")) then File.Copy(Path.Combine(src, "global.json"), Path.Combine(dst, "global.json"), true)
-        // The whole engine checkout, git metadata included (the sterile build reads the pinned commit from it);
-        // directories first, since git needs its empty ones (refs/heads, ...).
-        let kept (f: string) = not (f.Contains "/bin/" || f.Contains "/obj/" || f.Contains "/node_modules/" || f.EndsWith "/bin" || f.EndsWith "/obj")
-        Directory.GetDirectories(Path.Combine(src, ".engine"), "*", SearchOption.AllDirectories)
-        |> Array.filter kept
-        |> Array.iter (fun d -> Directory.CreateDirectory(Path.Combine(dst, Path.GetRelativePath(src, d))) |> ignore)
-        Directory.GetFiles(Path.Combine(src, ".engine"), "*", SearchOption.AllDirectories)
-        |> Array.filter kept
-        |> Array.iter (fun f ->
+        // Copy only the product-owned engine project and sources. The scratch build must not inherit
+        // nested repository metadata, generated output or credentials from another rehearsal.
+        let engineRoot = Path.Combine(src, ".engine")
+        ([ Path.Combine(engineRoot, "Directory.Build.props") ]
+         @ (Directory.GetFiles(Path.Combine(engineRoot, "src", "engine"), "*.fs", SearchOption.TopDirectoryOnly) |> Array.toList)
+         @ [ Path.Combine(engineRoot, "src", "engine", "App.Engine.fsproj") ])
+        |> List.iter (fun f ->
             let target = Path.Combine(dst, Path.GetRelativePath(src, f))
             Directory.CreateDirectory(Path.GetDirectoryName target |> nonNull) |> ignore
             File.Copy(f, target, true))

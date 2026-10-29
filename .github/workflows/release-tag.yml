@@ -64,7 +64,6 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m pip install --quiet "jsonschema==4.26.0"
-          tools/fetch-engine.sh
           dotnet build tools/src/Causa.Tool -c Release
           dotnet build tools/consumers/rehearsal-adapter -c Release
           dotnet build tools/consumers/clean-fsharp -c Release

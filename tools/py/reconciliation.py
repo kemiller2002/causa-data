@@ -382,7 +382,7 @@ def main():
     (out / "SCHEMA-RECONCILIATION.json").write_text(json.dumps(reconciliation, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
 
     md = ["# Field mapping — F# engine ↔ Causa v1.0.0 wire", "",
-          f"Engine: `kemiller2002/indy-init-rehearsal-001@{ENGINE_COMMIT}` (`src/engine/Commands.fs` `EventBody`). "
+          f"Engine: product-owned `.engine/src/engine` source (frozen provenance commit `{ENGINE_COMMIT}`, `Commands.fs` `EventBody`). "
           "Generated from a hand-written mapping and cross-checked against the frozen schemas: generation fails if any schema field "
           "or enumeration value is unmapped. Normative alongside CONTRACT.md §6–§7.", "",
           "Actor: " + ACTOR_KINDS + ".", "",

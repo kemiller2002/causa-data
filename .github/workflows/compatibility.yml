@@ -24,8 +24,6 @@ jobs:
           global-json-file: global.json
       - name: Install Python validator
         run: python3 -m pip install --quiet "jsonschema==4.26.0"
-      - name: Fetch pinned domain engine
-        run: tools/fetch-engine.sh
       - name: Build
         run: |
           dotnet build tools/src/Causa.Tool -c Release
