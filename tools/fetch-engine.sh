@@ -10,7 +10,14 @@ if [ ! -d "$dest/.git" ]; then
   git -C "$dest" remote add origin "$repo"
 fi
 if [ "$(git -C "$dest" rev-parse -q --verify HEAD 2>/dev/null || true)" != "$commit" ]; then
-  git -C "$dest" fetch -q --depth 1 origin "$commit"
+  # The engine repository is private. CI passes a read-only token scoped to it
+  # (PRIOR_REHEARSAL_READ_TOKEN); it is sent as a header for this one fetch and
+  # never written to git config or printed.
+  auth=()
+  if [ -n "${PRIOR_REHEARSAL_READ_TOKEN:-}" ]; then
+    auth=(-c "http.extraHeader=Authorization: Basic $(printf 'x-access-token:%s' "$PRIOR_REHEARSAL_READ_TOKEN" | base64 -w0)")
+  fi
+  git "${auth[@]}" -C "$dest" fetch -q --depth 1 origin "$commit"
   git -C "$dest" checkout -q --detach FETCH_HEAD
 fi
 actual="$(git -C "$dest" rev-parse HEAD)"

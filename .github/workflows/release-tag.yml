@@ -61,6 +61,8 @@ jobs:
       - name: Verify the target commit (every gate, anchored to the local tag)
         if: steps.req.outputs.exists == 'false'
         working-directory: frozen
+        env:
+          PRIOR_REHEARSAL_READ_TOKEN: ${{ secrets.PRIOR_REHEARSAL_READ_TOKEN }}
         run: |
           set -euo pipefail
           python3 -m pip install --quiet "jsonschema==4.26.0"

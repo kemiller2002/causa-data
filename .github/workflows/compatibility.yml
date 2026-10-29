@@ -26,6 +26,8 @@ jobs:
         run: python3 -m pip install --quiet "jsonschema==4.26.0"
       - name: Fetch pinned domain engine
         run: tools/fetch-engine.sh
+        env:
+          PRIOR_REHEARSAL_READ_TOKEN: ${{ secrets.PRIOR_REHEARSAL_READ_TOKEN }}
       - name: Build
         run: |
           dotnet build tools/src/Causa.Tool -c Release
