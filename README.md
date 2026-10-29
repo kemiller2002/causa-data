@@ -29,7 +29,7 @@ The active demonstration catalog contains exactly three historical investigation
 The investigations are created by issuing commands to the pinned engine (`Decide.execute`). The scripts are `tools/src/Causa.Tool/Historical/*.fs`. Ids are deterministic, from `UUIDv5(…/catalog/historical-v1, "<case>/<kind>/<name>")`, and the clock is fixed, so a rebuild is byte-identical. Mission times appear only in observation `observedAt`, evidence `capturedAt` and text; every envelope `occurredAt` is the 2026 build clock.
 
 ```bash
-dotnet build tools/src/Causa.Tool -c Release
+tools/fetch-engine.sh && dotnet build tools/src/Causa.Tool -c Release
 dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll historical-build .    # regenerate (byte-identical)
 dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll historical-verify .   # replay, admissibility, provenance, reconstruction, all three loaded together
 python3 -I tools/py/historical_catalog.py verify . --app <app checkout>         # independent reader, immutability, secrets, refusals, no app bundling
@@ -73,7 +73,7 @@ See [Everyday lightbulb demonstration](docs/EVERYDAY-LIGHTBULB-DEMONSTRATION.md)
 
 ## Contract
 
-**Causa storage contract v1.0.0** is frozen. The full specification is `contract/v1.0.0/CONTRACT.md`, and the schemas are in `contract/v1.0.0/schemas/`. The frozen contract records the engine's original provenance in `engine.lock.json`; builds use the byte-identical, product-owned source committed under `.engine/` and never fetch another rehearsal.
+**Causa storage contract v1.0.0** is frozen. The full specification is `contract/v1.0.0/CONTRACT.md`, and the schemas are in `contract/v1.0.0/schemas/`. The domain authority is the engine pinned in `engine.lock.json`.
 
 Never migrate, overwrite or reshape frozen files. Writes go only to isolated `workspaces/demo/<runId>/` paths.
 
