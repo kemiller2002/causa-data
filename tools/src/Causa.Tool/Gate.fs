@@ -386,7 +386,7 @@ module Gate =
         let expectedRule =
             [ "schema-breaking", "frozen.bytes"; "schema-additive", "frozen.bytes"; "schema-bundle", "schema.identity"
               "historical", "frozen.bytes"; "golden", "frozen.bytes"; "negative weakened", "negative.expectations"
-              "negative removed", "negative.expectations"; "engine drift", "engine.pinned"; "engine semantics", "engine.loaded"
+              "negative removed", "negative.expectations"; "engine drift", "engine.pinned"; "engine semantics", "engine.binary"
               "engine build steered", "engine.loaded"; "release marker", "frozen.bytes"; "anchored relock", "anchor.lock"
               "unapproved fixture", "frozen.bytes" ]
         let expectedFor (name: string) =
