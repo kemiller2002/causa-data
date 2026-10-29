@@ -44,7 +44,7 @@ dotnet run --project tools/src/Causa.Tool -- \
   template-verify --template historical-v1
 ```
 
-Verification requires the exact three identifiers and exact storage file set, matches every raw-file digest, and loads each history and snapshot through the product-owned engine committed under `.engine/`. The frozen `engine.lock.json` remains provenance for storage-v1.0.0, not a runtime dependency on another rehearsal.
+Verification requires the exact three identifiers and exact storage file set, matches every raw-file digest, and loads each history and snapshot through the engine pinned by `engine.lock.json`.
 
 For `everyday-v1` and `demonstration-v1`, the manifest declares and pins their exact one- and four-investigation sets respectively. The verifier derives workspace and remote-validation counts from the selected, validated manifest rather than assuming three cases.
 

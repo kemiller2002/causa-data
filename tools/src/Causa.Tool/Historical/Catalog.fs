@@ -158,14 +158,6 @@ module Catalog =
                     "manifest", JStr "fixtures/v1.0.0/manifest.json"
                     "status", JStr "immutable v1.0.0 compatibility fixtures; not part of the active demonstration catalog" ] ]
 
-    let active (root: string) : JValue =
-        JObj
-            [ "activeCatalog", JStr runId
-              "catalogId", JStr catalogId
-              "catalogVersion", JStr catalogVersion
-              "manifest", JStr(relative root (manifestPath root))
-              "workspace", JStr(relative root (workspace root)) ]
-
     let private engineCommit (root: string) =
         File.ReadAllBytes(Path.Combine(root, "engine.lock.json"))
         |> Json.decodeUtf8
@@ -186,8 +178,7 @@ module Catalog =
                   Path.Combine(dir, "events.ndjson"), b.Files.Events
                   Path.Combine(dir, "snapshot.json"), b.Files.Snapshot ])
         let catalogFiles =
-            [ manifestPath root, fileBytes (manifest root schemaSha (engineCommit root) built)
-              activePath root, fileBytes (active root) ]
+            [ manifestPath root, fileBytes (manifest root schemaSha (engineCommit root) built) ]
             @ (built |> List.map (fun b -> provenancePath root b.Case.Key, fileBytes (provenance b)))
         (investigationFiles @ catalogFiles) |> List.map (fun (p, bytes) -> relative root p, bytes)
 

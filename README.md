@@ -2,9 +2,24 @@
 
 Canonical datastore for the Causa Root-Cause Investigator.
 
-## Active demonstration catalog: `historical-v1`
+## Active demonstration catalog: `demonstration-v1`
 
-The active demonstration catalog contains exactly three historical investigations. Each one is built from primary sources:
+`catalog/active.json` names `catalog/demonstration-v1/manifest.json` and workspace `workspaces/demo/demonstration-v1`. The catalog holds exactly four investigations (Indy-init EXT-DATA-013, owner decision DEC-R7-006):
+
+| case | source | lifecycle |
+|---|---|---|
+| `apollo-1`, `apollo-11`, `challenger-sts-51l` | byte-identical copies of `historical-v1` (below) | as below |
+| `burned-out-lightbulb` | byte-identical copy of `everyday-v1` (`docs/EVERYDAY-LIGHTBULB-DEMONSTRATION.md`) | `resolved` |
+
+- **Manifest:** `catalog/demonstration-v1/manifest.json`, derived by `python3 -I tools/py/demonstration_catalog.py build .`. Its schema is `catalog/schemas/demonstration-catalog-manifest.schema.json`. It records each case's expected version, lifecycle and state digest.
+- **Verification:**
+  - `causa template-verify --template demonstration-v1` replays the four cases with the engine.
+  - `python3 -I tools/py/demonstration_catalog.py verify . [--app <checkout>]` checks the pointer, the manifest, byte identity with the sources and the template, the Python reader, and that nothing is bundled into an app.
+- **Application access:** select repository `kemiller2002/causa-data`, branch `main` and workspace `demonstration-v1`.
+
+## Historical component catalog: `historical-v1`
+
+`historical-v1` contains the three historical investigations, each built from primary sources. It is no longer what `catalog/active.json` names, but it is still verified in full, because `demonstration-v1` copies it:
 
 | case | investigation | lifecycle | question |
 |---|---|---|---|
@@ -12,7 +27,6 @@ The active demonstration catalog contains exactly three historical investigation
 | `apollo-11` | Apollo 11 lunar landing, July 1969 | `awaitingEvidence` | Why did a successful descent continue despite five 1202/1201 program alarms? The case concludes success; it is not modelled as a failure. |
 | `challenger-sts-51l` | Space Shuttle Challenger (STS-51-L), 28 January 1986 | `active` | What was the physical failure of the field joint, and what were the organizational causes of the decision to launch? The two are kept apart. |
 
-- **Pointer:** `catalog/active.json`
 - **Manifest:** `catalog/historical-v1/manifest.json` (three entries, with digests; schema in `catalog/schemas/catalog-manifest.schema.json`)
 - **Records:** `workspaces/demo/historical-v1/investigations/<investigationId>/{manifest.json,events.ndjson,snapshot.json}`. These are ordinary Causa storage v1.0.0 file sets in the isolated workspace namespace (CONTRACT §3, §9). An external application reads them by selecting repository `kemiller2002/causa-data`, its branch and workspace `historical-v1`. No record is bundled into any application.
 - **Provenance:**
@@ -29,7 +43,7 @@ The active demonstration catalog contains exactly three historical investigation
 The investigations are created by issuing commands to the pinned engine (`Decide.execute`). The scripts are `tools/src/Causa.Tool/Historical/*.fs`. Ids are deterministic, from `UUIDv5(…/catalog/historical-v1, "<case>/<kind>/<name>")`, and the clock is fixed, so a rebuild is byte-identical. Mission times appear only in observation `observedAt`, evidence `capturedAt` and text; every envelope `occurredAt` is the 2026 build clock.
 
 ```bash
-dotnet build tools/src/Causa.Tool -c Release
+tools/fetch-engine.sh && dotnet build tools/src/Causa.Tool -c Release
 dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll historical-build .    # regenerate (byte-identical)
 dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll historical-verify .   # replay, admissibility, provenance, reconstruction, all three loaded together
 python3 -I tools/py/historical_catalog.py verify . --app <app checkout>         # independent reader, immutability, secrets, refusals, no app bundling
@@ -73,7 +87,7 @@ See [Everyday lightbulb demonstration](docs/EVERYDAY-LIGHTBULB-DEMONSTRATION.md)
 
 ## Contract
 
-**Causa storage contract v1.0.0** is frozen. The full specification is `contract/v1.0.0/CONTRACT.md`, and the schemas are in `contract/v1.0.0/schemas/`. The frozen contract records the engine's original provenance in `engine.lock.json`; builds use the byte-identical, product-owned source committed under `.engine/` and never fetch another rehearsal.
+**Causa storage contract v1.0.0** is frozen. The full specification is `contract/v1.0.0/CONTRACT.md`, and the schemas are in `contract/v1.0.0/schemas/`. The domain authority is the engine pinned in `engine.lock.json`.
 
 Never migrate, overwrite or reshape frozen files. Writes go only to isolated `workspaces/demo/<runId>/` paths.
 

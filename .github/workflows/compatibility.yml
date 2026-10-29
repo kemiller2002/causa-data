@@ -24,6 +24,10 @@ jobs:
           global-json-file: global.json
       - name: Install Python validator
         run: python3 -m pip install --quiet "jsonschema==4.26.0"
+      - name: Fetch pinned domain engine
+        run: tools/fetch-engine.sh
+        env:
+          PRIOR_REHEARSAL_READ_TOKEN: ${{ secrets.PRIOR_REHEARSAL_READ_TOKEN }}
       - name: Build
         run: |
           dotnet build tools/src/Causa.Tool -c Release
@@ -60,3 +64,7 @@ jobs:
         run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll historical-verify .
       - name: Active historical catalog - independent Python checks (immutability, secrets, refusals)
         run: python3 -I tools/py/historical_catalog.py verify . --base origin/main
+      - name: Active four-case catalog demonstration-v1 - engine replay of the immutable template
+        run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll template-verify --template demonstration-v1 --root .
+      - name: Active four-case catalog demonstration-v1 - pointer, manifest, byte identity, Python reader
+        run: python3 -I tools/py/demonstration_catalog.py verify .

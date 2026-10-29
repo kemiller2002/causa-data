@@ -33,6 +33,9 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+      - run: tools/fetch-engine.sh
+        env:
+          PRIOR_REHEARSAL_READ_TOKEN: ${{ secrets.PRIOR_REHEARSAL_READ_TOKEN }}
       - run: dotnet build tools/src/Causa.Tool -c Release
       - name: Phase A (create, load, append) then phase B in a separate process
         run: |
