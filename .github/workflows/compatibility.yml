@@ -64,3 +64,7 @@ jobs:
         run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll historical-verify .
       - name: Active historical catalog - independent Python checks (immutability, secrets, refusals)
         run: python3 -I tools/py/historical_catalog.py verify . --base origin/main
+      - name: Active four-case catalog demonstration-v1 - engine replay of the immutable template
+        run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll template-verify --template demonstration-v1 --root .
+      - name: Active four-case catalog demonstration-v1 - pointer, manifest, byte identity, Python reader
+        run: python3 -I tools/py/demonstration_catalog.py verify .

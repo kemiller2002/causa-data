@@ -102,7 +102,8 @@ module CatalogVerify =
         | Ok set ->
             let activeOk = File.Exists(Catalog.activePath root) && canonicalFile (Catalog.activePath root)
             let activeV = readJson (Catalog.activePath root) |> Result.defaultValue JNull
-            let pointsAtManifest = str "manifest" activeV = "catalog/historical-v1/manifest.json" && str "workspace" activeV = "workspaces/demo/historical-v1"
+            // The active catalog is the four-case demonstration-v1 (EXT-DATA-013); historical-v1 is one of its sources.
+            let pointsAtManifest = str "manifest" activeV = "catalog/demonstration-v1/manifest.json" && str "workspace" activeV = "workspaces/demo/demonstration-v1"
             match readJson (Catalog.manifestPath root) with
             | Error e -> [ check "catalog.manifest.parse" false e ]
             | Ok m ->
@@ -174,7 +175,7 @@ module CatalogVerify =
                             |> List.filter (fun p -> not (expectedSet.Contains p) && not (p.StartsWith("catalog/historical-v1/verification", StringComparison.Ordinal)))
                         [ check "catalog.deterministic-reconstruction" (differing.IsEmpty && extra.IsEmpty)
                               $"rebuilt {expected.Length} files through Decide.execute; differing: {String.Join(',', differing)}; unexpected: {String.Join(',', extra)}" ]
-                [ check "catalog.active-pointer" (activeOk && pointsAtManifest) "catalog/active.json is canonical and names catalog/historical-v1 and workspaces/demo/historical-v1"
+                [ check "catalog.active-pointer" (activeOk && pointsAtManifest) "catalog/active.json is canonical and names the four-case catalog/demonstration-v1 and workspaces/demo/demonstration-v1"
                   check "catalog.manifest.canonical" (canonicalFile (Catalog.manifestPath root)) "RFC 8785 + LF"
                   check "catalog.exactly-three-cases" (cases.Length = 3) $"{cases.Length} cases listed"
                   check "catalog.case-identities" (keys = Catalog.caseKeys) ("case keys: " + String.Join(", ", keys))

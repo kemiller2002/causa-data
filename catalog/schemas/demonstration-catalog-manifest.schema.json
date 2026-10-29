@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/catalog/schemas/demonstration-catalog-manifest.schema.json",
+  "title": "Causa active demonstration catalog manifest (four investigations)",
+  "description": "catalog/demonstration-v1/manifest.json. Lists the four investigations of the active demonstration catalog (Indy-init EXT-DATA-013, DEC-R7-006), which live in workspaces/demo/demonstration-v1/ as ordinary Causa v1.0.0 file sets (CONTRACT §3, §9). Each case is a byte-identical copy of its source workspace; the historical cases keep their research provenance in catalog/historical-v1. Derived by tools/py/demonstration_catalog.py build and canonical (RFC 8785 + LF). This catalog layer is outside the frozen v1.0.0 contract and does not change it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["catalogId", "catalogVersion", "formatVersion", "semanticVersion", "schemaSha256", "createdAt", "workspace", "template", "cases", "retainedCompatibilityDataset"],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "uuid": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+    "text": { "type": "string", "minLength": 1 }
+  },
+  "properties": {
+    "catalogId": { "const": "causa-demonstration" },
+    "catalogVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "formatVersion": { "const": "1.0.0" },
+    "semanticVersion": { "const": "1.0.0" },
+    "schemaSha256": { "$ref": "#/$defs/sha256" },
+    "createdAt": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$" },
+    "workspace": { "const": "workspaces/demo/demonstration-v1" },
+    "template": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["templateId", "templateVersion", "overallTemplateSha256"],
+      "properties": {
+        "templateId": { "const": "demonstration-v1" },
+        "templateVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "overallTemplateSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["caseKey", "investigationId", "title", "path", "sourceWorkspace", "expectedVersion", "expectedLifecycle", "expectedStateSha256", "eventsSha256", "manifestSha256", "snapshotSha256"],
+        "properties": {
+          "caseKey": { "enum": ["apollo-1", "apollo-11", "challenger-sts-51l", "burned-out-lightbulb"] },
+          "investigationId": { "$ref": "#/$defs/uuid" },
+          "title": { "$ref": "#/$defs/text" },
+          "path": { "type": "string", "pattern": "^workspaces/demo/demonstration-v1/investigations/[0-9a-f-]{36}$" },
+          "sourceWorkspace": { "enum": ["workspaces/demo/historical-v1", "workspaces/demo/everyday-v1"] },
+          "expectedVersion": { "type": "integer", "minimum": 1 },
+          "expectedLifecycle": { "enum": ["draft", "active", "awaitingEvidence", "awaitingVerification", "resolved", "closed", "archived"] },
+          "expectedStateSha256": { "$ref": "#/$defs/sha256" },
+          "eventsSha256": { "$ref": "#/$defs/sha256" },
+          "manifestSha256": { "$ref": "#/$defs/sha256" },
+          "snapshotSha256": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    },
+    "retainedCompatibilityDataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["datasetId", "manifest", "status"],
+      "properties": {
+        "datasetId": { "const": "causa-demo-v1" },
+        "manifest": { "const": "fixtures/v1.0.0/manifest.json" },
+        "status": { "$ref": "#/$defs/text" }
+      }
+    }
+  }
+}
