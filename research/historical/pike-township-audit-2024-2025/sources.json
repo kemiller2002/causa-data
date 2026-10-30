@@ -1,0 +1,67 @@
+[
+  {
+    "sourceId": "PT-S01",
+    "title": "Financial Statements Audit Report of Pike Township, Marion County, Indiana, January 1, 2024 to December 31, 2024",
+    "issuer": "Indiana State Board of Accounts",
+    "published": "2026-09-28",
+    "url": "https://audit.sboa.in.gov/WebReports/21370A.pdf",
+    "archivalLocator": "SBOA report 21370A, 24 pages",
+    "retrievedAt": "2026-10-30",
+    "sourceClass": "primary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "Official Indiana public record; reuse subject to applicable law"
+  },
+  {
+    "sourceId": "PT-S02",
+    "title": "Supplemental Compliance Report of Pike Township, Marion County, Indiana, January 1, 2024 to December 31, 2024",
+    "issuer": "Indiana State Board of Accounts",
+    "published": "2026-09-28",
+    "url": "https://audit.sboa.in.gov/WebReports/21370S.pdf",
+    "archivalLocator": "SBOA report 21370S, 15 pages",
+    "retrievedAt": "2026-10-30",
+    "sourceClass": "primary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "Official Indiana public record; reuse subject to applicable law"
+  },
+  {
+    "sourceId": "PT-S03",
+    "title": "Financial Statements Audit Report of Pike Township, Marion County, Indiana, January 1, 2025 to December 31, 2025",
+    "issuer": "Indiana State Board of Accounts",
+    "published": "2026-09-29",
+    "url": "https://audit.sboa.in.gov/WebReports/35250A.pdf",
+    "archivalLocator": "SBOA report 35250A, 23 pages",
+    "retrievedAt": "2026-10-30",
+    "sourceClass": "primary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "Official Indiana public record; reuse subject to applicable law"
+  },
+  {
+    "sourceId": "PT-S04",
+    "title": "Federal Audit Compliance Report of Pike Township, Marion County, Indiana, January 1, 2025 to December 31, 2025",
+    "issuer": "Indiana State Board of Accounts",
+    "published": "2026-09-29",
+    "url": "https://audit.sboa.in.gov/WebReports/35250F.pdf",
+    "archivalLocator": "SBOA report 35250F, 21 pages; federal finding 2025-001",
+    "retrievedAt": "2026-10-30",
+    "sourceClass": "primary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "Official Indiana public record; reuse subject to applicable law"
+  },
+  {
+    "sourceId": "PT-S05",
+    "title": "Supplemental Compliance Report of Pike Township, Marion County, Indiana, January 1, 2025 to December 31, 2025",
+    "issuer": "Indiana State Board of Accounts",
+    "published": "2026-09-29",
+    "url": "https://audit.sboa.in.gov/WebReports/35250S.pdf",
+    "archivalLocator": "SBOA report 35250S, 18 pages",
+    "retrievedAt": "2026-10-30",
+    "sourceClass": "primary",
+    "retrievalStatus": "retrieved",
+    "httpStatus": 200,
+    "rights": "Official Indiana public record; reuse subject to applicable law"
+  }
+]
