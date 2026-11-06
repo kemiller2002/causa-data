@@ -66,6 +66,19 @@ jobs:
         run: dotnet tools/consumers/clean-fsharp/bin/Release/net10.0/clean-consumer.dll verify .
       - name: Consumer - independent Python consumer
         run: python3 tools/consumers/python/causa_consumer.py verify .
+      - name: Independent 1.0.0 consumers refuse causa-storage 1.1.0 data whole (CONTRACT 1.1.0 section 3)
+        run: |
+          # The clean F# and Python consumers are 1.0.0 readers: each must refuse the 1.1.0 fixture at stage 5 with
+          # CAUSA.UNSUPPORTED_VERSION. (The rehearsal adapter reads only the repository's listed 1.0.0 sets through
+          # the frozen Store.validate, which ST-06 already shows refusing 1.1.0.)
+          for d in fixtures/v1.1.0/investigations/*/; do
+            out="$(dotnet tools/consumers/clean-fsharp/bin/Release/net10.0/clean-consumer.dll validate "$d" || true)"
+            echo "clean-fsharp $d: $out"
+            case "$out" in CAUSA.UNSUPPORTED_VERSION*) ;; *) echo "::error::clean F# consumer did not refuse $d as unsupported"; exit 1 ;; esac
+            out="$(python3 -I -c 'import os, sys; from pathlib import Path; sys.path.insert(0, "tools/consumers/python"); import causa_consumer as c; d = Path(sys.argv[1]); s = c.load_schemas(Path("contract/v1.0.0/schemas")).value; r = c.run_pipeline(d.name, {f: (d / f).read_bytes() for f in os.listdir(d)}, s); print(r.primary.code if r.primary else "ACCEPTED")' "${d%/}")"
+            echo "python $d: $out"
+            test "$out" = CAUSA.UNSUPPORTED_VERSION || { echo "::error::Python consumer did not refuse $d as unsupported"; exit 1; }
+          done
       - name: Active historical catalog - engine replay, provenance and deterministic rebuild
         run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll historical-verify .
       - name: Active historical catalog - independent Python checks (immutability, secrets, refusals)
