@@ -278,6 +278,17 @@ let main argv =
     | "workspace-publish" :: args -> runWorkspacePublish args
     | "rehearsal-init" :: args -> runRehearsalInit args
     | [ "generate"; root ] -> generateInto (Path.GetFullPath root); 0
+    // DRAFT causa-storage 1.1.0 (contract/v1.1.0): writes fixtures/v1.1.0 only; verifies it byte for byte and by the 1.1.0 reader.
+    | [ "v110-fixtures"; root ] ->
+        match V110Fixtures.generate (Path.GetFullPath root) with
+        | Ok n -> printfn "fixtures/v1.1.0: %d files written" n; 0
+        | Error e -> eprintfn "v110-fixtures failed: %s" e; 1
+    | [ "v110-verify"; root ] ->
+        let full = Path.GetFullPath root
+        let v110 = match Store.loadSchemas (Path.Combine(full, "contract/v1.1.0/schemas")) with Ok s -> s | Error e -> eprintfn "1.1.0 schemas unusable: %s" e.Detail; exit 2
+        match V110Fixtures.verify full (schemasOrExit full) v110 with
+        | [] -> printfn "PASS v110-verify: fixtures/v1.1.0 reproduce byte for byte; the valid investigation reads as 1.1.0; every negative fixture is refused with its expected code"; 0
+        | problems -> problems |> List.iter (eprintfn "FAIL %s"); 1
     | [ "verify"; root ] -> Dataset.verify (Path.GetFullPath root) |> printChecks
     | [ "reproduce"; root ] -> reproduce (Path.GetFullPath root)
     | [ "validate-dir"; root; dir ] ->

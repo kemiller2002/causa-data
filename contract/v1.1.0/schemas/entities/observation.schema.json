@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.1.0/schemas/entities/observation.schema.json",
+  "title": "observation projection entity",
+  "description": "Observation projection. 1.1.0: source is null until an ObservationRevised sets it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "original",
+    "source",
+    "observedAt",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "original": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "source": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    },
+    "observedAt": {
+      "$ref": "../common.schema.json#/$defs/nullableTimestamp"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

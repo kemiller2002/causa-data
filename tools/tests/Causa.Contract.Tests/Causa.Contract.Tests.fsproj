@@ -6,6 +6,7 @@
     <Compile Include="EverydayTests.fs" />
     <Compile Include="WorkspaceTests.fs" />
     <Compile Include="Tests.fs" />
+    <Compile Include="V110Tests.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />

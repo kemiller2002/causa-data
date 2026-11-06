@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.1.0/schemas/entities/evidence.schema.json",
+  "title": "evidence projection entity",
+  "description": "Evidence projection. admittedAtVersion is the aggregateVersion that admitted it. 1.1.0: label and sourceUrl are null until an EvidenceRevised sets them.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "contentKind",
+    "content",
+    "label",
+    "category",
+    "source",
+    "sourceUrl",
+    "capturedAt",
+    "verification",
+    "supersededBy",
+    "admittedAtVersion",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "contentKind": {
+      "$ref": "../common.schema.json#/$defs/contentKind"
+    },
+    "content": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "label": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    },
+    "category": {
+      "$ref": "../common.schema.json#/$defs/evidenceCategory"
+    },
+    "source": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "sourceUrl": {
+      "oneOf": [
+        {
+          "$ref": "../common.schema.json#/$defs/httpUrl"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "capturedAt": {
+      "$ref": "../common.schema.json#/$defs/nullableTimestamp"
+    },
+    "verification": {
+      "$ref": "../common.schema.json#/$defs/verificationStatus"
+    },
+    "supersededBy": {
+      "oneOf": [
+        {
+          "$ref": "../common.schema.json#/$defs/uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "admittedAtVersion": {
+      "$ref": "../common.schema.json#/$defs/aggregateVersion"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "contentKind": {
+            "const": "artifact"
+          }
+        },
+        "required": [
+          "contentKind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "$ref": "../common.schema.json#/$defs/httpUrl"
+          }
+        }
+      }
+    }
+  ]
+}
