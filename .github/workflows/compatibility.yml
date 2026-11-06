@@ -40,6 +40,12 @@ jobs:
           python3 tools/py/schema_bundle.py check contract/v1.0.0/schemas
           python3 tools/py/schema_bundle.py digest contract/v1.0.0/schemas | cmp - contract/v1.0.0/schemas/bundle.json
           python3 tools/py/render_registry.py contract/v1.0.0/schemas check contract/v1.0.0/CONTRACT.md
+      - name: DRAFT causa-storage 1.1.0 - schema bundle (independent Python check) and fixtures (deterministic rebuild, 1.1.0 reader, negatives)
+        run: |
+          python3 tools/py/schema_bundle.py check contract/v1.1.0/schemas
+          python3 tools/py/schema_bundle.py digest contract/v1.1.0/schemas 1.1.0 | cmp - contract/v1.1.0/schemas/bundle.json
+          python3 -I tools/schema-authoring/author_schemas_v110.py "$RUNNER_TEMP/s110" && diff -r --exclude=bundle.json "$RUNNER_TEMP/s110" contract/v1.1.0/schemas
+          dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll v110-verify .
       - name: Dataset verification
         run: dotnet tools/src/Causa.Tool/bin/Release/net10.0/causa.dll verify .
       - name: Deterministic regeneration

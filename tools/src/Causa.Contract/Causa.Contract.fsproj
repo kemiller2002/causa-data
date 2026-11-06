@@ -10,6 +10,7 @@
     <Compile Include="Projection.fs" />
     <Compile Include="SchemaCheck.fs" />
     <Compile Include="Store.fs" />
+    <Compile Include="V110.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../../.engine/src/engine/App.Engine.fsproj" AdditionalProperties="$(CausaEngineBuildProperties)" />

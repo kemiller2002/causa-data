@@ -18,6 +18,7 @@
     <Compile Include="Historical/Cases.fs" />
     <Compile Include="Everyday.fs" />
     <Compile Include="Workspace.fs" />
+    <Compile Include="V110Fixtures.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

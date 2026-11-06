@@ -60,9 +60,9 @@ def jcs(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
-def bundle(root):
+def bundle(root, version="1.0.0"):
     entries = [{"path": path, "sha256": hashlib.sha256(b).hexdigest()} for path, b in load(root)]
-    return {"formatVersion": "1.0.0", "contractVersion": "1.0.0", "algorithm": "sha256", "canonicalization": "RFC8785",
+    return {"formatVersion": version, "contractVersion": version, "algorithm": "sha256", "canonicalization": "RFC8785",
             "schemas": sorted(entries, key=lambda e: e["path"])}
 
 
@@ -75,7 +75,8 @@ def main():
         print(f"schemas={n} problems={len(problems)}")
         sys.exit(1 if problems else 0)
     if cmd == "digest":
-        sys.stdout.write(jcs(bundle(root)) + "\n")
+        # An optional third argument names the contract version (default 1.0.0, the frozen release).
+        sys.stdout.write(jcs(bundle(root, sys.argv[3] if len(sys.argv) > 3 else "1.0.0")) + "\n")
         return
     sys.exit("unknown command")
 
