@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.2.0/schemas/payloads/EvidenceRevised.schema.json",
+  "title": "EvidenceRevised payload",
+  "description": "1.1.0: revises the descriptive metadata of evidence (label, source reference, source URL). The admitted content is never revised. In the command group that admits the evidence, source equals EvidenceAdmitted.source byte for byte (creation equality rule).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidenceId",
+    "label",
+    "source",
+    "sourceUrl"
+  ],
+  "properties": {
+    "evidenceId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "label": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "source": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "sourceUrl": {
+      "oneOf": [
+        {
+          "$ref": "../common.schema.json#/$defs/httpUrl"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.2.0/schemas/payloads/ObservationRevised.schema.json",
+  "title": "ObservationRevised payload",
+  "description": "1.1.0: revises an observation's text and source reference. In the command group that records the observation, original equals ObservationRecorded.original byte for byte (creation equality rule).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "observationId",
+    "original",
+    "source"
+  ],
+  "properties": {
+    "observationId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "original": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "source": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    }
+  }
+}
