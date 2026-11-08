@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.2.0/schemas/payloads/UnknownRevised.schema.json",
+  "title": "UnknownRevised payload",
+  "description": "1.2.0: revises an open unknown's question verbatim. The unknown keeps its id, state, basis, materiality and provenance. A revision is a command group of its own.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "unknownId",
+    "question"
+  ],
+  "properties": {
+    "unknownId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "question": {
+      "$ref": "../common.schema.json#/$defs/text"
+    }
+  }
+}
